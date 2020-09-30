@@ -1,14 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * RiskETSE - POO 2020/21, USC
+ * 
+ * @author Aldán Creo Mariño
+ * @author Hugo Gómez Sabucedo
  */
 package risketse;
 
-/**
- *
- * @author aldan.creo
- */
 public class RiskETSE {
 
     /**
