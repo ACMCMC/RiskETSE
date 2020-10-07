@@ -2,6 +2,7 @@ package risk;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -15,6 +16,8 @@ public class Menu {
     // En esta clase se deberían de definir los atributos a los que será 
     // necesario acceder durante la ejecución del programa como, por ejemplo,
     // el mapa o los jugadores
+    
+    static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
     
     /**
      * 
@@ -66,7 +69,12 @@ public class Menu {
                             }
                         } if(partes.length==3) {
                             if(partes[1].equals("jugadores")) { 
-                                crearJugador(new File(partes[2]));
+                                try {    
+                                    crearJugador(new File(partes[2]));
+                                } catch (FileNotFoundException ex) {
+                                    System.out.println("No existe el archivo especificado.");
+                                    logger.info("No existe el archivo especificado.");
+                                }
                             } else {
                                 crearJugador(partes[1], partes[2]);
                             }
@@ -124,8 +132,16 @@ public class Menu {
      * 
      * @param file 
      */
-    private void crearJugador(File file) {
+    private void crearJugador(File file) throws FileNotFoundException {
         // Código necesario para crear a los jugadores del RISK
+        
+        try {
+            FileReader lector= new FileReader(file);
+            BufferedReader bufferLector= new BufferedReader(lector);
+        } catch (FileNotFoundException fileNotFoundException) {
+            // Si no se encuentra el archivo, falla el programa
+            throw fileNotFoundException;
+        }
 
     }
     
