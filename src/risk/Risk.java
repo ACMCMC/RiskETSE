@@ -1,20 +1,20 @@
-/**
- * RiskETSE - POO 2020/21, USC
- * 
- * @author Aldán Creo Mariño
- * @author Hugo Gómez Sabucedo
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package risk;
 
-import risk.Menu;
-
+/**
+ *
+ * @author Manuel Lama
+ */
 public class Risk {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Menu menu = new Menu();
+        new Menu();
     }
-    
 }
