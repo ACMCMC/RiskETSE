@@ -17,6 +17,8 @@ public class Menu {
 
     static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
 
+    private static Mapa mapa;
+
     public Menu() {
         // Inicialización de algunos atributos
 
@@ -120,8 +122,21 @@ public class Menu {
     /**
      *
      */
-    public void crearMapa() {
-        // Código necesario para crear el mapa
+    private void crearMapa() {
+        if (mapa == null) {
+            try {
+                mapa = new Mapa(new File("paisesCoordenadas.csv"));
+            } catch (FileNotFoundException ex) {
+                logger.warning("No se pudo crear el mapa");
+            }
+        }
+    }
+
+    public Mapa getMapa() {
+        if (mapa == null) {
+            this.crearMapa();
+        }
+        return mapa;
     }
 
     /**
