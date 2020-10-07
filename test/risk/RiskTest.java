@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package risketse;
+package risk;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author aldan.creo
  */
-public class RiskETSETest {
+public class RiskTest {
     
-    public RiskETSETest() {
+    public RiskTest() {
     }
 
     @Test
