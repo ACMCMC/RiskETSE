@@ -4,15 +4,17 @@
  * @author Aldán Creo Mariño
  * @author Hugo Gómez Sabucedo
  */
-package risketse;
+package risk;
 
-public class RiskETSE {
+import risk.Menu;
+
+public class Risk {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Prueba");
+        Menu menu = new Menu();
     }
     
 }
