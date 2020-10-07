@@ -27,6 +27,7 @@ public class MenuTest {
 
     @Test
     public void testCrearMapa() {
+        assertEquals(1,1);
     }
     
 }
