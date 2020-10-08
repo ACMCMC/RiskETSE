@@ -1,9 +1,14 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -16,6 +21,8 @@ public class Menu {
     // el mapa o los jugadores
 
     static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
+
+    private static Mapa mapa;
 
     public Menu() {
         // Inicialización de algunos atributos
@@ -62,8 +69,7 @@ public class Menu {
                             } else {
                                 System.out.println("\nComando incorrecto.");
                             }
-                        }
-                        if (partes.length == 3) {
+                        } else if (partes.length == 3) {
                             if (partes[1].equals("jugadores")) {
                                 try {
                                     crearJugador(new File(partes[2]));
@@ -91,6 +97,13 @@ public class Menu {
                             asignarPaises(partes[1], partes[2]);
                         }
                         break;
+                    case "ver":
+                        if (partes.length == 2) {
+                            if (partes[1].equals("mapa")) {
+                                mapa.imprimirMapa();
+                            }
+                        }
+                        break;
                     default:
                         System.out.println("\nComando incorrecto.");
                 }
@@ -106,6 +119,11 @@ public class Menu {
      */
     public void asignarPaises(File file) {
         // Código necesario para asignar países
+        try {
+            this.getMapa().asignarPaises(file);
+        } catch (FileNotFoundException ex) {
+            logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", file.getAbsolutePath());
+        }
     }
 
     /**
@@ -120,8 +138,21 @@ public class Menu {
     /**
      *
      */
-    public void crearMapa() {
-        // Código necesario para crear el mapa
+    private void crearMapa() {
+        if (mapa == null) {
+            try {
+                mapa = new Mapa();
+            } catch (FileNotFoundException ex) {
+                logger.warning("No se pudo crear el mapa");
+            }
+        }
+    }
+
+    public Mapa getMapa() {
+        if (mapa == null) {
+            this.crearMapa();
+        }
+        return mapa;
     }
 
     /**
