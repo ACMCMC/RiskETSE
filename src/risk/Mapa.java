@@ -10,22 +10,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class Mapa {
 
     private Map<Coordenadas, Casilla> casillas;
 
-    Mapa(File archivoRelacionPaises) throws FileNotFoundException {
-        // llenamos el Mapa de casillas, todas marítimas en principio
-        String linea;
-        String[] valores;
-        BufferedReader bufferedReader;
+    /**
+     * Crea un mapa lleno de casillas marítimas
+     * @param archivoRelacionPaises
+     * @throws FileNotFoundException
+     */
+    Mapa() throws FileNotFoundException {
 
         casillas = new HashMap<Coordenadas, Casilla>();
 
+        // llenamos el Mapa de casillas, todas marítimas en principio
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 11; x++) {
                 Casilla casillaInsertar = new Casilla(new Coordenadas(x, y));
@@ -33,7 +33,20 @@ public class Mapa {
             }
         }
 
-        try { // En el mapa, reemplazamos las casillas marítimas donde haya países por casillas con país
+    }
+
+    /**
+     * Reemplaza las casillas del mapa por las casillas con el país que se indique en el archivo, por cada una de las entradas del archivo. El archivo tiene que tener formato [nombrePais];[X];[Y]
+     * @param archivoPaises
+     * @throws FileNotFoundException
+     */
+    void asignarPaises(File archivoRelacionPaises) throws FileNotFoundException {
+
+        String linea;
+        String[] valores;
+        BufferedReader bufferedReader;
+
+        try { // Reemplazamos las casillas del mapa por las que nos pone el archivo
             FileReader reader = new FileReader(archivoRelacionPaises);
             bufferedReader = new BufferedReader(reader);
             while ((linea = bufferedReader.readLine()) != null) {
@@ -47,7 +60,6 @@ public class Mapa {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public Casilla getCasilla(Coordenadas coordenadas) {

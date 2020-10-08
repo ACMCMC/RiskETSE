@@ -57,6 +57,9 @@ public class Coordenadas implements Comparable {
         return false; // No son iguales por defecto
     }
 
+    /**
+     * Función de hashCode. Debe devolver el mismo valor para un par (x,y) igual
+     */
     @Override
     public int hashCode() {
         return (100*getX() + getY());
