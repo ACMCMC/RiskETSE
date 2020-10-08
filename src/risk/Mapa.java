@@ -46,12 +46,14 @@ public class Mapa {
         String[] valores;
         BufferedReader bufferedReader;
 
+        Continente continente = new Continente("Asia", Color.VERDE);
+
         try { // Reemplazamos las casillas del mapa por las que nos pone el archivo
             FileReader reader = new FileReader(archivoRelacionPaises);
             bufferedReader = new BufferedReader(reader);
             while ((linea = bufferedReader.readLine()) != null) {
                 valores = linea.split(";");
-                Casilla casillaPais = new Casilla(new Coordenadas(Integer.valueOf(valores[1]), Integer.valueOf(valores[2])), new Pais(valores[0]));
+                Casilla casillaPais = new Casilla(new Coordenadas(Integer.valueOf(valores[1]), Integer.valueOf(valores[2])), new Pais(valores[0], continente));
                 casillas.replace(casillaPais.getCoordenadas(), casillaPais);
             }
             bufferedReader.close();
@@ -74,10 +76,13 @@ public class Mapa {
                 System.out.print("| ");
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
-                    System.out.print(new String(new char[10]).replace("\0", " ")); // Imprimimos espacios
+                    System.out.print(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
                 } else {
-                    System.out.print(String.format("%-9s ", this.getCasilla(new Coordenadas(x,y)).getPais().getNombre()));
+                    System.out.print(this.getCasilla(new Coordenadas(x,y)).getPais().getContinente().getColor().getSecFondo());
+                    System.out.print(String.format("%-9s", this.getCasilla(new Coordenadas(x,y)).getPais().getNombre()));
+                    System.out.print(Color.getSecColorReset());
                 }
+                System.out.print(" "); // Imprimimos un espacio al final para separar
             }
             System.out.println("|");
         }
