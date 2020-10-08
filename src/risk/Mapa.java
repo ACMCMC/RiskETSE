@@ -22,6 +22,12 @@ public class Mapa {
 
         casillas = new HashMap<Coordenadas, Casilla>();
 
+        for (int x = 0; x < 11; x++) {
+            for (int y = 0; y < 8; y++) {
+                casillas.put(new Casilla(new Coordenadas(x, y)));
+            }
+        }
+
         try {
             FileReader reader = new FileReader(archivoRelacionPaises);
             bufferedReader = new BufferedReader(reader);

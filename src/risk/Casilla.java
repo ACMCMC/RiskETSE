@@ -2,7 +2,12 @@ package risk;
 
 public class Casilla {
     private Coordenadas coordenadas;
-    private Pais pais;
+    private Pais pais; // Si es una casilla marítima, pais es null
+
+    Casilla(Coordenadas coordenadas) {
+        setCoordenadas(coordenadas);
+        setPais(null); // Esta casilla no tiene asociado un país, es una casilla marítima
+    }
 
     Casilla(Coordenadas coordenadas, Pais pais) {
         setCoordenadas(coordenadas);
@@ -23,6 +28,10 @@ public class Casilla {
 
     private void setPais(Pais pais) {
         this.pais = pais;
+    }
+
+    public boolean esMaritima() {
+        return (this.pais == null);
     }
 
     @Override
