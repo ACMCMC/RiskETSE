@@ -1,3 +1,7 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 public class Coordenadas implements Comparable {
@@ -51,6 +55,14 @@ public class Coordenadas implements Comparable {
         return true; // Son iguales si tienen las mismas coordenadas
 
         return false; // No son iguales por defecto
+    }
+
+    /**
+     * Función de hashCode. Debe devolver el mismo valor para un par (x,y) igual
+     */
+    @Override
+    public int hashCode() {
+        return (100*getX() + getY());
     }
 
 }
