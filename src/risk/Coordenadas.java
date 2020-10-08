@@ -53,4 +53,9 @@ public class Coordenadas implements Comparable {
         return false; // No son iguales por defecto
     }
 
+    @Override
+    public int hashCode() {
+        return (100*getX() + getY());
+    }
+
 }

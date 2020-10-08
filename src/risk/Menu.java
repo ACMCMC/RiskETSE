@@ -93,6 +93,13 @@ public class Menu {
                             asignarPaises(partes[1], partes[2]);
                         }
                         break;
+                    case "ver":
+                        if (partes.length == 2) {
+                            if (partes[1].equals("mapa")) {
+                                mapa.imprimirMapa();
+                            }
+                        }
+                        break;
                     default:
                         System.out.println("\nComando incorrecto.");
                 }

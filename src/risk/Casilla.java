@@ -36,7 +36,10 @@ public class Casilla {
 
     @Override
     public String toString() {
-        super.toString();
-        return("(" + coordenadas.getX() + "," + coordenadas.getY() + "): " + pais.getNombre());
+        if (this.esMaritima()) {
+            return("Casilla marítima -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
+        } else {
+            return("Casilla del país: " + this.getPais().getNombre() + " -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
+        }
     }
 }
