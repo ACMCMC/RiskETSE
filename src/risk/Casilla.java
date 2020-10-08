@@ -5,6 +5,8 @@
 package risk;
 
 public class Casilla {
+
+    private Jugador jugador;
     private Coordenadas coordenadas;
     private Pais pais; // Si es una casilla marítima, pais es null
 
@@ -16,6 +18,14 @@ public class Casilla {
     Casilla(Coordenadas coordenadas, Pais pais) {
         setCoordenadas(coordenadas);
         setPais(pais);
+    }
+
+    public Jugador getJugador() {
+        return this.jugador;
+    }
+
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
     }
 
     public Coordenadas getCoordenadas() {

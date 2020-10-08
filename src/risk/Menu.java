@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  * @author Manuel Lama
  */
 public class Menu {
-    // En esta clase se deberían de definir los atributos a los que será 
+    // En esta clase se deberían de definir los atributos a los que será
     // necesario acceder durante la ejecución del programa como, por ejemplo,
     // el mapa o los jugadores
 
@@ -39,32 +40,32 @@ public class Menu {
                 String[] partes = orden.split(" ");
                 String comando = partes[0];
                 // COMANDOS INICIALES PARA EMPEZAR A JUGAR
-                //    crear mapa
-                //    crear jugadores <nombre_fichero>
-                //    crear <nombre_jugador> <nombre_color>
-                //    asignar misiones
-                //    asignar paises <nombre_fichero>
-                //    asignar <nombre_pais> <nombre_jugador>
+                // crear mapa
+                // crear jugadores <nombre_fichero>
+                // crear <nombre_jugador> <nombre_color>
+                // asignar misiones
+                // asignar paises <nombre_fichero>
+                // asignar <nombre_pais> <nombre_jugador>
 
                 // COMANDOS DISPONIBLES DURANTE EL JUEGO
-                //    acabar
-                //    atacar <nombre_pais> <nombre_pais>
-                //    describir continente <nombre_continente>
-                //    describir frontera <nombre_pais>
-                //    describir frontera <nombre_continente>
-                //    describir jugador <nombre_jugador>
-                //    describir pais <nombre_pais>
-                //    jugador
-                //    repartir ejercitos
-                //    ver mapa
-                //    ver pais <nombre_pais>
+                // acabar
+                // atacar <nombre_pais> <nombre_pais>
+                // describir continente <nombre_continente>
+                // describir frontera <nombre_pais>
+                // describir frontera <nombre_continente>
+                // describir jugador <nombre_jugador>
+                // describir pais <nombre_pais>
+                // jugador
+                // repartir ejercitos
+                // ver mapa
+                // ver pais <nombre_pais>
                 switch (comando) {
                     case "crear":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
                                 // crearMapa es un método de la clase Menú desde el que se puede invocar
                                 // a otros métodos de las clases que contienen los atributos y los métodos
-                                // necesarios para realizar esa invocación 
+                                // necesarios para realizar esa invocación
                                 crearMapa();
                             } else {
                                 System.out.println("\nComando incorrecto.");
@@ -88,7 +89,8 @@ public class Menu {
                         if (partes.length != 3) {
                             System.out.println("\nComando incorrecto.");
                         } else if (partes[1].equals("paises")) {
-                            // asignarPaises es un método de la clase Menu que recibe como entrada el fichero
+                            // asignarPaises es un método de la clase Menu que recibe como entrada el
+                            // fichero
                             // en el que se encuentra la asignación de países a jugadores. Dentro de este
                             // método se invocará a otros métodos de las clases que contienen los atributos
                             // y los métodos necesarios para realizar esa invocación
@@ -164,9 +166,21 @@ public class Menu {
         try {
             FileReader lector = new FileReader(file);
             BufferedReader bufferLector = new BufferedReader(lector);
+
+            String linea;
+            String[] partesLinea;
+
+            while ((linea = bufferLector.readLine()) != null) {
+                partesLinea = linea.split(";");
+                Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
+                System.out.println("Jugador " + Partida.getPartida().getJugador(partesLinea[0]).getColor().getSecFondo() + Partida.getPartida().getJugador(partesLinea[0]).getNombre() + Color.getSecColorReset());
+            }
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
             throw fileNotFoundException;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
