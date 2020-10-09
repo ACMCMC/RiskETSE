@@ -10,5 +10,6 @@ public class Risk {
      */
     public static void main(String[] args) {
         new Menu();
+new Continente("Asia",Color.VERDE);
     }
 }

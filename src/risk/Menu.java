@@ -86,6 +86,9 @@ public class Menu {
                         }
                         break;
                     case "asignar":
+                        //*********************************************************************
+                        //CORREGIR
+                        //*********************************************************************
                         if (partes.length != 3) {
                             System.out.println("\nComando incorrecto.");
                         } else if (partes[1].equals("paises")) {
@@ -190,6 +193,6 @@ public class Menu {
      */
     private void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
-
+        
     }
 }
