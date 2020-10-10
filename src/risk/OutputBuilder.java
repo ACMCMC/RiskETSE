@@ -339,12 +339,46 @@ public class OutputBuilder {
      * @param valor
      * @return
      */
-    public OutputBuilder manualAdd(String key, String valor) {
+    public OutputBuilder manualAddString(String key, String valor) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(key);
         stringBuilder.append(": \"");
         stringBuilder.append(valor);
         stringBuilder.append("\"");
+
+        variables.add(stringBuilder.toString());
+        return this;
+    }
+
+    /**
+     * Añade automáticamente un parámetro, detectando su tipo y tratándolo adecuadamente
+     * 
+     * @param key
+     * @param valor
+     * @return
+     */
+    public OutputBuilder autoAdd(String key, Object obj) {
+        if (obj.getClass().equals(String.class)) { // Si el objeto es un String, lo adjuntamos tal cual
+            return manualAddString(key, (String) obj);
+        }
+
+        // El objeto no es un String
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(key);
+        stringBuilder.append(": ");
+        
+        int sangrado = key.length() + 2; // +2 porque estamos poniendo también ": "
+
+        if (Iterable.class.isAssignableFrom(obj.getClass())) { // Si el objeto es iterable, lo tratamos como una lista...
+            String lista = getListFromIterable((Iterable<Object>) obj);
+            lista = anadirSangrado(lista, sangrado);
+            stringBuilder.append(lista);
+        } else if (obj.getClass().isPrimitive()) { // El objeto es un primitivo
+            stringBuilder.append(String.valueOf(obj));
+        } else { // Genéricamente, como no sabemos el tipo del objeto, usamos toString()
+            stringBuilder.append(obj.toString());
+        }
 
         variables.add(stringBuilder.toString());
         return this;

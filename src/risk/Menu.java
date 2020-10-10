@@ -73,7 +73,7 @@ public class Menu {
                         } else if (partes.length == 3) {
                             if (partes[1].equals("jugadores")) {
                                 try {
-                                    crearJugador(new File(partes[2]));
+                                    crearJugadores(new File(partes[2]));
                                 } catch (FileNotFoundException ex) {
                                     System.out.println("No existe el archivo especificado.");
                                     logger.info("No existe el archivo especificado.");
@@ -110,7 +110,7 @@ public class Menu {
                         if (partes.length == 3) {
                             if (partes[1].equals("color")) {
                                 FileOutputHelper.printToOutput(new OutputBuilder()
-                                        .manualAdd("color",
+                                        .manualAddString("color",
                                                 mapa.getPais(partes[2]).getContinente().getColor().getNombre())
                                         .toString());
                             }
@@ -171,7 +171,7 @@ public class Menu {
      *
      * @param file
      */
-    private void crearJugador(File file) throws FileNotFoundException {
+    private void crearJugadores(File file) throws FileNotFoundException {
         // Código necesario para crear a los jugadores del RISK
         try {
             FileReader lector = new FileReader(file);
@@ -183,8 +183,7 @@ public class Menu {
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
-                System.out.println("Jugador " + Partida.getPartida().getJugador(partesLinea[0]).getColor().getSecFondo()
-                        + Partida.getPartida().getJugador(partesLinea[0]).getNombre() + Color.getSecColorReset());
+                FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).getNombre()).autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).getColor().getNombre()).build());
             }
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
@@ -203,6 +202,6 @@ public class Menu {
         // Código necesario para crear a un jugador a partir de su nombre y color
         Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
         Partida.getPartida().addJugador(jugador);
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAdd("nombre", jugador.getNombre()).manualAdd("color", jugador.getColor().getNombre()).build());
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre()).manualAddString("color", jugador.getColor().getNombre()).build());
     }
 }
