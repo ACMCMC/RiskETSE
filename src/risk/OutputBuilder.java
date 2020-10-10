@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 public class OutputBuilder {
 
     /**
+     * @deprecated Como en este proyecto no hay campos públicos, no nos va a servir. Usar en su lugar buildFromObjectGetters
      * Recorre todos los campos públicos de un objeto, e imprime un JSON con su
      * valor asociado
      * 
