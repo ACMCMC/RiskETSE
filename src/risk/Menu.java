@@ -106,6 +106,16 @@ public class Menu {
                             }
                         }
                         break;
+                    case "obtener":
+                        if (partes.length == 3) {
+                            if (partes[1].equals("color")) {
+                                FileOutputHelper.printToOutput(new OutputBuilder()
+                                        .addParametro("color",
+                                                mapa.getPais(partes[2]).getContinente().getColor().getNombre())
+                                        .toString());
+                            }
+                        }
+                        break;
                     default:
                         System.out.println("\nComando incorrecto.");
                 }
@@ -173,7 +183,8 @@ public class Menu {
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
-                System.out.println("Jugador " + Partida.getPartida().getJugador(partesLinea[0]).getColor().getSecFondo() + Partida.getPartida().getJugador(partesLinea[0]).getNombre() + Color.getSecColorReset());
+                System.out.println("Jugador " + Partida.getPartida().getJugador(partesLinea[0]).getColor().getSecFondo()
+                        + Partida.getPartida().getJugador(partesLinea[0]).getNombre() + Color.getSecColorReset());
             }
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa

@@ -15,6 +15,7 @@ import java.util.Map;
 public class Mapa {
 
     private Map<Coordenadas, Casilla> casillas;
+    private Map<String, Pais> paises;
 
     /**
      * Crea un mapa lleno de casillas marítimas
@@ -24,6 +25,7 @@ public class Mapa {
     Mapa() throws FileNotFoundException {
 
         casillas = new HashMap<Coordenadas, Casilla>();
+        paises = new HashMap<String, Pais>();
 
         // llenamos el Mapa de casillas, todas marítimas en principio
         for (int y = 0; y < 8; y++) {
@@ -55,6 +57,7 @@ public class Mapa {
                 valores = linea.split(";");
                 Casilla casillaPais = new Casilla(new Coordenadas(Integer.valueOf(valores[1]), Integer.valueOf(valores[2])), new Pais(valores[0], continente));
                 casillas.replace(casillaPais.getCoordenadas(), casillaPais);
+                paises.put(casillaPais.getPais().getNombre(), casillaPais.getPais()); // Insertamos el país en la lista de países
             }
             bufferedReader.close();
         } catch (FileNotFoundException ex) {
@@ -66,6 +69,10 @@ public class Mapa {
 
     public Casilla getCasilla(Coordenadas coordenadas) {
         return this.casillas.get(coordenadas);
+    }
+
+    public Pais getPais(String nombre) {
+        return this.paises.get(nombre);
     }
 
     public void imprimirMapa() {
