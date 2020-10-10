@@ -21,6 +21,7 @@ public class OutputBuilder {
      * @param obj
      * @return
      */
+    @Deprecated
     public static String buildFromObject(Object obj) {
         StringBuilder stringBuilder = new StringBuilder(); // Lo usaremos para construir la cadena JSON
         stringBuilder.append("{").append(System.getProperty("line.separator")); // La llave de apertura del JSON
