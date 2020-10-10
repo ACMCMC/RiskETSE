@@ -201,6 +201,8 @@ public class Menu {
      */
     private void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
-
+        Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
+        Partida.getPartida().addJugador(jugador);
+        FileOutputHelper.printToOutput(OutputBuilder.buildFromObjectGetters(jugador));
     }
 }
