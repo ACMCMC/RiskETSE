@@ -110,7 +110,7 @@ public class Menu {
                         if (partes.length == 3) {
                             if (partes[1].equals("color")) {
                                 FileOutputHelper.printToOutput(new OutputBuilder()
-                                        .addParametro("color",
+                                        .manualAdd("color",
                                                 mapa.getPais(partes[2]).getContinente().getColor().getNombre())
                                         .toString());
                             }
@@ -203,6 +203,6 @@ public class Menu {
         // Código necesario para crear a un jugador a partir de su nombre y color
         Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
         Partida.getPartida().addJugador(jugador);
-        FileOutputHelper.printToOutput(OutputBuilder.buildFromObjectGetters(jugador));
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAdd("nombre", jugador.getNombre()).manualAdd("color", jugador.getColor().getNombre()).build());
     }
 }

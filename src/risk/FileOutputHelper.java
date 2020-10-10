@@ -28,6 +28,7 @@ public class FileOutputHelper {
 
         try {
             bufferedWriter.write(output);
+            bufferedWriter.write(System.getProperty("line.separator"));
             bufferedWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();

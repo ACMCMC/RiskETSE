@@ -11,8 +11,9 @@ import java.util.logging.Logger;
 
 public class OutputBuilder {
 
-    private static final int nivelSangrado = 2; // El nivel de sangrado por defecto
+    private static final int nivelSangrado = 4; // El nivel de sangrado por defecto
     private static final String NEW_LINE = System.getProperty("line.separator");
+    private final int DEPTH_LEVEL;
 
     /**
      * @deprecated Como en este proyecto no hay campos públicos, no nos va a servir.
@@ -23,8 +24,8 @@ public class OutputBuilder {
      * @return
      */
     @Deprecated
-    public static String buildFromObject(Object obj) {
-        StringBuilder stringBuilder = new StringBuilder(); // Lo usaremos para construir la cadena JSON
+    public static String buildFromObject(Object obj, int depthLevel) {
+        StringBuilder stringBuilder = new StringBuilder(depthLevel); // Lo usaremos para construir la cadena JSON
         stringBuilder.append("{").append(NEW_LINE); // La llave de apertura del JSON
         for (Field f : obj.getClass().getFields()) { // Recorremos todos los campos del objeto
             try {
@@ -46,7 +47,7 @@ public class OutputBuilder {
      * @param obj
      * @return
      */
-    public static String buildFromObjectGetters(Object obj) {
+    public static String buildFromObjectGetters(Object obj, int depthLevel) {
 
         if (obj.getClass().isPrimitive()) { // Condición de parada
             return String.valueOf(obj);
@@ -55,16 +56,16 @@ public class OutputBuilder {
             return ((String) obj);
         }
 
-        OutputBuilder outputBuilder = new OutputBuilder();
+        OutputBuilder outputBuilder = new OutputBuilder(depthLevel);
 
         for (Method m : obj.getClass().getMethods()) { // Por cada método del objeto...
-            if (!m.getName().equals("getClass") && m.getName().toLowerCase().startsWith("get")
+            if (!m.getName().toLowerCase().contains("class") && m.getName().toLowerCase().startsWith("get")
                     && (m.getParameterCount() == 0)) { // El método tiene que empezar por get. Aparte, el método no
                                                        // puede requerir argumentos (por ejemplo, si la clase tiene una
                                                        // lista, que el getter pida el índice de la lista para extraer,
                                                        // ya que en ese caso lo que querríamos sería obtener la lista
                                                        // entera). La excepción es el método getClass
-                outputBuilder.addVariable(obj, m);
+                outputBuilder.addVariableUsingGetter(obj, m);
             }
         }
 
@@ -78,7 +79,7 @@ public class OutputBuilder {
      * @param cantidadDeSangrado
      * @return
      */
-    private static String buildFromObjectGetters(Object obj, int cantidadDeSangrado) {
+    private static String buildFromObjectGetters(Object obj, int depthLevel, int cantidadDeSangrado) {
 
         StringBuilder stringBuilder = new StringBuilder(); // Lo usaremos para construir la cadena JSON
         stringBuilder.append("{").append(NEW_LINE); // La llave de apertura del JSON
@@ -187,9 +188,18 @@ public class OutputBuilder {
      */
     public OutputBuilder() {
         variables = new HashSet<String>();
+        DEPTH_LEVEL = 0; // Por defecto, no se desencapsula nada
     }
 
-    public OutputBuilder addVariable(Object obj, Method m) {
+    public OutputBuilder(int depthLevel) {
+        variables = new HashSet<String>();
+        DEPTH_LEVEL = depthLevel;
+    }
+
+    /**
+     * Adds a variable from an object using an unparametrized getter method
+     */
+    public OutputBuilder addVariableUsingGetter(Object obj, Method m) {
         int sangrado;
         String nombreObjeto;
         Object valorObjeto;
@@ -229,12 +239,42 @@ public class OutputBuilder {
 
         if (Iterable.class.isAssignableFrom(m.getReturnType())) {
             String lista = getListFromIterable((Iterable<Object>) valorObjeto);
-            anadirSangrado(lista, sangrado);
+            lista = anadirSangrado(lista, sangrado + 2); // Sangrado + 2, porque en la primera línea de la lista estamos
+                                                         // metiendo ": ", que son 2 caracteres más
+            stringBuilder.append(lista);
         } else { // La variable no es iterable
-            stringBuilder.append("\"");
-            System.out.println("OBJ:" + obj);
-            stringBuilder.append(OutputBuilder.buildFromObjectGetters(obj));
-            stringBuilder.append("\"");
+            if (valorObjeto.getClass().equals(String.class)) { // Lleva comillas de apertura solo si es un string
+                stringBuilder.append("\"");
+            }
+            if (DEPTH_LEVEL > 0) { // Si DEPTH_LEVEL es > 0, seguimos desencapsulando
+                stringBuilder.append(
+                        anadirSangrado(OutputBuilder.buildFromObjectGetters(valorObjeto, DEPTH_LEVEL - 1), sangrado)); // Sangrado
+                                                                                                                       // +
+                                                                                                                       // 2,
+                                                                                                                       // porque
+                                                                                                                       // en
+                                                                                                                       // la
+                                                                                                                       // primera
+                                                                                                                       // línea
+                                                                                                                       // de
+                                                                                                                       // la
+                                                                                                                       // lista
+                                                                                                                       // estamos
+                                                                                                                       // metiendo
+                                                                                                                       // ":
+                                                                                                                       // ",
+                                                                                                                       // que
+                                                                                                                       // son
+                                                                                                                       // 2
+                                                                                                                       // caracteres
+                                                                                                                       // más
+            } else { // Si DEPTH_LEVEL NO es > 0, así que usamos toString()
+                stringBuilder.append(valorObjeto.toString());
+            }
+            if (valorObjeto.getClass().equals(String.class)) { // Lleva comillas de cierre solo si es un string
+                stringBuilder.append("\"");
+            }
+
         }
 
         variables.add(stringBuilder.toString()); // Añadimos esta variable
@@ -242,8 +282,15 @@ public class OutputBuilder {
         return this;
     }
 
-    private void anadirSangrado(String stringOriginal, int cantidadDeSangrado) {
-        stringOriginal.replace(NEW_LINE, NEW_LINE + new String(new char[cantidadDeSangrado]).replace('\0', ' '));
+    /**
+     * Añade un sangrado determinado en cada línea nueva
+     * 
+     * @param stringOriginal
+     * @param cantidadDeSangrado
+     * @return
+     */
+    private String anadirSangrado(String stringOriginal, int cantidadDeSangrado) {
+        return stringOriginal.replace(NEW_LINE, NEW_LINE + new String(new char[cantidadDeSangrado]).replace('\0', ' '));
     }
 
     /**
@@ -256,11 +303,26 @@ public class OutputBuilder {
         stringBuilder.append("[ ");
         Iterator<Object> iterator = iterable.iterator();
         while (iterator.hasNext()) {
-            stringBuilder.append("\"").append(OutputBuilder.buildFromObjectGetters(iterator.next())).append("\"");
+
+            Object currentObject = iterator.next();
+            if (currentObject.getClass().equals(String.class)) { // Lleva comillas de cierre solo si es un string
+                stringBuilder.append("\"");
+            }
+
+            if (DEPTH_LEVEL > 0) { // Si DEPTH_LEVEL es > 0, seguimos desencapsulando
+                stringBuilder.append(OutputBuilder.buildFromObjectGetters(currentObject, DEPTH_LEVEL - 1));
+            } else { // Si DEPTH_LEVEL NO es > 0, así que usamos toString()
+                stringBuilder.append(currentObject.toString());
+            }
+
+            if (currentObject.getClass().equals(String.class)) { // Lleva comillas de cierre solo si es un string
+                stringBuilder.append("\"");
+            }
+
             if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
                 stringBuilder.append(",").append(NEW_LINE); // Terminamos la línea
-                stringBuilder.append(new String(new char[2]).replace('\0', ' ')); // Añadimos una nueva línea toda de
-                                                                                  // espacios
+                stringBuilder.append(new String(new char[2]).replace('\0', ' ')); // Añadimos los espacios del principio
+                                                                                  // de la línea siguiente
             }
         }
 
@@ -273,18 +335,28 @@ public class OutputBuilder {
     /**
      * Añade manualmente un parámetro
      * 
-     * @param nombre
+     * @param key
      * @param valor
      * @return
      */
-    public OutputBuilder addParametro(String nombre, String valor) {
+    public OutputBuilder manualAdd(String key, String valor) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(nombre);
-        stringBuilder.append(": ");
+        stringBuilder.append(key);
+        stringBuilder.append(": \"");
         stringBuilder.append(valor);
+        stringBuilder.append("\"");
 
         variables.add(stringBuilder.toString());
         return this;
+    }
+
+    /**
+     * Begins the build of an Output
+     * 
+     * @return
+     */
+    public static OutputBuilder beginBuild() {
+        return new OutputBuilder();
     }
 
     /**
@@ -310,9 +382,14 @@ public class OutputBuilder {
             stringBuilder.append(NEW_LINE);
         }
 
-        stringBuilder.append("}").append(NEW_LINE);
+        stringBuilder.append("}");
 
         return stringBuilder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return this.build();
     }
 
 }
