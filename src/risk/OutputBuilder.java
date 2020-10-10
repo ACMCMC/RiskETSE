@@ -47,6 +47,17 @@ public class OutputBuilder {
      * @return
      */
     public static String buildFromObjectGetters(Object obj) {
+        return buildFromObjectGetters(obj, 0);
+    }
+
+    /**
+     * Función recursiva privada, que acepta un nivel de sangrado
+     * @param obj
+     * @param cantidadDeSangrado
+     * @return
+     */
+    private static String buildFromObjectGetters(Object obj, int cantidadDeSangrado) {
+
         StringBuilder stringBuilder = new StringBuilder(); // Lo usaremos para construir la cadena JSON
         stringBuilder.append("{").append(System.getProperty("line.separator")); // La llave de apertura del JSON
         for (Method m : obj.getClass().getMethods()) { // Por cada método del objeto...
@@ -74,7 +85,7 @@ public class OutputBuilder {
                         nombreObjeto = m.getName();
                     }
 
-                    stringBuilder.append("  ").append(nombreObjeto).append(": "); // Añadimos el nombre del objeto al
+                    stringBuilder.append(new String(new char[cantidadDeSangrado]).replace('\0', ' ')).append(nombreObjeto).append(": "); // Añadimos el nombre del objeto al
                                                                                   // JSON
 
                     String objeto;
@@ -82,7 +93,7 @@ public class OutputBuilder {
                         // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una
                         // lista
                         stringBuilder.append("[ ");
-                        int cantidadDeSangrado = stringBuilder.toString()
+                        int cantidadDeSangradoLocal = stringBuilder.toString()
                                 .split(System.getProperty("line.separator"))[stringBuilder.toString()
                                         .split(System.getProperty("line.separator")).length - 1].length(); // Vamos a
                                                                                                            // mirar
@@ -99,11 +110,11 @@ public class OutputBuilder {
                                                                                                            // sangrado
                         Iterator<Object> iterator = ((Iterable<Object>) m.invoke(obj)).iterator();
                         while (iterator.hasNext()) {
-                            stringBuilder.append("\"").append(iterator.next().toString()).append("\"");
+                            stringBuilder.append("\"").append(OutputBuilder.buildFromObjectGetters(iterator.next(), cantidadDeSangradoLocal)).append("\"");
                             if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
                                 stringBuilder.append(",").append(System.getProperty("line.separator")); // Terminamos la
                                                                                                         // línea
-                                stringBuilder.append(new String(new char[cantidadDeSangrado]).replace('\0', ' ')); // Añadimos
+                                stringBuilder.append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' ')); // Añadimos
                                                                                                                    // una
                                                                                                                    // nueva
                                                                                                                    // línea
@@ -113,7 +124,7 @@ public class OutputBuilder {
                             }
                         }
                         stringBuilder.append(System.getProperty("line.separator")); // Nueva línea
-                        stringBuilder.append(new String(new char[cantidadDeSangrado - 2]).replace('\0', ' ')); // 2
+                        stringBuilder.append(new String(new char[cantidadDeSangradoLocal - 2]).replace('\0', ' ')); // 2
                                                                                                                         // caracteres
                                                                                                                         // de
                                                                                                                         // sangrado
