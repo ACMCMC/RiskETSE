@@ -46,6 +46,6 @@ public enum Error {
     }
 
     public String getJSON() {
-        return OutputBuilder.beginBuild().manualAddString("código de error", String.valueOf(this.getCodigo())).manualAddString("descripción", this.getCodigoTexto()).build();
+        return OutputBuilder.beginBuild().autoAdd("código de error", String.valueOf(this.getCodigo())).manualAddString("descripción", this.getCodigoTexto()).build();
     }
 }
