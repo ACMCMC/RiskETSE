@@ -9,23 +9,37 @@ import java.io.Serializable;
 public class FileOutputHelper {
 
     private static File outputFile = new File("output.txt");
-    private static FileWriter fileWriter;
     private static BufferedWriter bufferedWriter;
+    private static File errorOutputFile = new File("errorOutput.txt");
+    private static BufferedWriter errorBufferedWriter;
 
     static {
         try {
-            fileWriter = new FileWriter(outputFile);
+            bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        bufferedWriter = new BufferedWriter(fileWriter);
+
+        try {
+            errorBufferedWriter = new BufferedWriter(new FileWriter(errorOutputFile));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    static void printToErrOutput(String output) {
+        try {
+            errorBufferedWriter.write(output);
+            errorBufferedWriter.write(System.getProperty("line.separator"));
+            errorBufferedWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     static void printToOutput(String output) {
-        System.out.print(output);
-        System.out.println();
-
         try {
             bufferedWriter.write(output);
             bufferedWriter.write(System.getProperty("line.separator"));

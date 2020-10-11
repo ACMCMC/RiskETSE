@@ -14,6 +14,9 @@ import java.util.Map;
 
 public class Mapa {
 
+    private static Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
+    private static boolean isMapaCreado = false; // Will be false at first, until the asignarPaises() method gets executed
+
     private Map<Coordenadas, Casilla> casillas;
     private Map<String, Pais> paises;
 
@@ -22,7 +25,7 @@ public class Mapa {
      * @param archivoRelacionPaises
      * @throws FileNotFoundException
      */
-    Mapa() throws FileNotFoundException {
+    private Mapa() {
 
         casillas = new HashMap<Coordenadas, Casilla>();
         paises = new HashMap<String, Pais>();
@@ -38,11 +41,38 @@ public class Mapa {
     }
 
     /**
+     * Creates the Mapa singleton
+     * 
+     * @throws FileNotFoundException
+     */
+    public static void crearMapa(File file) throws FileNotFoundException, IllegalStateException {
+        if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
+            throw new IllegalStateException(Error.MAPA_YA_CREADO.getJSON());
+        }
+
+        mapaSingleton.asignarPaises(file); // Could throw a FileNotFoundException, but we leave exception handling to the caller
+
+        isMapaCreado = true;
+    }
+
+    /**
+     * Returns the Mapa singleton
+     * @return
+     * @throws IllegalStateException
+     */
+    public static Mapa getMapa() throws IllegalStateException {
+        if (isMapaCreado == false) {
+            throw new IllegalStateException(Error.MAPA_NO_CREADO.getJSON());
+        }
+        return mapaSingleton;
+    }
+
+    /**
      * Reemplaza las casillas del mapa por las casillas con el país que se indique en el archivo, por cada una de las entradas del archivo. El archivo tiene que tener formato [nombrePais];[X];[Y]
      * @param archivoPaises
      * @throws FileNotFoundException
      */
-    void asignarPaises(File archivoRelacionPaises) throws FileNotFoundException {
+    private void asignarPaises(File archivoRelacionPaises) throws FileNotFoundException {
 
         String linea;
         String[] valores;

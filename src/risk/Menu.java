@@ -23,8 +23,6 @@ public class Menu {
 
     static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
 
-    private static Mapa mapa;
-
     public Menu() {
         // Inicialización de algunos atributos
 
@@ -102,7 +100,11 @@ public class Menu {
                     case "ver":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
-                                mapa.imprimirMapa();
+                                try {
+                                    Mapa.getMapa().imprimirMapa();
+                                } catch (IllegalStateException ex) {
+                                    FileOutputHelper.printToErrOutput(ex.getMessage());
+                                }
                             }
                         }
                         break;
@@ -111,7 +113,7 @@ public class Menu {
                             if (partes[1].equals("color")) {
                                 FileOutputHelper.printToOutput(new OutputBuilder()
                                         .manualAddString("color",
-                                                mapa.getPais(partes[2]).getContinente().getColor().getNombre())
+                                                Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
                                         .toString());
                             }
                         }
@@ -132,9 +134,11 @@ public class Menu {
     public void asignarPaises(File file) {
         // Código necesario para asignar países
         try {
-            this.getMapa().asignarPaises(file);
+            Mapa.crearMapa(file);
         } catch (FileNotFoundException ex) {
             logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", file.getAbsolutePath());
+        } catch (IllegalStateException e) {
+            FileOutputHelper.printToErrOutput(e.getMessage()); // Print the exception to the output
         }
     }
 
@@ -151,20 +155,14 @@ public class Menu {
      *
      */
     private void crearMapa() {
-        if (mapa == null) {
-            try {
-                mapa = new Mapa();
-            } catch (FileNotFoundException ex) {
-                logger.warning("No se pudo crear el mapa");
-            }
-        }
-    }
-
-    public Mapa getMapa() {
-        if (mapa == null) {
-            this.crearMapa();
-        }
-        return mapa;
+        /*try {
+            Mapa.crearMapa(new File("paisesCoordenadas.csv"));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            FileOutputHelper.printToErrOutput(e.getMessage()); // Print the exception to the output
+        }*/
     }
 
     /**
