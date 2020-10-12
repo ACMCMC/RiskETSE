@@ -16,7 +16,11 @@ import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import risk.RiskException.RiskExceptionEnum;
+
 public class Mapa {
+
+    private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");
 
     private static Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
     private static boolean isMapaCreado = false; // Will be false at first, until the asignarPaises() method gets executed
@@ -82,6 +86,8 @@ public class Mapa {
 
         mapaSingleton.anadirFronterasDirectas();
 
+        mapaSingleton.asignarColoresContinentes(FILE_COLORES_CONTINENTES);
+
         isMapaCreado = true;
     }
 
@@ -95,6 +101,36 @@ public class Mapa {
             throw new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO);
         }
         return mapaSingleton;
+    }
+
+    private void addContinente(Continente continente) {
+        this.continentes.put(continente.getCodigo(), continente);
+    }
+
+    /**
+     * Lee un archivo con los colores de los continentes y les asigna ese color
+     * @param archivoColores
+     * @throws RiskException
+     */
+    public void asignarColoresContinentes(File archivoColores) throws RiskException {
+        String linea;
+        String[] valores;
+        BufferedReader bufferedReader;
+
+        try {
+            bufferedReader = new BufferedReader(new FileReader(archivoColores));
+            while ((linea = bufferedReader.readLine()) != null) {
+                valores = linea.split(";");
+                if (getContinente(valores[0]) != null ) {
+                    getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
+                } else {
+                    addContinente(new Continente(valores[0], valores[0], Color.getColorByString(valores[1]))); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+                }
+            }
+            bufferedReader.close();
+        } catch (IOException ex) {
+            FileOutputHelper.printToErrOutput(new RiskException(0, "No se ha encontrado el archivo de colores"));
+        }
     }
 
     /**
@@ -241,6 +277,9 @@ public class Mapa {
         return this.paises.get(codigo);
     }
 
+    /**
+     * Imprime el mapa por consola
+     */
     public void imprimirMapa() {
         // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
         for (int y = 0; y < getSizeY(); y++) {
