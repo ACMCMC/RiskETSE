@@ -1,42 +1,42 @@
-Alaska;0;0
-TNoroeste;1;0
-Groenlan;2;0
-Islandia;4;0
-Escandina;5;0
-Siberia;6;0
-Yakustsk;7;0
-Kamchatka;8;0
-Alberta;0;1
-Ontario;1;1
-Quebec;2;1
-GBretaña;5;1
-EurNorte;6;1
-Rusia;7;1
-Irkutsk;8;1
-USAOeste;0;2
-USAEste;1;2
-EurOcc;5;2
-EurSur;6;2
-Urales;7;2
-Mongolia;8;2
-Japón;9;2
-AmeCentra;1;3
-Afgan;7;3
-China;8;3
-Venezuela;1;4
-ANorte;5;4
-Egipto;6;4
-OMedio;7;4
-India;8;4
-SAsiático;9;4
-Perú;1;5
-Brasil;2;5
-Congo;5;5
-AOriental;6;5
-Argentina;1;6
-Sudáfrica;6;6
-Madagasca;7;6
-Indonesia;9;6
-NGuinea;10;6
-AusOccid;9;7
-AusOrient;10;7
+Alaska;Alaska;América del Norte;AméricaNorte;0;0
+Territorios del Noroeste;TNoroeste;América del Norte;AméricaNorte;1;0
+Groenlandia;Groenlan;América del Norte;AméricaNorte;2;0
+Islandia;Islandia;Europa;Europa;4;0
+Escandinavia;Escandina;Europa;Europa;5;0
+Siberia;Siberia;Asia;Asia;6;0
+Yakustsk;Yakustsk;Asia;Asia;7;0
+Kamchatka;Kamchatka;Asia;Asia;8;0
+Alberta;Alberta;América del Norte ;AméricaNorte;0;1
+Ontario;Ontario;América del Norte ;AméricaNorte;1;1
+Quebec;Quebec;América del Norte ;AméricaNorte;2;1
+Gran Bretaña;GBretaña;Europa;Europa;5;1
+Europa del Norte;EurNorte;Europa;Europa;6;1
+Rusia;Rusia;Europa;Europa;7;1
+Irkutsk;Irkutsk;Asia;Asia;8;1
+Estados Unidos del Oeste;USAOeste;América del Norte;AméricaNorte;0;2
+Estados Unidos del Este;USAEste;América del Norte;AméricaNorte;1;2
+Europa Occidental;EurOcc;Europa;Europa;5;2
+Europa del Sur;EurSur;Europa;Europa;6;2
+Urales;Urales;Asia;Asia;7;2
+Mongolia;Mongolia;Asia;Asia;8;2
+Japón;Japón;Asia;Asia;9;2
+América Central;AmeCentra;América del Norte;AméricaNorte;1;3
+Afganistán;Afgan;Asia;Asia;7;3
+China;China;Asia;Asia;8;3
+Venezuela;Venezuela;América del Sur;AméricaSur;1;4
+África del Norte;ANorte;África;África;5;4
+Egipto;Egipto;África;África;6;4
+Oriente Medio;OMedio;Asia;Asia;7;4
+India;India;Asia;Asia;8;4
+Sureste Asiático;SAsiático;Asia;Asia;9;4
+Perú;Perú;América del Sur;AméricaSur;1;5
+Brasil;Brasil;América del Sur;AméricaSur;2;5
+Congo;Congo;África;África;5;5
+África Oriental;AOriental;África;África;6;5
+Argentina;Argentina;América del Sur;AméricaSur;1;6
+Sudáfrica;Sudáfrica;África;África;6;6
+Madagascar;Madagasca;África;África;7;6
+Indonesia;Indonesia;Oceanía;Oceanía;9;6
+Nueva Guinea;NGuinea;Oceanía;Oceanía;10;6
+Australia Occidental;AusOccid;Oceanía;Oceanía;9;7
+Australia Oriental;AusOrient;Oceanía;Oceanía;10;7

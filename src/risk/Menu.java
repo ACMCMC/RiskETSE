@@ -118,6 +118,12 @@ public class Menu {
                             }
                         }
                         break;
+                    case "repartir":
+                        if (partes.length == 2) {
+                            if (partes[1].equals("ejercitos")) {
+                                repartirEjercitos();
+                            }
+                        }
                     default:
                         System.out.println("\nComando incorrecto.");
                 }
@@ -133,13 +139,7 @@ public class Menu {
      */
     public void asignarPaises(File file) {
         // Código necesario para asignar países
-        try {
-            Mapa.crearMapa(file);
-        } catch (FileNotFoundException ex) {
-            logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", file.getAbsolutePath());
-        } catch (RiskException e) {
-            FileOutputHelper.printToErrOutput(e); // Print the exception to the output
-        }
+        
     }
 
     /**
@@ -155,14 +155,14 @@ public class Menu {
      *
      */
     private void crearMapa() {
-        /*try {
-            Mapa.crearMapa(new File("paisesCoordenadas.csv"));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            FileOutputHelper.printToErrOutput(e.getMessage()); // Print the exception to the output
-        }*/
+        File filePaisesCoordenadas = new File("paisesCoordenadas.csv");
+        try {
+            Mapa.crearMapa(filePaisesCoordenadas);
+        } catch (FileNotFoundException ex) {
+            logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
+        } catch (RiskException e) {
+            FileOutputHelper.printToErrOutput(e); // Print the exception to the output
+        }
     }
 
     /**
@@ -203,5 +203,12 @@ public class Menu {
         Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
         Partida.getPartida().addJugador(jugador);
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre()).manualAddString("color", jugador.getColor().getNombre()).build());
+    }
+
+    /**
+     * Se encarga automáticamente de realizar el reparto de los ejércitos.
+     */
+    private void repartirEjercitos() {
+        // TODO Completar esta parte
     }
 }

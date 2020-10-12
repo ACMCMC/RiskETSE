@@ -7,30 +7,48 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- * Clase Continente. Almacena el nombre, su color, y los países asociados al continente.
+ * Clase Continente. Almacena el codigo, su color, y los países asociados al continente.
  */
 public class Continente {
     private Color color;
-    private String nombre;
+    private String codigo;
+    private String nombreHumano;
     private Map<String, Pais> paises;
 
     /**
      * Crea un nuevo Continente, sin países asignados
-     * @param nombre
+     * @param codigo
      * @param color
      */
-    public Continente(String nombre, Color color) {
-        this.setColor(color);
-        this.setNombre(nombre);
+    public Continente(String codigo, String nombreHumano) {
+        this.setColor(Color.INDEFINIDO);
+        this.setCodigo(codigo);
+        this.setNombreHumano(nombreHumano);
         this.paises = new HashMap<>();
     }
 
-    private void setColor(Color color) {
+    /**
+     * Crea un nuevo Continente, sin países asignados
+     * @param codigo
+     * @param color
+     */
+    public Continente(String codigo, String nombreHumano, Color color) {
+        this.setColor(color);
+        this.setCodigo(codigo);
+        this.setNombreHumano(nombreHumano);
+        this.paises = new HashMap<>();
+    }
+
+    public void setColor(Color color) {
         this.color = color;
     }
 
-    private void setNombre(String nombre) {
-        this.nombre = nombre;
+    private void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    private void setNombreHumano(String nombreHumano) {
+        this.nombreHumano = nombreHumano;
     }
 
     /**
@@ -42,11 +60,19 @@ public class Continente {
     }
 
     /**
-     * Devuelve el nombre del continente
-     * @return String nombre
+     * Devuelve el codigo del continente
+     * @return String codigo
      */
-    public String getNombre() {
-        return this.nombre;
+    public String getCodigo() {
+        return this.codigo;
+    }
+
+    /**
+     * Devuelve el nombre humano del continente
+     * @return String codigo
+     */
+    public String getNombreHumano() {
+        return this.nombreHumano;
     }
 
     /**
@@ -54,16 +80,16 @@ public class Continente {
      * @param pais
      */
     public void addPais(Pais pais) {
-        this.paises.put(pais.getNombre(), pais);
+        this.paises.put(pais.getCodigo(), pais);
     }
 
     /**
-     * Devuelve el Pais de nombre especificado
-     * @param nombre
+     * Devuelve el Pais de codigo especificado
+     * @param codigo
      * @return el Pais, o NULL
      */
-    public Pais getPais(String nombre) {
-        return this.paises.get(nombre);
+    public Pais getPais(String codigo) {
+        return this.paises.get(codigo);
     }
 
     /**

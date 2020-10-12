@@ -5,26 +5,48 @@
 package risk;
 
 public class Pais {
-    private String nombre;
+    private String codigo;
+    private String nombreHumano;
     private Continente continente;
 
-    Pais(String nombre, Continente continente) {
-        this.setNombre(nombre);
+    Pais(String nombre, String nombreHumano, Continente continente) {
+        this.setCodigo(nombre);
+        this.setNombreHumano(nombreHumano);
         this.setContinente(continente);
     }
 
-    public String getNombre() {
-        return this.nombre;
+    /**
+     * Devuelve el nombre humano del país
+     * @return
+     */
+    public String getNombreHumano() {
+        return this.nombreHumano;
     }
 
-    public void setNombre(String nombre) {
-		this.nombre = nombre;
+    private void setNombreHumano(String nombreHumano) {
+    this.nombreHumano = nombreHumano;
+    }
+
+    /**
+     * Devuelve el código del país
+     * @return
+     */
+    public String getCodigo() {
+        return this.codigo;
     }
     
-    public void setContinente(Continente continente) {
+    private void setCodigo(String codigo) {
+		this.codigo = codigo;
+    }
+    
+    private void setContinente(Continente continente) {
 		this.continente = continente;
     }
     
+    /**
+     * Devuelve el Continente asociado a este país
+     * @return
+     */
     public Continente getContinente() {
         return this.continente;
     }

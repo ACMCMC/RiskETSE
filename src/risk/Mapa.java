@@ -19,6 +19,7 @@ public class Mapa {
 
     private Map<Coordenadas, Casilla> casillas;
     private Map<String, Pais> paises;
+    private Map<String, Continente> continentes;
 
     /**
      * Crea un mapa lleno de casillas marítimas
@@ -29,6 +30,7 @@ public class Mapa {
 
         casillas = new HashMap<Coordenadas, Casilla>();
         paises = new HashMap<String, Pais>();
+        continentes = new HashMap<String, Continente>();
 
         // llenamos el Mapa de casillas, todas marítimas en principio
         for (int y = 0; y < 8; y++) {
@@ -79,16 +81,28 @@ public class Mapa {
         String[] valores;
         BufferedReader bufferedReader;
 
-        Continente continente = new Continente("Asia", Color.VERDE);
-
         try { // Reemplazamos las casillas del mapa por las que nos pone el archivo
-            FileReader reader = new FileReader(archivoRelacionPaises);
-            bufferedReader = new BufferedReader(reader);
+            bufferedReader = new BufferedReader(new FileReader(archivoRelacionPaises));
             while ((linea = bufferedReader.readLine()) != null) {
                 valores = linea.split(";");
-                Casilla casillaPais = new Casilla(new Coordenadas(Integer.valueOf(valores[1]), Integer.valueOf(valores[2])), new Pais(valores[0], continente));
+
+                String nombreHumanoPais, codigoPais, nombreHumanoContinente, codigoContinente, posX, posY;
+                nombreHumanoPais = valores[0];
+                codigoPais = valores[1];
+                nombreHumanoContinente = valores[2];
+                codigoContinente = valores[3];
+                posX = valores[4];
+                posY = valores[5];
+
+                Continente continenteDelPais = getContinente(codigoContinente);
+                if (continenteDelPais == null) {
+                    // Creamos el continente, porque no está en la lista
+                    continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
+                    continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
+                }
+                Casilla casillaPais = new Casilla(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)), new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
                 casillas.replace(casillaPais.getCoordenadas(), casillaPais);
-                paises.put(casillaPais.getPais().getNombre(), casillaPais.getPais()); // Insertamos el país en la lista de países
+                paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista de países
             }
             bufferedReader.close();
         } catch (FileNotFoundException ex) {
@@ -98,12 +112,31 @@ public class Mapa {
         }
     }
 
+    /**
+     * Devuelve la Casilla en las coordenadas especificadas
+     * @param coordenadas
+     * @return
+     */
     public Casilla getCasilla(Coordenadas coordenadas) {
         return this.casillas.get(coordenadas);
     }
 
-    public Pais getPais(String nombre) {
-        return this.paises.get(nombre);
+    /**
+     * Devuelve el Continente con el código especificado
+     * @param codigo
+     * @return
+     */
+    public Continente getContinente(String codigo) {
+        return this.continentes.get(codigo);
+    }
+
+    /**
+     * Devuelve el país con el código especificado
+     * @param codigo
+     * @return
+     */
+    public Pais getPais(String codigo) {
+        return this.paises.get(codigo);
     }
 
     public void imprimirMapa() {
@@ -117,7 +150,7 @@ public class Mapa {
                     System.out.print(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
                 } else {
                     System.out.print(this.getCasilla(new Coordenadas(x,y)).getPais().getContinente().getColor().getSecFondo());
-                    System.out.print(String.format("%-9s", this.getCasilla(new Coordenadas(x,y)).getPais().getNombre()));
+                    System.out.print(String.format("%-9s", this.getCasilla(new Coordenadas(x,y)).getPais().getCodigo()));
                     System.out.print(Color.getSecColorReset());
                 }
                 System.out.print(" "); // Imprimimos un espacio al final para separar
