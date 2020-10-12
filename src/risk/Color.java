@@ -2,8 +2,8 @@ package risk;
 
 public enum Color {
     // El primer parámetro es el nombre del color, el segundo la secuencia para colorear texto de ese color, el tercero para colorear el fondo de ese color
-    CYAN("cyan", "\033[0;36m", "\033[46m"), VERDE("verde", "\033[0;32m", "\033[42m"), AMARILLO("amarillo", "\033[0;33m", "\033[43m"),
-    VIOLETA("violeta", "\033[0;35m", "\033[45m"), ROJO("rojo", "\033[0;31m", "\033[41m"), AZUL("azul", "\033[0;36m", "\033[44m"),
+    CYAN("CYAN", "\033[0;36m", "\033[46m"), VERDE("VERDE", "\033[0;32m", "\033[42m"), AMARILLO("AMARILLO", "\033[0;33m", "\033[43m"),
+    VIOLETA("VIOLETA", "\033[0;35m", "\033[45m"), ROJO("ROJO", "\033[0;31m", "\033[41m"), AZUL("AZUL", "\033[0;36m", "\033[44m"),
     INDEFINIDO((String) null, (String) null, (String) null);
 
     private final String nombre;
@@ -30,7 +30,7 @@ public enum Color {
 
     public static Color getColorByString(String nombreColor) {
         for (Color c : values()) {
-            if (c.nombre.equals(nombreColor.toLowerCase())) {
+            if (c.nombre.equals(nombreColor.toUpperCase())) {
                 return c;
             }
         }

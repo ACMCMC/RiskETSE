@@ -23,8 +23,6 @@ public class Menu {
 
     static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
 
-    private static Mapa mapa;
-
     public Menu() {
         // Inicialización de algunos atributos
 
@@ -73,7 +71,7 @@ public class Menu {
                         } else if (partes.length == 3) {
                             if (partes[1].equals("jugadores")) {
                                 try {
-                                    crearJugador(new File(partes[2]));
+                                    crearJugadores(new File(partes[2]));
                                 } catch (FileNotFoundException ex) {
                                     System.out.println("No existe el archivo especificado.");
                                     logger.info("No existe el archivo especificado.");
@@ -86,6 +84,9 @@ public class Menu {
                         }
                         break;
                     case "asignar":
+                        //*********************************************************************
+                        //CORREGIR
+                        //*********************************************************************
                         if (partes.length != 3) {
                             System.out.println("\nComando incorrecto.");
                         } else if (partes[1].equals("paises")) {
@@ -102,10 +103,30 @@ public class Menu {
                     case "ver":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
-                                mapa.imprimirMapa();
+                                try {
+                                    Mapa.getMapa().imprimirMapa();
+                                } catch (RiskException ex) {
+                                    FileOutputHelper.printToErrOutput(ex);
+                                }
                             }
                         }
                         break;
+                    case "obtener":
+                        if (partes.length == 3) {
+                            if (partes[1].equals("color")) {
+                                FileOutputHelper.printToOutput(new OutputBuilder()
+                                        .manualAddString("color",
+                                                Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
+                                        .toString());
+                            }
+                        }
+                        break;
+                    case "repartir":
+                        if (partes.length == 2) {
+                            if (partes[1].equals("ejercitos")) {
+                                repartirEjercitos();
+                            }
+                        }
                     default:
                         System.out.println("\nComando incorrecto.");
                 }
@@ -121,11 +142,7 @@ public class Menu {
      */
     public void asignarPaises(File file) {
         // Código necesario para asignar países
-        try {
-            this.getMapa().asignarPaises(file);
-        } catch (FileNotFoundException ex) {
-            logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", file.getAbsolutePath());
-        }
+        
     }
 
     /**
@@ -141,27 +158,21 @@ public class Menu {
      *
      */
     private void crearMapa() {
-        if (mapa == null) {
-            try {
-                mapa = new Mapa();
-            } catch (FileNotFoundException ex) {
-                logger.warning("No se pudo crear el mapa");
-            }
+        File filePaisesCoordenadas = new File("paisesCoordenadas.csv");
+        try {
+            Mapa.crearMapa(filePaisesCoordenadas);
+        } catch (FileNotFoundException ex) {
+            logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
+        } catch (RiskException e) {
+            FileOutputHelper.printToErrOutput(e); // Print the exception to the output
         }
-    }
-
-    public Mapa getMapa() {
-        if (mapa == null) {
-            this.crearMapa();
-        }
-        return mapa;
     }
 
     /**
      *
      * @param file
      */
-    private void crearJugador(File file) throws FileNotFoundException {
+    private void crearJugadores(File file) throws FileNotFoundException {
         // Código necesario para crear a los jugadores del RISK
         try {
             FileReader lector = new FileReader(file);
@@ -173,8 +184,10 @@ public class Menu {
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
-                System.out.println("Jugador " + Partida.getPartida().getJugador(partesLinea[0]).getColor().getSecFondo() + Partida.getPartida().getJugador(partesLinea[0]).getNombre() + Color.getSecColorReset());
+                FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).getNombre()).autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).getColor().getNombre()).build());
             }
+
+            bufferLector.close();
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
             throw fileNotFoundException;
@@ -190,6 +203,15 @@ public class Menu {
      */
     private void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
+        Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
+        Partida.getPartida().addJugador(jugador);
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre()).manualAddString("color", jugador.getColor().getNombre()).build());
+    }
 
+    /**
+     * Se encarga automáticamente de realizar el reparto de los ejércitos.
+     */
+    private void repartirEjercitos() {
+        // TODO Completar esta parte
     }
 }
