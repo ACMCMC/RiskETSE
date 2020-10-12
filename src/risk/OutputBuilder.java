@@ -374,6 +374,7 @@ public class OutputBuilder {
         if (Iterable.class.isAssignableFrom(obj.getClass())) { // Si el objeto es iterable, lo tratamos como una
                                                                // lista...
             String lista = getListFromIterable((Iterable<Object>) obj);
+            
             lista = anadirSangrado(lista, sangrado);
             stringBuilder.append(lista);
         } else if (obj.getClass().isPrimitive()) { // El objeto es un primitivo
@@ -404,15 +405,15 @@ public class OutputBuilder {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{").append(NEW_LINE);
 
-        Iterator<String> iterator = variables.iterator();
+        Iterator<String> iterator = variables.iterator(); // Recorremos toda la lista de variables y las vamos añadiendo al String final
 
         while (iterator.hasNext()) {
 
             stringBuilder.append(new String(new char[nivelSangrado]).replace('\0', ' '));
-            stringBuilder.append(iterator.next());
+            stringBuilder.append(anadirSangrado(iterator.next(), nivelSangrado)); // Añadimos el valor asociado, pero sangrando todas las líneas a partir de la primera (si son varias líneas, el sangrado no aparece automáticamente)
 
             if (iterator.hasNext()) {
-                stringBuilder.append(",");
+                stringBuilder.append(","); // Ponemos la coma si hay más elementos
             }
 
             stringBuilder.append(NEW_LINE);
