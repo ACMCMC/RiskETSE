@@ -70,4 +70,9 @@ public class Frontera {
     public int hashCode() {
         return getPaisA().hashCode() * getPaisB().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return getPaisA().getCodigo() + " - " + getPaisB().getCodigo();
+    }
 }
