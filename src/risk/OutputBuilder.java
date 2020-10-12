@@ -351,7 +351,8 @@ public class OutputBuilder {
     }
 
     /**
-     * Añade automáticamente un parámetro, detectando su tipo y tratándolo adecuadamente
+     * Añade automáticamente un parámetro, detectando su tipo y tratándolo
+     * adecuadamente
      * 
      * @param key
      * @param valor
@@ -367,10 +368,11 @@ public class OutputBuilder {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(key);
         stringBuilder.append(": ");
-        
+
         int sangrado = key.length() + 2; // +2 porque estamos poniendo también ": "
 
-        if (Iterable.class.isAssignableFrom(obj.getClass())) { // Si el objeto es iterable, lo tratamos como una lista...
+        if (Iterable.class.isAssignableFrom(obj.getClass())) { // Si el objeto es iterable, lo tratamos como una
+                                                               // lista...
             String lista = getListFromIterable((Iterable<Object>) obj);
             lista = anadirSangrado(lista, sangrado);
             stringBuilder.append(lista);

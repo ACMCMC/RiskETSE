@@ -102,8 +102,8 @@ public class Menu {
                             if (partes[1].equals("mapa")) {
                                 try {
                                     Mapa.getMapa().imprimirMapa();
-                                } catch (IllegalStateException ex) {
-                                    FileOutputHelper.printToErrOutput(ex.getMessage());
+                                } catch (RiskException ex) {
+                                    FileOutputHelper.printToErrOutput(ex);
                                 }
                             }
                         }
@@ -137,8 +137,8 @@ public class Menu {
             Mapa.crearMapa(file);
         } catch (FileNotFoundException ex) {
             logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", file.getAbsolutePath());
-        } catch (IllegalStateException e) {
-            FileOutputHelper.printToErrOutput(e.getMessage()); // Print the exception to the output
+        } catch (RiskException e) {
+            FileOutputHelper.printToErrOutput(e); // Print the exception to the output
         }
     }
 
@@ -183,6 +183,8 @@ public class Menu {
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
                 FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).getNombre()).autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).getColor().getNombre()).build());
             }
+
+            bufferLector.close();
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
             throw fileNotFoundException;

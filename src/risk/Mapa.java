@@ -44,10 +44,11 @@ public class Mapa {
      * Creates the Mapa singleton
      * 
      * @throws FileNotFoundException
+     * @throws RiskException
      */
-    public static void crearMapa(File file) throws FileNotFoundException, IllegalStateException {
+    public static void crearMapa(File file) throws FileNotFoundException, RiskException {
         if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
-            throw new IllegalStateException(Error.MAPA_YA_CREADO.getJSON());
+            throw new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO);
         }
 
         mapaSingleton.asignarPaises(file); // Could throw a FileNotFoundException, but we leave exception handling to the caller
@@ -58,11 +59,11 @@ public class Mapa {
     /**
      * Returns the Mapa singleton
      * @return
-     * @throws IllegalStateException
+     * @throws RiskException
      */
-    public static Mapa getMapa() throws IllegalStateException {
+    public static Mapa getMapa() throws RiskException {
         if (isMapaCreado == false) {
-            throw new IllegalStateException(Error.MAPA_NO_CREADO.getJSON());
+            throw new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO);
         }
         return mapaSingleton;
     }

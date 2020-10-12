@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 
 public class FileOutputHelper {
 
@@ -29,9 +28,9 @@ public class FileOutputHelper {
         }
     }
 
-    static void printToErrOutput(String output) {
+    static void printToErrOutput(Throwable th) {
         try {
-            errorBufferedWriter.write(output);
+            errorBufferedWriter.write(th.getMessage());
             errorBufferedWriter.write(System.getProperty("line.separator"));
             errorBufferedWriter.flush();
         } catch (IOException e) {
