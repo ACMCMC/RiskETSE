@@ -53,7 +53,7 @@ public class Casilla {
         if (this.esMaritima()) {
             return("Casilla marítima -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
         } else {
-            return("Casilla del país: " + this.getPais().getNombre() + " -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
+            return("Casilla del país: " + this.getPais().getCodigo() + " -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
         }
     }
 }
