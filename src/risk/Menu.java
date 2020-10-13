@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -84,9 +86,9 @@ public class Menu {
                         }
                         break;
                     case "asignar":
-                        //*********************************************************************
-                        //CORREGIR
-                        //*********************************************************************
+                        // *********************************************************************
+                        // CORREGIR
+                        // *********************************************************************
                         if (partes.length != 3) {
                             System.out.println("\nComando incorrecto.");
                         } else if (partes[1].equals("paises")) {
@@ -103,21 +105,18 @@ public class Menu {
                     case "ver":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
-                                try {
-                                    Mapa.getMapa().imprimirMapa();
-                                } catch (RiskException ex) {
-                                    FileOutputHelper.printToErrOutput(ex);
-                                }
+                                Mapa.getMapa().imprimirMapa();
                             }
                         }
                         break;
                     case "obtener":
                         if (partes.length == 3) {
                             if (partes[1].equals("color")) {
-                                FileOutputHelper.printToOutput(new OutputBuilder()
-                                        .manualAddString("color",
-                                                Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
+                                FileOutputHelper.printToOutput(new OutputBuilder().manualAddString("color",
+                                        Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
                                         .toString());
+                            } else if (partes[1].equals("frontera")) {
+                                obtenerFronteras(partes[2]);
                             }
                         }
                         break;
@@ -142,7 +141,7 @@ public class Menu {
      */
     public void asignarPaises(File file) {
         // Código necesario para asignar países
-        
+
     }
 
     /**
@@ -184,7 +183,10 @@ public class Menu {
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
-                FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).getNombre()).autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).getColor().getNombre()).build());
+                FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
+                        .autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).getNombre())
+                        .autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).getColor().getNombre())
+                        .build());
             }
 
             bufferLector.close();
@@ -205,7 +207,8 @@ public class Menu {
         // Código necesario para crear a un jugador a partir de su nombre y color
         Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
         Partida.getPartida().addJugador(jugador);
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre()).manualAddString("color", jugador.getColor().getNombre()).build());
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre())
+                .manualAddString("color", jugador.getColor().getNombre()).build());
     }
 
     /**
@@ -213,5 +216,19 @@ public class Menu {
      */
     private void repartirEjercitos() {
         // TODO Completar esta parte
+    }
+
+    /**
+     * Imprime las fronteras de un país
+     * @param codigoPais
+     */
+    private void obtenerFronteras(String codigoPais) {
+        Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos un Stream de las Fronteras de ese país
+                .map((Frontera frontera) -> {
+                    return (frontera.getPaises().stream().filter((Pais pais) -> {
+                        return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países de esa frontera, el país que no sea el de la consulta
+                    }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el nombre en formato humano
+                }).collect(Collectors.toSet()); // Lo convertimos a un Set
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo sacamos a la salida
     }
 }
