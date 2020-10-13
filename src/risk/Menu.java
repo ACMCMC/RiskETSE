@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -220,13 +218,17 @@ public class Menu {
         // TODO Completar esta parte
     }
 
+    /**
+     * Imprime las fronteras de un país
+     * @param codigoPais
+     */
     private void obtenerFronteras(String codigoPais) {
-        Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream()
+        Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos un Stream de las Fronteras de ese país
                 .map((Frontera frontera) -> {
                     return (frontera.getPaises().stream().filter((Pais pais) -> {
-                        return (Mapa.getMapa().getPais(codigoPais).equals(pais));
-                    }).collect(Collectors.toList()).get(0)).getNombreHumano();
-                }).collect(Collectors.toSet());
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build());
+                        return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países de esa frontera, el país que no sea el de la consulta
+                    }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el nombre en formato humano
+                }).collect(Collectors.toSet()); // Lo convertimos a un Set
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo sacamos a la salida
     }
 }
