@@ -96,10 +96,7 @@ public class Mapa {
      * @return
      * @throws RiskException
      */
-    public static Mapa getMapa() throws RiskException {
-        if (isMapaCreado == false) {
-            throw new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO);
-        }
+    public static Mapa getMapa() {
         return mapaSingleton;
     }
 

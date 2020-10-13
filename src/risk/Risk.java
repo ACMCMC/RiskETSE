@@ -10,13 +10,5 @@ public class Risk {
      */
     public static void main(String[] args) {
         new Menu();
-
-        try {
-            FileOutputHelper.printToOutput(OutputBuilder
-                    .buildFromObjectGetters(Mapa.getMapa().getFronteras(Mapa.getMapa().getPais("Alberta")), 2));
-        } catch (RiskException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 }
