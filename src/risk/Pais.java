@@ -51,4 +51,9 @@ public class Pais {
         return this.continente;
     }
 
+    @Override
+    public String toString() {
+        return getCodigo();
+    }
+
 }
