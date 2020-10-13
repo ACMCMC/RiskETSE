@@ -1,3 +1,7 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 public class RiskException extends Exception {
