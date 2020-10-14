@@ -231,4 +231,12 @@ public class Menu {
                 }).collect(Collectors.toSet()); // Lo convertimos a un Set
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo sacamos a la salida
     }
+    
+    private void obtenerContinentes(String abrevPais){
+        String Continente;
+        Continente=Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
+    }
+    
+    
 }
