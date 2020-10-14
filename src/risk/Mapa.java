@@ -242,10 +242,10 @@ public class Mapa {
     private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
         List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
 
-        int difX; // La diferencia de altura entre las casillas
-        int difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // La diferencia de anchura entre las casillas
+        int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
+        int difY; // La diferencia de anchura entre las casillas
         
-        if (difY < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha)
+        if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha)
             ruta = buscarRuta(fin, inicio);
             Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
             return ruta;
@@ -260,20 +260,24 @@ public class Mapa {
         Coordenadas coordenadasActuales = inicio.getCoordenadas(); // Salimos de las coordenadas iniciales
         Coordenadas coordenadasSiguientes; // Las coordenadas de la casilla a la que nos vamos a mover
         
-        while (!coordenadasActuales.equals(fin.getCoordenadas())) { // Repetimos el bucle hasta llegar a las coordenadas finales
+        while (!coordenadasActuales.equals(fin.getCoordenadas()) && (coordenadasActuales.getX() < 20) && (coordenadasActuales.getY() < 20)){ // Repetimos el bucle hasta llegar a las coordenadas finales
             /**
              * Si el arcotangente es mayor de 45 grados, nos dirigiremos en dirección Y; si es menor, nos moveremos en X (ya que la dirección hasta el fin es más plana). Si es igual, nos moveremos simultáneamente en X e Y.
              */
+            System.out.println("X: " + coordenadasActuales.getX() + ", Y: " + coordenadasActuales.getY());
             
-            difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // Volvemos a calcular la diferencia de altura entre las casillas
-            difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // Volvemos a calcular la diferencia de anchura entre las casillas
+            difX = fin.getCoordenadas().getX() - coordenadasActuales.getX(); // Volvemos a calcular la diferencia de altura entre las casillas
+            difY = fin.getCoordenadas().getY() - coordenadasActuales.getY(); // Volvemos a calcular la diferencia de anchura entre las casillas
             
-            direccion = Math.atan(difX/difY); // La dirección es el arcotangente de la tangente, es decir, los grados de la línea que une donde estamos con el final
-
+            direccion = Math.atan(((double)difY)/((double)difX)); // La dirección es el arcotangente de la tangente, es decir, los grados de la línea que une donde estamos con el final
+            
+            System.out.println(difX + " [difX], " + difY + "[difY]");
+            System.out.println(direccion + ", " + discriminante_45grados);
+            
             int comparacion = Double.compare(Math.abs(direccion), discriminante_45grados); // Comparamos la dirección con el discriminante. Comparamos el valor absoluto de la dirección solamente, ya que queremos saber si es más o menos de 45 grados.
             
             if (comparacion == 0) { // Si la dirección hacia el final es 45 grados, subimos o bajamos simultáneamente en X e Y
-
+                
                 if (direccion > 0) { //Nos movemos hacia arriba
                     coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() + 1, coordenadasActuales.getY() + 1);
                 } else { // Nos movemos hacia abajo
@@ -296,10 +300,9 @@ public class Mapa {
 
             ruta.add(getCasilla(coordenadasSiguientes)); // Añadimos la casilla siguiente a la ruta
 
+
             coordenadasActuales = coordenadasSiguientes; // Ahora estamos en las siguientes coordenadas
         }
-
-        ruta.add(fin); // Añadimos la casilla final a la ruta
 
         return ruta;
     }
@@ -312,7 +315,11 @@ public class Mapa {
     public Casilla getCasillaPais(Pais pais) {
         try {
             return (this.casillas.entrySet().parallelStream().filter((entrada) -> {
-                return (entrada.getValue().getPais().equals(pais));
+                if (!entrada.getValue().esMaritima()) {
+                    return (entrada.getValue().getPais().equals(pais));
+                } else { // La casilla es marítima, no puede tener asociado un país
+                    return false;
+                }
             }).findFirst().get().getValue());
         } catch (NoSuchElementException ex) {
             return null;
