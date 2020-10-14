@@ -234,7 +234,7 @@ public class Mapa {
     }
 
     /**
-     * Ejecuta un algoritmo sencillo para buscar la ruta más corta entre dos Casillas
+     * Ejecuta un algoritmo sencillo para buscar la ruta más corta entre dos Casillas. SIEMPRE nos movemos hacia la derecha al buscar.
      * @param inicio
      * @param fin
      * @return La lista de las casillas por las que pasa la ruta
