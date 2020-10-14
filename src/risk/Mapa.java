@@ -251,16 +251,29 @@ public class Mapa {
          * Vamos a dibujar una línea entre el borde izquierdo de la casilla de inicio y el derecho de la del final (es decir, difX + 1).  La altura será desde el borde superior o inferior del inicio, hasta el superior o inferior del final (difY +1). Después, calcularemos por dónde corta la línea a cada casilla.
          */
 
-        double tangente = ((double) (difX+1))/((double)(difY+1));
+        double difAbsY = Math.abs(difY);
 
-        for (int x = 1; x < difX; x++ ) {
+        double tangenteAbs = ((double) (difAbsY+1))/((double)(difX+1)); // El valor absoluto de la tangente
+
+        for (int x = 0; x <= difX; x++ ) {
             // Calculamos el punto de corte en la izquierda y en la derecha de la casilla, para saber cómo corta la recta
-            double yIzquierda = x * tangente; // El valor de Y en la recta, en el borde izquierdo de la casilla
-            double yDerecha = (x+1) * tangente; // El valor de Y en la recta, en el borde derecho de la casilla
+            double yIzquierda = x * tangenteAbs; // El valor de Y en la recta, en el borde izquierdo de la casilla
+            double yDerecha = (x+1) * tangenteAbs; // El valor de Y en la recta, en el borde derecho de la casilla
 
-            double corteIzquierda = yIzquierda - (() ? Math.floor(yIzquierda) : Math.ceil(yIzquierda)); // El punto donde corta a la casilla (entre 0 y 1)
-            double corteDerecha = yDerecha - Math.floor(yDerecha); // El punto donde corta a la casilla (entre 0 y 1)
+            double deltaY = yDerecha - yIzquierda;
 
+            int positivo;
+            if (difY < 0) {
+                positivo = -1;
+            } else {
+                positivo = 1;
+            }
+
+            for (int i = 0; i < Math.ceil(deltaY); i++) {
+                Coordenadas coordenadasCasilla = new Coordenadas(inicio.getCoordenadas().getX() + x, inicio.getCoordenadas().getY() + (positivo) * (((int)(yIzquierda)) + i));
+                
+                ruta.add(Mapa.getMapa().getCasilla(coordenadasCasilla));
+            }
 
         }
 

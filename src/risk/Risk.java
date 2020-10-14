@@ -12,5 +12,7 @@ public class Risk {
         new Menu();
 
         Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Brasil"), Mapa.getMapa().getPais("ANorte"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("EurOcc"), Mapa.getMapa().getPais("ANorte"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Groenlan"), Mapa.getMapa().getPais("Islandia"));
     }
 }
