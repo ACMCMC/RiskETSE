@@ -55,5 +55,29 @@ public class Pais {
     public String toString() {
         return getCodigo();
     }
+    
+    @Override
+    public boolean equals(Object pais){
+        if (this==pais){
+            return true;
+        }
+        if (pais==null){
+            return false;
+        }
+        if(getClass() != pais.getClass()){
+            return false;
+        }
+        final Pais other = (Pais) pais;
+        if(!this.getCodigo().equals(other.getCodigo())){
+            return false;
+        }
+        if(!this.getContinente().equals(other.getContinente())){
+            return false;
+        }
+        if(!this.getNombreHumano().equals(other.getNombreHumano())){
+            return false;
+        }
+        return true;
+    }
 
 }
