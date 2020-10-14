@@ -4,7 +4,7 @@
 
 package risk;
 
-public class RiskException extends Exception {
+public class RiskException {
 
     final int codigo;
     final String codigoTexto;
@@ -33,7 +33,6 @@ public class RiskException extends Exception {
                 .autoAdd("descripción", this.getCodigoTexto()).build();
     }
 
-    @Override
     public String getMessage() {
         return OutputBuilder.beginBuild().autoAdd("código de error", this.getCodigo())
                 .autoAdd("descripción", this.getCodigoTexto()).build();

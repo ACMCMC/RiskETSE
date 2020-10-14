@@ -10,5 +10,7 @@ public class Risk {
      */
     public static void main(String[] args) {
         new Menu();
+
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Alaska"), Mapa.getMapa().getPais("Brasil"));
     }
 }

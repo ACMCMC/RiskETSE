@@ -162,8 +162,6 @@ public class Menu {
             Mapa.crearMapa(filePaisesCoordenadas);
         } catch (FileNotFoundException ex) {
             logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
-        } catch (RiskException e) {
-            FileOutputHelper.printToErrOutput(e); // Print the exception to the output
         }
     }
 
