@@ -239,7 +239,7 @@ public class Mapa {
         int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
         int difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // La diferencia de anchura entre las casillas
         
-        if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha)
+        if ((difX < 0) && (Math.abs(difX) < (getSizeX()/2))) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha). Eso sí, solo lo hacemos si la distancia en X entre las casillas no es más que la mitad del mapa (si es más que la mitad del mapa, es mejor que se le de la vuelta)
             ruta = buscarRuta(fin, inicio);
             Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
             return ruta;
@@ -262,15 +262,15 @@ public class Mapa {
 
             double deltaY = yDerecha - yIzquierda;
 
-            int positivo;
+            int positivo; // Si tenemos que ir hacia arriba, positivo será -1 (ya que cuanto más arriba, Y vale menos)
             if (difY < 0) {
                 positivo = -1;
             } else {
                 positivo = 1;
             }
 
-            for (int i = 0; i < Math.ceil(deltaY); i++) {
-                Coordenadas coordenadasCasilla = new Coordenadas(inicio.getCoordenadas().getX() + x, inicio.getCoordenadas().getY() + (positivo) * (((int)(yIzquierda)) + i));
+            for (int i = 0; i < Math.ceil(deltaY); i++) { // Si en una unidad de la línea en X subimos más de una unidad en Y, añadimos todas esas casillas
+                Coordenadas coordenadasCasilla = new Coordenadas((inicio.getCoordenadas().getX() + x) % getSizeX(), inicio.getCoordenadas().getY() + (positivo) * (((int)(yIzquierda)) + i)); // X es módulo el tamaño en X del mapa, porque puede que le demos la vuelta (acabar en la derecha y seguir en la izquierda).
                 
                 ruta.add(Mapa.getMapa().getCasilla(coordenadasCasilla));
             }
