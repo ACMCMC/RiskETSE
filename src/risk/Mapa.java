@@ -281,7 +281,7 @@ public class Mapa {
                 if (direccion > 0) { //Nos movemos hacia arriba
                     coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() + 1, coordenadasActuales.getY() + 1);
                 } else { // Nos movemos hacia abajo
-                    coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() - 1, coordenadasActuales.getY() - 1);
+                    coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() + 1, coordenadasActuales.getY() - 1);
                 }
                 
             } else if (comparacion > 0) { // La dirección es mayor de 45 grados, nos movemos en Y
