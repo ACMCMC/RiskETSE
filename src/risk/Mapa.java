@@ -222,15 +222,49 @@ public class Mapa {
             }
         }
     }
-
+    
     /**
      * Añade una frontera indirecta al mapa. Busca una ruta entre los dos países, y pinta los bordes de las casillas de acuerdo con la ruta.
      */
     public void anadirFronteraIndirecta(Pais paisA, Pais paisB) {
         Casilla casillaInicio = getCasillaPais(paisA);
         Casilla casillaFin = getCasillaPais(paisB);
-
+        
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("casillas", buscarRuta(casillaInicio, casillaFin)).build());
+    }
+    
+    private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
+        List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
+    
+        int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
+        int difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // La diferencia de anchura entre las casillas
+        
+        if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha)
+            ruta = buscarRuta(fin, inicio);
+            Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
+            return ruta;
+        }
+    
+        ruta = new ArrayList<>(); // Creamos una lista vacía para guardar la ruta
+
+        /**
+         * Vamos a dibujar una línea entre el borde izquierdo de la casilla de inicio y el derecho de la del final (es decir, difX + 1).  La altura será desde el borde superior o inferior del inicio, hasta el superior o inferior del final (difY +1). Después, calcularemos por dónde corta la línea a cada casilla.
+         */
+
+        double tangente = ((double) (difX+1))/((double)(difY+1));
+
+        for (int x = 1; x < difX; x++ ) {
+            // Calculamos el punto de corte en la izquierda y en la derecha de la casilla, para saber cómo corta la recta
+            double yIzquierda = x * tangente; // El valor de Y en la recta, en el borde izquierdo de la casilla
+            double yDerecha = (x+1) * tangente; // El valor de Y en la recta, en el borde derecho de la casilla
+
+            double corteIzquierda = yIzquierda - (() ? Math.floor(yIzquierda) : Math.ceil(yIzquierda)); // El punto donde corta a la casilla (entre 0 y 1)
+            double corteDerecha = yDerecha - Math.floor(yDerecha); // El punto donde corta a la casilla (entre 0 y 1)
+
+
+        }
+
+        return ruta;
     }
 
     /**
@@ -239,7 +273,7 @@ public class Mapa {
      * @param fin
      * @return La lista de las casillas por las que pasa la ruta
      */
-    private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
+    private List<Casilla> buscarRutaIterativo(Casilla inicio, Casilla fin) {
         List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
 
         int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
