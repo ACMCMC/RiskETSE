@@ -233,6 +233,9 @@ public class Mapa {
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("casillas", buscarRuta(casillaInicio, casillaFin)).build());
     }
     
+    /**
+     * Busca la mejor ruta entre dos casillas. Traza una línea imaginaria, y luego la convierte en coordenadas.
+     */
     private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
         List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
     
