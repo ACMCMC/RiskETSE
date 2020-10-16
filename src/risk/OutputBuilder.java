@@ -46,7 +46,7 @@ public class OutputBuilder {
 
     /**
      * Recorre todos los métodos que empiezan por get del objeto y el valor que
-     * devuelven, y genera un JSON con el resultado
+     * devuelven, y genera un JSON con el resultado 
      * 
      * @param obj
      * @return

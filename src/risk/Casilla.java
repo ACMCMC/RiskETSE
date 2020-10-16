@@ -6,7 +6,6 @@ package risk;
 
 public class Casilla {
 
-    private Jugador jugador;
     private Coordenadas coordenadas;
     private Pais pais; // Si es una casilla marítima, pais es null
     private BordeCasilla borde; // Parámetro auxiliar para pintar los bordes
@@ -49,14 +48,6 @@ public class Casilla {
 
     public BordeCasilla getBorde() {
         return this.borde;
-    }
-
-    public Jugador getJugador() {
-        return this.jugador;
-    }
-
-    public void setJugador(Jugador jugador) {
-        this.jugador = jugador;
     }
 
     public Coordenadas getCoordenadas() {
