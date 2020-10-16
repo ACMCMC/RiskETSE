@@ -187,7 +187,7 @@ public class OutputBuilder {
         return stringBuilder.toString();
     }
 
-    private List<String> variables; // Cada variable es un elemento de este conjunto
+    private List<String> variables; // Cada variable es un elemento de esta lista. Es una lista porque nos importa el orden de adición (no es esencial, pero de esta forma es más predecible)
 
     /**
      * Si queremos construir el objeto JSON manualmente, usamos un OutputBuilder
