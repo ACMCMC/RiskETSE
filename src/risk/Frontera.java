@@ -1,3 +1,7 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 import java.util.HashSet;
@@ -9,9 +13,24 @@ import java.util.Set;
 public class Frontera {
     private Pais paisA;
     private Pais paisB;
+    private boolean esIndirecta;
 
     Frontera (Pais paisA, Pais paisB) {
         this.setPaises(paisA, paisB);
+        this.esIndirecta = false;
+    }
+
+    Frontera (Pais paisA, Pais paisB, boolean esIndirecta) {
+        this.setPaises(paisA, paisB);
+        this.esIndirecta = esIndirecta;
+    }
+
+    /**
+     * Dice si esta frontera es indirecta
+     * @return
+     */
+    public boolean esIndirecta() {
+        return esIndirecta;
     }
 
     /**

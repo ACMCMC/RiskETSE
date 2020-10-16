@@ -136,11 +136,45 @@ public class Menu {
     }
 
     /**
-     *
-     * @param file
+     * Procesa un archivo con [NombreJugador];[NombrePais] para realizar las asignaciones en el mapa
+     * @param archivoAsignaciones
      */
-    public void asignarPaises(File file) {
-        // Código necesario para asignar países
+    public void asignarPaises(File archivoAsignaciones) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(archivoAsignaciones));
+            String linea;
+            while ((linea = bufferedReader.readLine())!=null) {
+                String partes[] = linea.split(";");
+                String nombrePais = partes[1];
+                String nombreJugador = partes[0];
+                if (Mapa.getMapa().getPais(nombrePais) == null) {
+                    FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
+                } else {
+                    if (Mapa.getMapa().getPais(nombrePais).getJugador() != null) {
+                        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
+                    } else {
+                        if (Partida.getPartida().getJugador(nombreJugador) == null) {
+                            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
+                        } else {
+                            if (false) {
+                                // TODO: Las misiones no están asignadas ERROR
+                            } else {
+                                Mapa.getMapa().getPais(partes[1]).setJugador(Partida.getPartida().getJugador(partes[0]));
+                                FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais).autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais))).build());
+                            }
+                        }
+                    }
+                }
+                
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -162,8 +196,6 @@ public class Menu {
             Mapa.crearMapa(filePaisesCoordenadas);
         } catch (FileNotFoundException ex) {
             logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
-        } catch (RiskException e) {
-            FileOutputHelper.printToErrOutput(e); // Print the exception to the output
         }
     }
 
@@ -245,5 +277,4 @@ public class Menu {
     private void obtenerColor(String abrevPais){
         
     }
-    
 }

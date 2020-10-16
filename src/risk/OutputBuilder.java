@@ -1,11 +1,15 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +46,7 @@ public class OutputBuilder {
 
     /**
      * Recorre todos los métodos que empiezan por get del objeto y el valor que
-     * devuelven, y genera un JSON con el resultado
+     * devuelven, y genera un JSON con el resultado 
      * 
      * @param obj
      * @return
@@ -181,25 +185,29 @@ public class OutputBuilder {
         return stringBuilder.toString();
     }
 
-    private Set<String> variables; // Cada variable es un elemento de este conjunto
+    private List<String> variables; // Cada variable es un elemento de esta lista. Es una lista porque nos importa el orden de adición (no es esencial, pero de esta forma es más predecible)
 
     /**
      * Si queremos construir el objeto JSON manualmente, usamos un OutputBuilder
      */
     public OutputBuilder() {
-        variables = new HashSet<String>();
+        variables = new ArrayList<String>();
         DEPTH_LEVEL = 0; // Por defecto, no se desencapsula nada
     }
 
-    public OutputBuilder(int depthLevel) {
-        variables = new HashSet<String>();
+    /**
+     * Un OutputBuilder que buscará hasta la profundidad indicada
+     * @param depthLevel
+     */
+    private OutputBuilder(int depthLevel) {
+        variables = new ArrayList<String>();
         DEPTH_LEVEL = depthLevel;
     }
 
     /**
      * Adds a variable from an object using an unparametrized getter method
      */
-    public OutputBuilder addVariableUsingGetter(Object obj, Method m) {
+    private OutputBuilder addVariableUsingGetter(Object obj, Method m) {
         int sangrado;
         String nombreObjeto;
         Object valorObjeto;

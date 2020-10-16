@@ -8,11 +8,21 @@ public class Pais {
     private String codigo;
     private String nombreHumano;
     private Continente continente;
+    private Jugador jugador;
 
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
         this.setNombreHumano(nombreHumano);
         this.setContinente(continente);
+        this.setJugador(null);
+    }
+
+    public Jugador getJugador() {
+        return this.jugador;
+    }
+
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
     }
 
     /**
