@@ -97,9 +97,6 @@ public class Casilla {
         if(!this.getPais().equals(other.getPais())){
             return false;
         }
-        if(!this.getJugador().equals(other.getJugador())){
-            return false;
-        }
         
         return true;
     }

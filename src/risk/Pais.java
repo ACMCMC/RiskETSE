@@ -87,6 +87,9 @@ public class Pais {
         if(!this.getNombreHumano().equals(other.getNombreHumano())){
             return false;
         }
+        if(!this.getJugador().equals(other.getJugador())) {
+            return false;
+        }
         return true;
     }
 
