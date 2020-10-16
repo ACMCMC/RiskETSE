@@ -167,6 +167,7 @@ public class Menu {
                 }
                 
             }
+            bufferedReader.close();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

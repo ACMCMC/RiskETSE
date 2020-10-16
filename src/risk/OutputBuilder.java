@@ -8,10 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -197,7 +195,11 @@ public class OutputBuilder {
         DEPTH_LEVEL = 0; // Por defecto, no se desencapsula nada
     }
 
-    public OutputBuilder(int depthLevel) {
+    /**
+     * Un OutputBuilder que buscará hasta la profundidad indicada
+     * @param depthLevel
+     */
+    private OutputBuilder(int depthLevel) {
         variables = new ArrayList<String>();
         DEPTH_LEVEL = depthLevel;
     }
@@ -205,7 +207,7 @@ public class OutputBuilder {
     /**
      * Adds a variable from an object using an unparametrized getter method
      */
-    public OutputBuilder addVariableUsingGetter(Object obj, Method m) {
+    private OutputBuilder addVariableUsingGetter(Object obj, Method m) {
         int sangrado;
         String nombreObjeto;
         Object valorObjeto;
