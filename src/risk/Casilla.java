@@ -56,4 +56,29 @@ public class Casilla {
             return("Casilla del país: " + this.getPais().getCodigo() + " -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
         }
     }
+    
+    @Override
+    public boolean equals(Object casilla){
+        if (this==casilla){
+            return true;
+        }
+        if (casilla==null){
+            return false;
+        }
+        if (getClass() != casilla.getClass()){
+            return false;
+        }
+        final Casilla other = (Casilla) casilla;
+        if(!this.getCoordenadas().equals(other.getCoordenadas())){
+            return false;
+        }
+        if(!this.getPais().equals(other.getPais())){
+            return false;
+        }
+        if(!this.getJugador().equals(other.getJugador())){
+            return false;
+        }
+        
+        return true;
+    }
 }
