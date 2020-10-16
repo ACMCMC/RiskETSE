@@ -28,4 +28,25 @@ public class Jugador {
     private void setColor(Color color) {
         this.color = color;
     }
+    
+    @Override
+    public boolean equals(Object jugador){
+        if (this==jugador){
+            return true;
+        }
+        if (jugador==null){
+            return false;
+        }
+        if(getClass() != jugador.getClass()){
+            return false;
+        }
+        final Jugador other = (Jugador) jugador;
+        if(!this.getNombre().equals(other.getNombre())){
+            return false;
+        }
+        if(!this.getColor().equals(other.getColor())){
+            return false;
+        }
+        return true;
+    }
 }

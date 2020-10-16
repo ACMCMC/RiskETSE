@@ -2,7 +2,11 @@
  * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
  */
 
+
 package risk;
+
+import java.util.List;
+import java.util.ArrayList;
 
 public class Risk {
     /**

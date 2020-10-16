@@ -264,10 +264,17 @@ public class Menu {
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo sacamos a la salida
     }
     
-    private void obtenerContinentes(String abrevPais){
+    /**
+    * Imprime el continente al que pertenece un pais
+    * @param abrevPais
+    */
+    private void obtenerContinente(String abrevPais){
         String Continente;
         Continente=Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
     }
     
+    private void obtenerColor(String abrevPais){
+        
+    }
 }
