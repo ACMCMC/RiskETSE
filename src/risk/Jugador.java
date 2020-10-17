@@ -10,10 +10,44 @@ import java.util.stream.Collectors;
 public class Jugador {
     private String nombre;
     private Color color;
+    private int ejercitosSinRepartir; // Los ejércitos que tiene el jugador, pero no están repartidos. Los que sí están repartidos se almacenan en el país en sí.
 
     public Jugador(String nombre, Color color) {
         this.setNombre(nombre);
         this.setColor(color);
+        this.setEjercitosSinRepartir(0);
+    }
+
+    /**
+     * De los ejércitos sin repartir que tiene el jugador, asignar {@code numEjercitos} al país elegido.
+     * @param numEjercitos los ejércitos que se van a asignar
+     */
+    public void asignarEjercitosAPais(int numEjercitos, Pais pais) {
+        if (this.getEjercitosSinRepartir() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la asignación
+            pais.setNumEjercitos(pais.getNumEjercitos() + numEjercitos);
+            this.setEjercitosSinRepartir(this.getEjercitosSinRepartir() - numEjercitos);
+        } else if (this.getEjercitosSinRepartir() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí podemos asignar todos los que quedan
+            pais.setNumEjercitos(pais.getNumEjercitos() + this.getEjercitosSinRepartir()); // Le ponemos al país todos los ejércitos sin repartir que le quedan al jugador
+            this.setEjercitosSinRepartir(0);
+        } else { // No hay ejércitos disponibles
+            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES).toString());
+        }
+    }
+
+    /**
+     * Establece el número de ejércitos sin repartir de un jugador
+     * @param ejercitosSinRepartir
+     */
+    public void setEjercitosSinRepartir(int ejercitosSinRepartir) {
+        this.ejercitosSinRepartir = ejercitosSinRepartir;
+    }
+
+    /**
+     * Devuelve el número de ejércitos que tiene el jugador, sin repartir
+     * @return
+     */
+    public int getEjercitosSinRepartir() {
+        return this.ejercitosSinRepartir;
     }
 
     /**
