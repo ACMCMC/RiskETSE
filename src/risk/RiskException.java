@@ -43,7 +43,7 @@ public class RiskException {
         COMANDO_INCORRECTO(101, "Comando incorrecto"), CONTINENTE_NO_EXISTE(102, "El continente no existe"),
         JUGADOR_NO_EXISTE(103, "El jugador no existe"), JUGADOR_YA_EXISTE(104, "El jugador ya existe"),
         JUGADORES_NO_CREADOS(105, "Los jugadores no están creados"), MAPA_NO_CREADO(106, "El mapa no está creado"),
-        MAPA_YA_CREADO(107, "El mapa ya ha sido creado"), PAIS_NO_EXISTE(109, "El país no existe "),
+        MAPA_YA_CREADO(107, "El mapa ya ha sido creado"), PAIS_NO_EXISTE(109, "El país no existe"),
         PAIS_NO_PERTENECE_JUGADOR(110, "El país no pertenece al jugador"),
         PAIS_PERTENECE_JUGADOR(111, "El país pertenece al jugador"),
         PAISES_NO_SON_FRONTERA(112, "Los países no son frontera"), PAIS_YA_ASIGNADO(113, "El país ya está asignado"),
