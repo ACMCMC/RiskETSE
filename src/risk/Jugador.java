@@ -4,6 +4,9 @@
 
 package risk;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class Jugador {
     private String nombre;
     private Color color;
@@ -11,6 +14,23 @@ public class Jugador {
     public Jugador(String nombre, Color color) {
         this.setNombre(nombre);
         this.setColor(color);
+    }
+
+    /**
+     * Devuelve un Set de los Paises de este Jugador
+     */
+    public Set<Pais> getPaises() {
+        Set<Pais> paisesJugador = Mapa.getMapa().getPaises().parallelStream().filter(pais -> {return(pais.getJugador().equals(this));}).collect(Collectors.toSet());
+        return paisesJugador;
+    }
+
+    /**
+     * Devuelve el total de ejércitos de este Jugador, buscando por todos sus países
+     * @return
+     */
+    public int getTotalEjercitos() {
+        int totalEjercitos = this.getPaises().parallelStream().reduce(0, (accum, pais) -> {return (accum + pais.getNumEjercitos());}, Integer::sum);
+        return totalEjercitos;
     }
 
     public String getNombre() {
