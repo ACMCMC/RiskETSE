@@ -180,6 +180,12 @@ public class Mapa {
         }
     }
 
+    public Set<Pais> getPaises() {
+        return (this.paises.entrySet().parallelStream().map((entrada) -> {
+            return (entrada.getValue());
+        }).collect(Collectors.toSet()));
+    }
+
     /**
      * Recorre el mapa, añadiendo las fronteras entre los países que tienen conexión directa.
      * 
