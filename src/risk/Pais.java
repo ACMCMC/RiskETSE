@@ -9,12 +9,30 @@ public class Pais {
     private String nombreHumano;
     private Continente continente;
     private Jugador jugador;
+    private int numEjercitos; // El número de ejércitos que están en este país. Pertenecen al jugador que tiene este país.
 
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
         this.setNombreHumano(nombreHumano);
         this.setContinente(continente);
         this.setJugador(null);
+        this.setNumEjercitos(0);
+    }
+
+    /**
+     * Devuelve el número de ejércitos que hay en este Pais
+     * @return
+     */
+    public int getNumEjercitos() {
+        return this.numEjercitos;
+    }
+
+    /**
+     * Establece el número de ejércitos que hay en este Pais
+     * @param numEjercitos
+     */
+    public void setNumEjercitos(int numEjercitos) {
+        this.numEjercitos = numEjercitos;
     }
 
     public Jugador getJugador() {
