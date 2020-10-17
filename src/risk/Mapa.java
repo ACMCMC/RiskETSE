@@ -180,6 +180,12 @@ public class Mapa {
         }
     }
 
+    public Set<Pais> getPaises() {
+        return (this.paises.entrySet().parallelStream().map((entrada) -> {
+            return (entrada.getValue());
+        }).collect(Collectors.toSet()));
+    }
+
     /**
      * Recorre el mapa, añadiendo las fronteras entre los países que tienen conexión directa.
      * 
@@ -447,11 +453,25 @@ public class Mapa {
                 if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
                     System.out.print(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
                 } else {
-                    System.out.print(this.getCasilla(new Coordenadas(x,y)).getPais().getContinente().getColor().getSecFondo());
-                    System.out.print(String.format("%-9s", this.getCasilla(new Coordenadas(x,y)).getPais().getCodigo()));
+                    System.out.print(casilla.getPais().getContinente().getColor().getSecFondo());
+                    System.out.print(String.format("%-9s", casilla.getPais().getCodigo()));
                     System.out.print(Color.getSecColorReset());
                 }
                 System.out.print(" "); // Imprimimos un espacio al final para separar
+            }
+            System.out.println("|");
+            for (int x = 0; x < getSizeX(); x++) { // Imprimimos los ejércitos de cada jugador
+                System.out.print("| ");
+                Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                if (casilla.esMaritima() || casilla.getPais().getJugador() == null) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
+                    System.out.print(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
+                } else {
+                    System.out.print(casilla.getPais().getJugador().getColor().getSecTexto());
+                    System.out.print(String.format("%-9s", casilla.getPais().getNumEjercitos()));
+                    System.out.print(Color.getSecColorReset());
+                }
+                System.out.print(" "); // Imprimimos un espacio al final para separar
+                
             }
             System.out.println("|");
         }

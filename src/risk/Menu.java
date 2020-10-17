@@ -99,7 +99,7 @@ public class Menu {
                             // y los métodos necesarios para realizar esa invocación
                             asignarPaises(new File(partes[2]));
                         } else {
-                            asignarPaises(partes[1], partes[2]);
+                            asignarPais(partes[1], partes[2]);
                         }
                         break;
                     case "ver":
@@ -147,25 +147,8 @@ public class Menu {
                 String partes[] = linea.split(";");
                 String nombrePais = partes[1];
                 String nombreJugador = partes[0];
-                if (Mapa.getMapa().getPais(nombrePais) == null) {
-                    FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
-                } else {
-                    if (Mapa.getMapa().getPais(nombrePais).getJugador() != null) {
-                        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
-                    } else {
-                        if (Partida.getPartida().getJugador(nombreJugador) == null) {
-                            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
-                        } else {
-                            if (false) {
-                                // TODO: Las misiones no están asignadas ERROR
-                            } else {
-                                Mapa.getMapa().getPais(partes[1]).setJugador(Partida.getPartida().getJugador(partes[0]));
-                                FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais).autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais))).build());
-                            }
-                        }
-                    }
-                }
                 
+                asignarPais(nombrePais, nombreJugador);
             }
             bufferedReader.close();
         } catch (FileNotFoundException e) {
@@ -183,8 +166,25 @@ public class Menu {
      * @param nombrePais
      * @param nombreJugador
      */
-    public void asignarPaises(String nombrePais, String nombreJugador) {
-        // Código necesario para asignar un país a un jugador
+    public void asignarPais(String nombrePais, String nombreJugador) {
+        if (Mapa.getMapa().getPais(nombrePais) == null) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
+        } else {
+            if (Mapa.getMapa().getPais(nombrePais).getJugador() != null) {
+                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
+            } else {
+                if (Partida.getPartida().getJugador(nombreJugador) == null) {
+                    FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
+                } else {
+                    if (false) {
+                        // TODO: Las misiones no están asignadas ERROR
+                    } else {
+                        Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador));
+                        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais).autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais))).build());
+                    }
+                }
+            }
+        }
     }
 
     /**
