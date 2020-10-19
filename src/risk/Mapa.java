@@ -80,7 +80,8 @@ public class Mapa {
      */
     public static void crearMapa(File file) throws FileNotFoundException {
         if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
-            //throw new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO);
+            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO).toString());
+            return;
         }
 
         mapaSingleton.asignarPaisesACasillas(file); // Could throw a FileNotFoundException, but we leave exception handling to the caller
