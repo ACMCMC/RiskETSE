@@ -48,8 +48,10 @@ public class Menu {
             }
             System.out.println(PROMPT + orden);
             crearMapa();
-            anadirFronterasIndirectas();
-            Mapa.getMapa().imprimirMapa();
+            anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles son las fronteras indirectas
+            Mapa.getMapa().imprimirMapa(); // Imprimimos el mapa una vez creado
+
+
             boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
             while ((orden = bufferLector.readLine()) != null
                     && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La segunda línea (y posiblemente

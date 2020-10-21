@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class Mapa {
 
     private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");
+    private static final String NEW_LINE = System.getProperty("line.separator");
 
     private static final Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
     private static boolean isMapaCreado = false; // Will be false at first, until the asignarPaises() method gets executed
@@ -238,8 +240,41 @@ public class Mapa {
     public void anadirFronteraIndirecta(Pais paisA, Pais paisB) {
         Casilla casillaInicio = getCasillaPais(paisA);
         Casilla casillaFin = getCasillaPais(paisB);
-        
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("casillas", buscarRuta(casillaInicio, casillaFin)).build());
+
+        List<Casilla> ruta = buscarRuta(casillaInicio, casillaFin);
+
+        procesarRuta(ruta);
+    }
+
+    private void procesarRuta(List<Casilla> ruta) {
+        for (int i = 0; i < (ruta.size() - 1); i++) {
+            Coordenadas coordsActuales = ruta.get(i).getCoordenadas();
+            Coordenadas coordsSiguientes = ruta.get(i+1).getCoordenadas();
+            int deltaX = coordsSiguientes.getX() - coordsActuales.getX();
+            int deltaY = coordsSiguientes.getY() - coordsActuales.getY();
+
+            if (deltaX < 0) { // Como el mapa es un toro (si llegamos a la derecha de todo volvemos a la izquierda, podría darse el caso de que la siguiente casilla esté mas a la izquierda y por eso deltaX sea negativo. En ese caso, lo que hacemos es sumarle el tamaño en X del mapa)
+                deltaX = deltaX + getSizeX();
+            }
+            
+            if (deltaX == 0) {
+
+            } else if (deltaX == 1) { // No debería darse el caso de que deltaX < 0, porque en la ruta siempre nos movemos hacia la derecha
+                if (deltaY < 0) { // La siguiente casilla está arriba a la derecha
+                    if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
+                        getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
+                    }
+                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY() -1)).setBorde(Casilla.BordeCasilla.LEFT_TOP);
+                } else if (deltaY == 0) { // La siguiente casilla está justo a la derecha
+                    if ( !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
+                        getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
+                    }
+                } else { // La siguiente casilla está abajo a la derecha
+                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM);
+                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY()+1)).setBorde(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL);
+                }
+            }
+        }
     }
     
     /**
@@ -435,7 +470,7 @@ public class Mapa {
     }
 
     /**
-     * Devuelve el país con el código especificado
+     * Devuelve el Pais con el código especificado
      * @param codigo
      * @return
      */
@@ -444,40 +479,59 @@ public class Mapa {
     }
 
     /**
-     * Imprime el mapa por consola
+     * Imprime el Mapa por pantalla
      */
     public void imprimirMapa() {
+        System.out.print(toString());
+    }
+
+    /**
+     * Devuelve una representación del Mapa como String
+     */
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
         // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
         for (int y = 0; y < getSizeY(); y++) {
-            System.out.println(new String(new char[getSizeX()]).replace("\0", "|===========") + "|");
+            stringBuilder.append(new String(new char[getSizeX()]).replace("\0", "|===========") + "|");
+            stringBuilder.append(NEW_LINE);
             for (int x = 0; x < getSizeX(); x++) {
-                System.out.print("| ");
+                stringBuilder.append("|");
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
-                    System.out.print(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL)) {
+                        stringBuilder.append(new String(new char[11]).replace("\0", "-")); // Imprimimos espacios
+                    } else {
+                        stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
+                    }
                 } else {
-                    System.out.print(casilla.getPais().getContinente().getColor().getSecFondo());
-                    System.out.print(String.format("%-9s", casilla.getPais().getCodigo()));
-                    System.out.print(Color.getSecColorReset());
+                    stringBuilder.append(" "); // Imprimimos un espacio al final para separar
+                    stringBuilder.append(casilla.getPais().getContinente().getColor().getSecFondo());
+                    stringBuilder.append(String.format("%-9s", casilla.getPais().getCodigo()));
+                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
-                System.out.print(" "); // Imprimimos un espacio al final para separar
             }
-            System.out.println("|");
+            stringBuilder.append("|");
+            stringBuilder.append(NEW_LINE);
             for (int x = 0; x < getSizeX(); x++) { // Imprimimos los ejércitos de cada jugador
-                System.out.print("| ");
+                stringBuilder.append("| ");
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.esMaritima() || !casilla.getPais().getJugador().isPresent()) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
-                    System.out.print(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
+                    stringBuilder.append(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
                 } else {
-                    System.out.print(casilla.getPais().getJugador().get().getColor().getSecTexto());
-                    System.out.print(String.format("%-9s", casilla.getPais().getNumEjercitos()));
-                    System.out.print(Color.getSecColorReset());
+                    stringBuilder.append(casilla.getPais().getJugador().get().getColor().getSecTexto());
+                    stringBuilder.append(String.format("%-9s", casilla.getPais().getNumEjercitos()));
+                    stringBuilder.append(Color.getSecColorReset());
                 }
-                System.out.print(" "); // Imprimimos un espacio al final para separar
+                stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 
             }
-            System.out.println("|");
+            stringBuilder.append("|");
+            stringBuilder.append(NEW_LINE);
         }
-        System.out.println(new String(new char[getSizeX()]).replace("\0", "|===========") + "|");
+        stringBuilder.append(new String(new char[getSizeX()]).replace("\0", "|===========") + "|");
+        stringBuilder.append(NEW_LINE);
+        return stringBuilder.toString();
     }
 }
