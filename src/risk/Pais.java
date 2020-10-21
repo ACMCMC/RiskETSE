@@ -4,19 +4,23 @@
 
 package risk;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 public class Pais {
     private String codigo;
     private String nombreHumano;
     private Continente continente;
     private Jugador jugador;
-    private int numEjercitos; // El número de ejércitos que están en este país. Pertenecen al jugador que tiene este país.
+    private Set<Ejercito> ejercitos; // Los ejércitos que están en este país. Pertenecen al jugador que tiene este país.
 
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
         this.setNombreHumano(nombreHumano);
         this.setContinente(continente);
         this.setJugador(null);
-        this.setNumEjercitos(0);
+        this.ejercitos = new HashSet<>();
     }
 
     /**
@@ -24,19 +28,27 @@ public class Pais {
      * @return
      */
     public int getNumEjercitos() {
-        return this.numEjercitos;
+        return this.ejercitos.size();
     }
 
     /**
-     * Establece el número de ejércitos que hay en este Pais
-     * @param numEjercitos
+     * Devuelve un Set de los Ejercitos de este Pais
+     * @return un HashSet con los Ejercitos del Pais, pero no el HashSet original
      */
-    public void setNumEjercitos(int numEjercitos) {
-        this.numEjercitos = numEjercitos;
+    public Set<Ejercito> getEjercitos() {
+        return new HashSet<>(this.ejercitos);
     }
 
-    public Jugador getJugador() {
-        return this.jugador;
+    /**
+     * Añade un Ejercito al Set de Ejercitos de este Pais
+     * @param ejercito
+     */
+    public void addEjercito(Ejercito ejercito) {
+        this.ejercitos.add(ejercito);
+    }
+
+    public Optional<Jugador> getJugador() {
+        return Optional.ofNullable(this.jugador);
     }
 
     public void setJugador(Jugador jugador) {

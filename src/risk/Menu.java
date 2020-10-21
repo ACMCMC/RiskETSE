@@ -30,14 +30,38 @@ public class Menu {
 
         // Iniciar juego
         String orden = null;
+        String[] partes;
         BufferedReader bufferLector = null;
         try {
             File fichero = new File("comandos.csv");
             FileReader lector = new FileReader(fichero);
             bufferLector = new BufferedReader(lector);
+            while ((orden = bufferLector.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene que ser "crear mapa". Mostramos un error mientras no sea esa.
+                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
+            }
+            crearMapa();
+            boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
+            while ((orden = bufferLector.readLine()) != null && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La segunda línea (y posiblemente las siguientes) tienen que ser "crear jugador nombre color". Mostramos un error mientras no sea esa. Tiene que haber al menos 3 jugadores.
+            if (orden.startsWith("crear jugador")) { // Entramos por aquí si es crear jugador o crear jugadores
+                partes = orden.split(" ");
+                if (partes[1].equals("jugador") && partes.length == 4) {
+                    crearJugador(partes[2], partes[3]);
+                    if (Partida.getPartida().getJugadores().size() >= 3) {
+                        jugadoresCreados = true;
+                    }
+                } else if (partes[1].equals("jugadores") && partes.length == 3) {
+                    crearJugadores(new File(partes[2]));
+                } else {
+                    comandoIncorrecto();
+                }
+            } else { // Si el comando no es crear jugador
+                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS).toString());
+            }
+            }
+            
             while ((orden = bufferLector.readLine()) != null) {
                 System.out.println("$> " + orden);
-                String[] partes = orden.split(" ");
+                partes = orden.split(" ");
                 String comando = partes[0];
                 // COMANDOS INICIALES PARA EMPEZAR A JUGAR
                 // crear mapa
@@ -63,12 +87,9 @@ public class Menu {
                     case "crear":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
-                                // crearMapa es un método de la clase Menú desde el que se puede invocar
-                                // a otros métodos de las clases que contienen los atributos y los métodos
-                                // necesarios para realizar esa invocación
-                                crearMapa();
+                                comandoNoPermitido();
                             } else {
-                                System.out.println("\nComando incorrecto.");
+                                comandoIncorrecto();
                             }
                         } else if (partes.length == 3) {
                             if (partes[1].equals("jugadores")) {
@@ -127,7 +148,7 @@ public class Menu {
                             }
                         }
                     default:
-                        System.out.println("\nComando incorrecto.");
+                        comandoIncorrecto();
                 }
             }
         } catch (Exception excepcion) {
@@ -197,6 +218,19 @@ public class Menu {
         } catch (FileNotFoundException ex) {
             logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
         }
+    }
+
+    /**
+     * Imprime el error 99 (Comando no permitido en este momento)
+     */
+    private void comandoNoPermitido() {
+        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO).toString());
+    }
+    /**
+     * Imprime el error 101 (Comando incorrecto)
+     */
+    private void comandoIncorrecto() {
+        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO).toString());
     }
 
     /**

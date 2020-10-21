@@ -24,10 +24,15 @@ public class Jugador {
      */
     public void asignarEjercitosAPais(int numEjercitos, Pais pais) {
         if (this.getEjercitosSinRepartir() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la asignación
-            pais.setNumEjercitos(pais.getNumEjercitos() + numEjercitos);
+            for (int i = 0; i < numEjercitos; i++) {
+                pais.addEjercito(new Ejercito());
+            }
             this.setEjercitosSinRepartir(this.getEjercitosSinRepartir() - numEjercitos);
         } else if (this.getEjercitosSinRepartir() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí podemos asignar todos los que quedan
-            pais.setNumEjercitos(pais.getNumEjercitos() + this.getEjercitosSinRepartir()); // Le ponemos al país todos los ejércitos sin repartir que le quedan al jugador
+            int ejercitosSinRepartir = this.getEjercitosSinRepartir(); // No es realmente necesario, pero me parece buena práctica porque si modificásemos el número de ejércitos sin repartir dentro del for, entonces habría problemas
+                    for (int i = 0; i < ejercitosSinRepartir; i++) {
+                        pais.addEjercito(new Ejercito());
+                    }
             this.setEjercitosSinRepartir(0);
         } else { // No hay ejércitos disponibles
             FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES).toString());
@@ -54,7 +59,7 @@ public class Jugador {
      * Devuelve un Set de los Paises de este Jugador
      */
     public Set<Pais> getPaises() {
-        Set<Pais> paisesJugador = Mapa.getMapa().getPaises().parallelStream().filter(pais -> {return(pais.getJugador().equals(this));}).collect(Collectors.toSet());
+        Set<Pais> paisesJugador = Mapa.getMapa().getPaises().parallelStream().filter(pais -> {return(pais.getJugador().isPresent() ? pais.getJugador().get().equals(this) : false);}).collect(Collectors.toSet());
         return paisesJugador;
     }
 
