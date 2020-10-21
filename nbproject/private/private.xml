@@ -3,16 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Coordenadas.java</file>
-            <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Partida.java</file>
             <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Menu.java</file>
             <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Casilla.java</file>
             <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Continente.java</file>
-            <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Color.java</file>
             <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Pais.java</file>
-            <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Risk.java</file>
             <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Mapa.java</file>
             <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Jugador.java</file>
+            <file>file:/C:/Users/hugo0/OneDrive/Documentos/NetBeansProjects/RiskETSE/src/risk/Frontera.java</file>
         </group>
     </open-files>
 </project-private>

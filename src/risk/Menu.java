@@ -275,6 +275,8 @@ public class Menu {
     }
     
     private void obtenerColor(String abrevPais){
-        
+        Color color;
+        color=Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
     }
 }
