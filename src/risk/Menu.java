@@ -25,6 +25,8 @@ public class Menu {
 
     static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
 
+    private static final String PROMPT = "$> ";
+
     public Menu() {
         // Inicialización de algunos atributos
 
@@ -36,31 +38,47 @@ public class Menu {
             File fichero = new File("comandos.csv");
             FileReader lector = new FileReader(fichero);
             bufferLector = new BufferedReader(lector);
-            while ((orden = bufferLector.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene que ser "crear mapa". Mostramos un error mientras no sea esa.
-                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
+            while ((orden = bufferLector.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene
+                                                                                               // que ser "crear mapa".
+                                                                                               // Mostramos un error
+                                                                                               // mientras no sea esa.
+                System.out.println(PROMPT + orden);
+                FileOutputHelper
+                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
             }
+            System.out.println(PROMPT + orden);
             crearMapa();
+            anadirFronterasIndirectas();
+            Mapa.getMapa().imprimirMapa();
             boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
-            while ((orden = bufferLector.readLine()) != null && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La segunda línea (y posiblemente las siguientes) tienen que ser "crear jugador nombre color". Mostramos un error mientras no sea esa. Tiene que haber al menos 3 jugadores.
-            if (orden.startsWith("crear jugador")) { // Entramos por aquí si es crear jugador o crear jugadores
-                partes = orden.split(" ");
-                if (partes[1].equals("jugador") && partes.length == 4) {
-                    crearJugador(partes[2], partes[3]);
-                    if (Partida.getPartida().getJugadores().size() >= 3) {
+            while ((orden = bufferLector.readLine()) != null
+                    && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La segunda línea (y posiblemente
+                // las siguientes) tienen que ser
+                // "crear jugador nombre color".
+                // Mostramos un error mientras no sea
+                // esa. Tiene que haber al menos 3
+                // jugadores.
+                System.out.println(PROMPT + orden);
+                if (orden.startsWith("crear jugador")) { // Entramos por aquí si es crear jugador o crear jugadores
+                    partes = orden.split(" ");
+                    if (partes[1].equals("jugador") && partes.length == 4) {
+                        crearJugador(partes[2], partes[3]);
+                    } else if (partes[1].equals("jugadores") && partes.length == 3) {
+                        crearJugadores(new File(partes[2]));
+                    } else {
+                        comandoIncorrecto();
+                    }
+                    if (Partida.getPartida().getJugadores().size() >= 3) { // Comprobamos si ya hay 3 jugadores creados
                         jugadoresCreados = true;
                     }
-                } else if (partes[1].equals("jugadores") && partes.length == 3) {
-                    crearJugadores(new File(partes[2]));
-                } else {
-                    comandoIncorrecto();
+                } else { // Si el comando no es crear jugador
+                    FileOutputHelper.printToErrOutput(
+                            new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS).toString());
                 }
-            } else { // Si el comando no es crear jugador
-                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS).toString());
             }
-            }
-            
+
             while ((orden = bufferLector.readLine()) != null) {
-                System.out.println("$> " + orden);
+                System.out.println(PROMPT + orden);
                 partes = orden.split(" ");
                 String comando = partes[0];
                 // COMANDOS INICIALES PARA EMPEZAR A JUGAR
@@ -157,18 +175,20 @@ public class Menu {
     }
 
     /**
-     * Procesa un archivo con [NombreJugador];[NombrePais] para realizar las asignaciones en el mapa
+     * Procesa un archivo con [NombreJugador];[NombrePais] para realizar las
+     * asignaciones en el mapa
+     * 
      * @param archivoAsignaciones
      */
     public void asignarPaises(File archivoAsignaciones) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(archivoAsignaciones));
             String linea;
-            while ((linea = bufferedReader.readLine())!=null) {
+            while ((linea = bufferedReader.readLine()) != null) {
                 String partes[] = linea.split(";");
                 String nombrePais = partes[1];
                 String nombreJugador = partes[0];
-                
+
                 asignarPais(nombrePais, nombreJugador);
             }
             bufferedReader.close();
@@ -189,19 +209,27 @@ public class Menu {
      */
     public void asignarPais(String nombrePais, String nombreJugador) {
         if (Mapa.getMapa().getPais(nombrePais) == null) {
-            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
+            FileOutputHelper
+                    .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
         } else {
             if (Mapa.getMapa().getPais(nombrePais).getJugador() != null) {
-                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
+                FileOutputHelper.printToErrOutput(
+                        new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
             } else {
                 if (Partida.getPartida().getJugador(nombreJugador) == null) {
-                    FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
+                    FileOutputHelper.printToErrOutput(
+                            new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
                 } else {
                     if (false) {
                         // TODO: Las misiones no están asignadas ERROR
                     } else {
                         Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador));
-                        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais).autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais))).build());
+                        FileOutputHelper.printToOutput(
+                                OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
+                                        .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente())
+                                        .autoAdd("frontera",
+                                                Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
+                                        .build());
                     }
                 }
             }
@@ -224,13 +252,16 @@ public class Menu {
      * Imprime el error 99 (Comando no permitido en este momento)
      */
     private void comandoNoPermitido() {
-        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO).toString());
+        FileOutputHelper
+                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO).toString());
     }
+
     /**
      * Imprime el error 101 (Comando incorrecto)
      */
     private void comandoIncorrecto() {
-        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO).toString());
+        FileOutputHelper
+                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO).toString());
     }
 
     /**
@@ -286,29 +317,57 @@ public class Menu {
 
     /**
      * Imprime las fronteras de un país
+     * 
      * @param codigoPais
      */
     private void obtenerFronteras(String codigoPais) {
-        Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos un Stream de las Fronteras de ese país
+        Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos
+                                                                                                                      // un
+                                                                                                                      // Stream
+                                                                                                                      // de
+                                                                                                                      // las
+                                                                                                                      // Fronteras
+                                                                                                                      // de
+                                                                                                                      // ese
+                                                                                                                      // país
                 .map((Frontera frontera) -> {
                     return (frontera.getPaises().stream().filter((Pais pais) -> {
-                        return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países de esa frontera, el país que no sea el de la consulta
-                    }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el nombre en formato humano
+                        return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países
+                                                                                   // de esa frontera, el país que no
+                                                                                   // sea el de la consulta
+                    }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el
+                                                                               // nombre en formato humano
                 }).collect(Collectors.toSet()); // Lo convertimos a un Set
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo sacamos a la salida
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
+                                                                                                                        // sacamos
+                                                                                                                        // a
+                                                                                                                        // la
+                                                                                                                        // salida
     }
-    
+
     /**
-    * Imprime el continente al que pertenece un pais
-    * @param abrevPais
-    */
-    private void obtenerContinente(String abrevPais){
+     * Imprime el continente al que pertenece un pais
+     * 
+     * @param abrevPais
+     */
+    private void obtenerContinente(String abrevPais) {
         String Continente;
-        Continente=Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
+        Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
     }
-    
-    private void obtenerColor(String abrevPais){
-        
+
+    private void obtenerColor(String abrevPais) {
+
     }
+
+    /**
+     * Añade manualmente las fronteras indirectas
+     */
+    private void anadirFronterasIndirectas() {
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Brasil"), Mapa.getMapa().getPais("ANorte"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("EurOcc"), Mapa.getMapa().getPais("ANorte"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Groenlan"), Mapa.getMapa().getPais("Islandia"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Kamchatka"), Mapa.getMapa().getPais("Alaska"));
+    }
+
 }
