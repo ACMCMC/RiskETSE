@@ -212,21 +212,21 @@ public class Menu {
             FileOutputHelper
                     .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
         } else {
-            if (Mapa.getMapa().getPais(nombrePais).getJugador() != null) {
+            if (Mapa.getMapa().getPais(nombrePais).getJugador().isPresent()) {
                 FileOutputHelper.printToErrOutput(
                         new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
             } else {
-                if (Partida.getPartida().getJugador(nombreJugador) == null) {
+                if (!Partida.getPartida().getJugador(nombreJugador).isPresent()) {
                     FileOutputHelper.printToErrOutput(
                             new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
                 } else {
                     if (false) {
                         // TODO: Las misiones no están asignadas ERROR
                     } else {
-                        Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador));
+                        Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador).get());
                         FileOutputHelper.printToOutput(
                                 OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                                        .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente())
+                                        .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
                                         .autoAdd("frontera",
                                                 Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
                                         .build());
@@ -281,8 +281,8 @@ public class Menu {
                 partesLinea = linea.split(";");
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
                 FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
-                        .autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).getNombre())
-                        .autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).getColor().getNombre())
+                        .autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getNombre())
+                        .autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getColor().getNombre())
                         .build());
             }
 

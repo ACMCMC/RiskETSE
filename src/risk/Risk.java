@@ -5,9 +5,6 @@
 
 package risk;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class Risk {
     /**
      * @param args argumentos de la línea de comandos
