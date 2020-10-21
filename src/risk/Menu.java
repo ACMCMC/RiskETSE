@@ -308,9 +308,42 @@ public class Menu {
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
     }
     
+    /**
+    * Imprime el color asociado a un pais
+    * @param abrevPais
+    */
     private void obtenerColor(String abrevPais){
         Color color;
         color=Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
+    }
+    
+    /**
+    * Muestra las caracteristicas de un pais: nombre, abreviatura, continente,
+    * fronteras, jugador al que pertenece, numero de ejercitos que lo ocupan y
+    * el numero de veces que ha sido conquistado
+    * @param abrevPais
+    */
+    private void describirPais(String abrevPais){
+        String nombreHumano;
+        String abreviatura;
+        //Continente continente;
+        Jugador jugador;
+        Ejercito ejercito;
+        Integer numeroConquistas;
+        
+        nombreHumano=Mapa.getMapa().getPais(abrevPais).getNombreHumano();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
+
+        abreviatura=Mapa.getMapa().getPais(abrevPais).getCodigo();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
+        
+        //continente=Mapa.getContinente(abrevPais);
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
+
+        //FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera", obtenerFronteras()).build());
+
+        abreviatura=Mapa.getMapa().getPais(abrevPais).getCodigo();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
     }
 }
