@@ -493,14 +493,27 @@ public class Mapa {
         StringBuilder stringBuilder = new StringBuilder();
         // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
         for (int y = 0; y < getSizeY(); y++) {
-            stringBuilder.append(new String(new char[getSizeX()]).replace("\0", "|===========") + "|");
+            for (int x = 0; x < getSizeX(); x++) {
+                Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
+                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append("|");
+                    stringBuilder.append(Color.getSecColorReset());
+                } else {
+                    stringBuilder.append("|");
+                }
+                stringBuilder.append("===========");
+            }
+            stringBuilder.append("|");
             stringBuilder.append(NEW_LINE);
             for (int x = 0; x < getSizeX(); x++) {
                 stringBuilder.append("|");
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL)) {
+                        stringBuilder.append(Color.ROJO.getSecTexto());
                         stringBuilder.append(new String(new char[11]).replace("\0", "-")); // Imprimimos espacios
+                        stringBuilder.append(Color.getSecColorReset());
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
                     }
