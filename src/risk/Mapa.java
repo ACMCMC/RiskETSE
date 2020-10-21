@@ -23,7 +23,7 @@ public class Mapa {
 
     private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");
 
-    private static Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
+    private static final Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
     private static boolean isMapaCreado = false; // Will be false at first, until the asignarPaises() method gets executed
 
     private final int SIZE_X = 11;
@@ -72,8 +72,10 @@ public class Mapa {
         return this.SIZE_Y;
     }
 
+
+    //TODO:_ cambiar
     /**
-     * Creates the Mapa singleton
+     * 
      * 
      * @throws FileNotFoundException
      * @throws RiskException

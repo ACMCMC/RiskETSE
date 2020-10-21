@@ -1,6 +1,5 @@
 package risk;
 
-@Deprecated
 public class Ejercito {
     private final Pais pais; // El país de este ejército nunca va a variar
 

@@ -6,8 +6,8 @@ package risk;
 
 public class Coordenadas implements Comparable {
     
-    private int X;
-    private int Y;
+    private final int X;
+    private final int Y;
     
     Coordenadas (int X, int Y) {
         this.X = X;

@@ -35,6 +35,10 @@ public class Menu {
             File fichero = new File("comandos.csv");
             FileReader lector = new FileReader(fichero);
             bufferLector = new BufferedReader(lector);
+            while ((orden = bufferLector.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene que ser "crear mapa". Mostramos un error mientras no sea esa.
+                FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
+            }
+            crearMapa();
             while ((orden = bufferLector.readLine()) != null) {
                 System.out.println("$> " + orden);
                 String[] partes = orden.split(" ");
@@ -63,10 +67,7 @@ public class Menu {
                     case "crear":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
-                                // crearMapa es un método de la clase Menú desde el que se puede invocar
-                                // a otros métodos de las clases que contienen los atributos y los métodos
-                                // necesarios para realizar esa invocación
-                                crearMapa();
+                                comandoNoPermitido();
                             } else {
                                 System.out.println("\nComando incorrecto.");
                             }
@@ -127,7 +128,7 @@ public class Menu {
                             }
                         }
                     default:
-                        System.out.println("\nComando incorrecto.");
+                        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO).toString());
                 }
             }
         } catch (Exception excepcion) {
@@ -197,6 +198,13 @@ public class Menu {
         } catch (FileNotFoundException ex) {
             logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
         }
+    }
+
+    /**
+     * Imprime el error 99 (Comando no permitido en este momento)
+     */
+    private void comandoNoPermitido() {
+        FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO).toString());
     }
 
     /**
