@@ -1,3 +1,7 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 import java.io.BufferedWriter;
@@ -28,9 +32,9 @@ public class FileOutputHelper {
         }
     }
 
-    static void printToErrOutput(Throwable th) {
+    static void printToErrOutput(String th) {
         try {
-            errorBufferedWriter.write(th.getMessage());
+            errorBufferedWriter.write(th);
             errorBufferedWriter.write(System.getProperty("line.separator"));
             errorBufferedWriter.flush();
         } catch (IOException e) {

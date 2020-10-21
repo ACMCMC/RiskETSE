@@ -48,6 +48,12 @@ public class Coordenadas implements Comparable {
     
     @Override
     public boolean equals(Object o) {
+        if (this == o)
+        return true;
+
+        if (o == null)
+        return false;
+
         if ( !o.getClass().equals(this.getClass()) )
         return false; // No son iguales si son de distinta clase
 

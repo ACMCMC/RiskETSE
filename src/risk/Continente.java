@@ -1,3 +1,7 @@
+/**
+ * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
+ */
+
 package risk;
 
 import java.util.HashMap;
@@ -100,5 +104,29 @@ public class Continente {
         Set<Pais> setPaises = new HashSet<>();
         this.paises.entrySet().forEach((Entry<String, Pais> entry) -> {setPaises.add(entry.getValue());});
         return setPaises;
+    }
+    
+    @Override
+    public boolean equals(Object continente){
+        if(this==continente){
+            return true;
+        }
+        if (continente==null){
+            return false;
+        }
+        if(getClass() != continente.getClass()){
+            return false;
+        }
+        final Continente other = (Continente) continente;
+        if(!this.getCodigo().equals(other.getCodigo())){
+            return false;
+        }
+        if(!this.getNombreHumano().equals(other.getNombreHumano())){
+            return false;
+        }
+        if(!this.getColor().equals(other.getColor())){
+            return false;
+        }
+        return true;
     }
 }
