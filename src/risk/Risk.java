@@ -20,8 +20,8 @@ public class Risk {
         Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Groenlan"), Mapa.getMapa().getPais("Islandia"));
         Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Kamchatka"), Mapa.getMapa().getPais("Alaska"));
 
-        Mapa.getMapa().getPais("EurOcc").setNumEjercitos(4);
-
         OutputBuilder.beginBuild().autoAdd("totalEjercitos", Partida.getPartida().getJugador("Hooker").getTotalEjercitos()).build();
+
+        System.out.println(Color.getColorByString("Cyan").equals(Color.getColorByString("Cyan")) ?"T": "F");
     }
 }

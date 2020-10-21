@@ -5,6 +5,7 @@
 package risk;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Pais {
@@ -12,7 +13,7 @@ public class Pais {
     private String nombreHumano;
     private Continente continente;
     private Jugador jugador;
-    private Set<Ejercito> ejercitos; // El número de ejércitos que están en este país. Pertenecen al jugador que tiene este país.
+    private Set<Ejercito> ejercitos; // Los ejércitos que están en este país. Pertenecen al jugador que tiene este país.
 
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
@@ -30,8 +31,24 @@ public class Pais {
         return this.ejercitos.size();
     }
 
-    public Jugador getJugador() {
-        return this.jugador;
+    /**
+     * Devuelve un Set de los Ejercitos de este Pais
+     * @return un HashSet con los Ejercitos del Pais, pero no el HashSet original
+     */
+    public Set<Ejercito> getEjercitos() {
+        return new HashSet<>(this.ejercitos);
+    }
+
+    /**
+     * Añade un Ejercito al Set de Ejercitos de este Pais
+     * @param ejercito
+     */
+    public void addEjercito(Ejercito ejercito) {
+        this.ejercitos.add(ejercito);
+    }
+
+    public Optional<Jugador> getJugador() {
+        return Optional.ofNullable(this.jugador);
     }
 
     public void setJugador(Jugador jugador) {
