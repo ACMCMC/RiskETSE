@@ -268,8 +268,8 @@ public class Mapa {
                     if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
                         getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
                     }
-                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_TOP);
-                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY() - 1)).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL);
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_TOP);
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), (coordsActuales.getY() - 1) % getSizeY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL);
                 } else if (deltaY == 0) { // La siguiente casilla está justo a la derecha
                     if ( !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
                         getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
@@ -278,15 +278,15 @@ public class Mapa {
                     if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
                         getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
                     }
-                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM);
-                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY()+1)).setBorde(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL);
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM);
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), (coordsActuales.getY()+1) % getSizeY())).setBorde(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL);
                 }
             }
         }
     }
     
     /**
-     * Busca la mejor ruta entre dos casillas. Traza una línea imaginaria, y luego la convierte en coordenadas.
+     * Busca la mejor ruta entre dos casillas. Traza una línea imaginaria, y luego la convierte en coordenadas. El mapa se trata como un toro (empieza donde acaba)
      */
     private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
         List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
@@ -294,10 +294,14 @@ public class Mapa {
         int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
         int difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // La diferencia de anchura entre las casillas
         
-        if ((difX < 0) && (Math.abs(difX) < (getSizeX()/2))) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha). Eso sí, solo lo hacemos si la distancia en X entre las casillas no es más que la mitad del mapa (si es más que la mitad del mapa, es mejor que se le de la vuelta)
-            ruta = buscarRuta(fin, inicio);
-            Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
-            return ruta;
+        if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha). Eso sí, solo lo hacemos si la distancia en X entre las casillas no es más que la mitad del mapa (si es más que la mitad del mapa, es mejor que se le de la vuelta)
+            if (!(Math.abs(difX) < (getSizeX()/2))) { // No intercambiamos sino que damos la vuelta al mapa
+                difX = difX + getSizeX();
+            } else { // Vamos a intercambiar los parámetros de búsqueda, porque la distancia entre las dos casillas es menor que la mitad del mapa
+                ruta = buscarRuta(fin, inicio);
+                Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
+                return ruta;
+            }
         }
     
         ruta = new ArrayList<>(); // Creamos una lista vacía para guardar la ruta
