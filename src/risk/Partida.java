@@ -5,7 +5,6 @@
 package risk;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -36,8 +35,8 @@ public class Partida {
         this.jugadores.put(jugador.getNombre(), jugador);
     }
 
-    public Jugador getJugador(String nombre) {
-        return(this.jugadores.get(nombre));
+    public Optional<Jugador> getJugador(String nombre) {
+        return(Optional.ofNullable(this.jugadores.get(nombre)));
     }
 
     /**
