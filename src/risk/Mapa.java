@@ -259,17 +259,25 @@ public class Mapa {
             
             if (deltaX == 0) {
 
+                if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.VERTICAL_LEFT)) {
+                    getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.VERTICAL);
+                }
+
             } else if (deltaX == 1) { // No debería darse el caso de que deltaX < 0, porque en la ruta siempre nos movemos hacia la derecha
                 if (deltaY < 0) { // La siguiente casilla está arriba a la derecha
                     if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
                         getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
                     }
-                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY() -1)).setBorde(Casilla.BordeCasilla.LEFT_TOP);
+                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_TOP);
+                    getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY() - 1)).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL);
                 } else if (deltaY == 0) { // La siguiente casilla está justo a la derecha
                     if ( !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
                         getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
                     }
                 } else { // La siguiente casilla está abajo a la derecha
+                    if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
+                        getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
+                    }
                     getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM);
                     getCasilla(new Coordenadas(coordsActuales.getX()+1, coordsActuales.getY()+1)).setBorde(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL);
                 }
@@ -506,14 +514,27 @@ public class Mapa {
             }
             stringBuilder.append("|");
             stringBuilder.append(NEW_LINE);
+
             for (int x = 0; x < getSizeX(); x++) {
-                stringBuilder.append("|");
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
+                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append("|");
+                    stringBuilder.append(Color.getSecColorReset());
+                } else {
+                    stringBuilder.append("|");
+                }
                 if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
-                    if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL)) {
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
                         stringBuilder.append(Color.ROJO.getSecTexto());
                         stringBuilder.append(new String(new char[11]).replace("\0", "-")); // Imprimimos espacios
                         stringBuilder.append(Color.getSecColorReset());
+                    } else if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append("|");
+                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
                     }
@@ -527,17 +548,35 @@ public class Mapa {
             }
             stringBuilder.append("|");
             stringBuilder.append(NEW_LINE);
+
             for (int x = 0; x < getSizeX(); x++) { // Imprimimos los ejércitos de cada jugador
-                stringBuilder.append("| ");
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
-                if (casilla.esMaritima() || !casilla.getPais().getJugador().isPresent()) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
-                    stringBuilder.append(new String(new char[9]).replace("\0", " ")); // Imprimimos espacios
+                if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
+                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append("|");
+                    stringBuilder.append(Color.getSecColorReset());
                 } else {
+                    stringBuilder.append("|");
+                }
+                if (casilla.esMaritima()) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append("|");
+                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                    } else {
+                        stringBuilder.append(new String(new char[11]).replace("\0", " "));
+                    }
+                } else if (!casilla.getPais().getJugador().isPresent()) { // No podemos imprimir el número de ejércitos, porque no tiene asignado un jugador
+                    stringBuilder.append(new String(new char[11]).replace("\0", " "));
+                } else {
+                    stringBuilder.append(" ");
                     stringBuilder.append(casilla.getPais().getJugador().get().getColor().getSecTexto());
                     stringBuilder.append(String.format("%-9s", casilla.getPais().getNumEjercitos()));
                     stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
-                stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 
             }
             stringBuilder.append("|");

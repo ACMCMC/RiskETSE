@@ -370,6 +370,8 @@ public class Menu {
         Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("EurOcc"), Mapa.getMapa().getPais("ANorte"));
         Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Groenlan"), Mapa.getMapa().getPais("Islandia"));
         Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Kamchatka"), Mapa.getMapa().getPais("Alaska"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("EurSur"), Mapa.getMapa().getPais("Egipto"));
+        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("SAsiático"), Mapa.getMapa().getPais("Indonesia"));
     }
 
 }
