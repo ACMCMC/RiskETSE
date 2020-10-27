@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileOutputHelper {
+public abstract class FileOutputHelper {
 
     private static File outputFile = new File("output.txt");
     private static BufferedWriter bufferedWriter;
