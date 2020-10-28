@@ -325,25 +325,28 @@ public class Menu {
     * @param abrevPais
     */
     private void describirPais(String abrevPais){
-        String nombreHumano;
-        String abreviatura;
-        //Continente continente;
-        Jugador jugador;
-        Ejercito ejercito;
+        //String nombreHumano;
+        //String abreviatura;
+        //Jugador jugador;
+        //Integer ejercito;
         Integer numeroConquistas;
         
-        nombreHumano=Mapa.getMapa().getPais(abrevPais).getNombreHumano();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
+        //nombreHumano=Mapa.getMapa().getPais(abrevPais).getNombreHumano();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Mapa.getMapa().getPais(abrevPais).getNombreHumano()).build());
 
-        abreviatura=Mapa.getMapa().getPais(abrevPais).getCodigo();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
+        //abreviatura=Mapa.getMapa().getPais(abrevPais).getCodigo();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("abreviatura", Mapa.getMapa().getPais(abrevPais).getCodigo()).build());
         
-        //continente=Mapa.getContinente(abrevPais);
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
 
-        //FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera", obtenerFronteras()).build());
+        obtenerFronteras(abrevPais);
 
-        abreviatura=Mapa.getMapa().getPais(abrevPais).getCodigo();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("jugador", Mapa.getMapa().getPais(abrevPais).getJugador()).build());
+
+        //ejercito=Mapa.getMapa().getPais(abrevPais).getNumEjercitos();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("numeroEjercitos", Mapa.getMapa().getPais(abrevPais).getNumEjercitos()).build());
+
+        //numeroConquistas=Mapa.getMapa().getPais(abrevPais).getNumVecesConquistado();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("numeroVecesOcupado", Mapa.getMapa().getPais(abrevPais).getNumVecesConquistado()).build());
     }
 }
