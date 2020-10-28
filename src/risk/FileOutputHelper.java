@@ -33,6 +33,7 @@ public class FileOutputHelper {
     }
 
     static void printToErrOutput(String th) {
+        System.out.println(th); // Lo imprimimos también por consola
         try {
             errorBufferedWriter.write(th);
             errorBufferedWriter.write(System.getProperty("line.separator"));
@@ -43,6 +44,7 @@ public class FileOutputHelper {
     }
 
     static void printToOutput(String output) {
+        System.out.println(output); // Lo imprimimos también por consola
         try {
             bufferedWriter.write(output);
             bufferedWriter.write(System.getProperty("line.separator"));
