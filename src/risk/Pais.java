@@ -14,7 +14,7 @@ public class Pais {
     private Continente continente;
     private Jugador jugador;
     private Set<Ejercito> ejercitos; // Los ejércitos que están en este país. Pertenecen al jugador que tiene este país.
-    private Integer vecesConquistado;
+    private int vecesConquistado;
 
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
@@ -22,6 +22,14 @@ public class Pais {
         this.setContinente(continente);
         this.setJugador(null);
         this.ejercitos = new HashSet<>();
+        addToContinente();
+    }
+    
+    /**
+     * Añade este Pais a su Continente
+     */
+    private void addToContinente() {
+        continente.addPais(this);
     }
 
     /**

@@ -185,10 +185,18 @@ public class Mapa {
         }
     }
 
+    /**
+     * Devuelve un Set de los Paises del Mapa
+     * @return
+     */
     public Set<Pais> getPaises() {
         return (this.paises.entrySet().parallelStream().map((entrada) -> {
             return (entrada.getValue());
         }).collect(Collectors.toSet()));
+    }
+
+    public Set<Frontera> getFronteras(Continente c) {
+        return (this.fronteras.parallelStream().filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c))).collect(Collectors.toSet()));
     }
 
     /**
@@ -488,6 +496,13 @@ public class Mapa {
      */
     public Pais getPais(String codigo) {
         return this.paises.get(codigo);
+    }
+
+    /**
+     * Devuelve un Set de todos los Continentes del mapa
+     */
+    public Set<Continente> getContinentes() {
+        return this.continentes.entrySet().parallelStream().map(entry -> entry.getValue()).collect(Collectors.toSet());
     }
 
     /**
