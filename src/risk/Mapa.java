@@ -195,10 +195,24 @@ public class Mapa {
         }).collect(Collectors.toSet()));
     }
 
+    /**
+     * Devuelve el Set de las Fronteras de Paises de este continente con Paises de otros continentes
+     * @param c
+     * @return
+     */
     public Set<Frontera> getFronterasIntercontinentales(Continente c) {
         return (this.fronteras.parallelStream()
         .filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c)))
         .filter(frontera -> !frontera.getPaises().stream().allMatch(pais -> pais.getContinente().equals(c))).collect(Collectors.toSet()));
+    }
+
+    /**
+     * Devuelve el número de Paises de otros Continentes que tienen alguna Frontera con el continente {@code c}. Si varios Paises de este Continente tocan el mismo Pais de otro Continente, solo se cuenta una vez.
+     * @param c
+     * @return
+     */
+    public int getNumFronterasIntercontinentales(Continente c) {
+        return getFronterasIntercontinentales(c).stream().collect(Collectors.groupingBy(frontera -> frontera.getPaises().stream().filter(pais -> !pais.getContinente().equals(c)).findFirst().get())).size();
     }
 
     /**

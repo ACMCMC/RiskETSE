@@ -425,8 +425,8 @@ public class Menu {
 
             @Override
             public int compare(Continente o1, Continente o2) {
-                int numFronterasO1 = Mapa.getMapa().getFronterasIntercontinentales(o1).size();
-                int numFronterasO2 = Mapa.getMapa().getFronterasIntercontinentales(o2).size();
+                int numFronterasO1 = Mapa.getMapa().getNumFronterasIntercontinentales(o1);
+                int numFronterasO2 = Mapa.getMapa().getNumFronterasIntercontinentales(o2);
                 return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? -1 : 1);
             }
 
@@ -462,8 +462,8 @@ public class Menu {
                 .min(new Comparator<TuplaContinenteJugadorPorcentaje>() {
                     @Override
                     public int compare(TuplaContinenteJugadorPorcentaje o1, TuplaContinenteJugadorPorcentaje o2) {
-                        int numFronterasO1 = Mapa.getMapa().getFronterasIntercontinentales(o1.getContinente()).size();
-                        int numFronterasO2 = Mapa.getMapa().getFronterasIntercontinentales(o2.getContinente()).size();
+                        int numFronterasO1 = Mapa.getMapa().getNumFronterasIntercontinentales(o1.getContinente());
+                        int numFronterasO2 = Mapa.getMapa().getNumFronterasIntercontinentales(o2.getContinente());
                         return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? -1 : 1);
                     }
                 }.reversed()).get().getContinente();
