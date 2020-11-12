@@ -15,6 +15,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -352,7 +354,7 @@ public class Menu {
             return j;
         }
 
-        float getNumPaises() {
+        int getNumPaises() {
             return n;
         }
 
@@ -376,13 +378,66 @@ public class Menu {
 
         Set<TuplaContinenteJugadorPorcentaje> tuplas = obtenerTuplasContinenteJugadorPorcentaje();
         if (!aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.5, tupla -> {
-            if (tupla.getContinente().equals(Mapa.getMapa().getContinente("Oceanía")) || tupla.getContinente().equals(Mapa.getMapa().getContinente("AméricaSur"))) {
+            if (tupla.getContinente().equals(Mapa.getMapa().getContinente("Oceanía"))
+                    || tupla.getContinente().equals(Mapa.getMapa().getContinente("AméricaSur"))) {
                 return new Float(1.5);
             } else {
                 return new Float(1);
-            }})) {
-            aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.25 && tupla.getPorcentaje() < 0.5, tupla -> new Float(2));
+            }
+        })) {
+            aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.25 && tupla.getPorcentaje() < 0.5,
+                    tupla -> new Float(2));
         }
+
+        Map<Jugador, List<TuplaContinenteJugadorPorcentaje>> tuplasJugs = tuplas.parallelStream()
+                .collect(Collectors.groupingBy(TuplaContinenteJugadorPorcentaje::getJugador));
+        // Un Map que relaciona Jugadores con sus tuplas
+        tuplasJugs.entrySet().parallelStream()
+                .filter(entry -> entry.getValue().stream().allMatch(tupla -> tupla.getPorcentaje() < 0.25))
+                // Nos quedamos solo con las entradas del Map en las que todas las tuplas dicen
+                // que el jugador tiene menos del 25% del porcentaje (es decir, solo nos
+                // quedamos con los jugadores que tienen todos los porcentajes de menos del 25%)
+                .forEach(entrada -> { // Por cada jugador...
+                    entrada.getValue().forEach(tupla -> {
+                        // Por cada tupla (continente, porque el jugador va a ser el mismo en cada
+                        // iteración de este bucle)...
+                        int numEjercitos = (Partida.getPartida().getJugadores().size() < 5 ? 2 : 3)
+                                * tupla.getNumPaises();
+                        // La regla del PDF de cuántos países hay que asignar (R7)
+                        tupla.getContinente().getPaises().stream()
+                                .filter(pais -> pais.getJugador().get().equals(tupla.getJugador()))
+                                .forEach(pais -> tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais));
+                        // Le asignamos numEjercitos a todos los países del jugador, en ese continente
+                    });
+                });
+
+        /*
+         * Si después de haber aplicado la regla R7 aún queda ejércitos disponibles,
+         * entonces se colocará 1 ejército en cada uno de los países que tienen un
+         * único ejército, priorizando aquellos países que pertenecen a continentes
+         * con menos países frontera.
+         */
+        asignar1EjercitoAPaisesCon1Ejercito(Mapa.getMapa().getContinentes());
+    }
+
+    private void asignar1EjercitoAPaisesCon1Ejercito(Set<Continente> setContinentes) {
+        PriorityQueue<Continente> colaAsignar = new PriorityQueue<>(new Comparator<Continente>() {
+
+            @Override
+            public int compare(Continente o1, Continente o2) {
+                int numFronterasO1 = Mapa.getMapa().getFronterasIntercontinentales(o1).size();
+                int numFronterasO2 = Mapa.getMapa().getFronterasIntercontinentales(o2).size();
+                return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? -1 : 1);
+            }
+
+        }.reversed());
+        colaAsignar.addAll(setContinentes); // Ponemos los continentes en una cola de prioridad, ordenándolos por los
+                                            // que tengan menos fronteras
+        Stream.generate(colaAsignar::poll);
+        colaAsignar.stream().sorted(colaAsignar.comparator()).forEach(continente -> {
+            continente.getPaises().parallelStream().filter(pais -> pais.getEjercitos().size() == 1)
+                    .forEach(pais -> pais.getJugador().get().asignarEjercitosAPais(1, pais));
+        });
     }
 
     private boolean aplicarReglasPorcentajes(Set<TuplaContinenteJugadorPorcentaje> setTuplas,
@@ -407,11 +462,11 @@ public class Menu {
                 .min(new Comparator<TuplaContinenteJugadorPorcentaje>() {
                     @Override
                     public int compare(TuplaContinenteJugadorPorcentaje o1, TuplaContinenteJugadorPorcentaje o2) {
-                        int numFronterasO1 = Mapa.getMapa().getFronteras(o1.getContinente()).size();
-                        int numFronterasO2 = Mapa.getMapa().getFronteras(o2.getContinente()).size();
-                        return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? 1 : -1);
+                        int numFronterasO1 = Mapa.getMapa().getFronterasIntercontinentales(o1.getContinente()).size();
+                        int numFronterasO2 = Mapa.getMapa().getFronterasIntercontinentales(o2.getContinente()).size();
+                        return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? -1 : 1);
                     }
-                }).get().getContinente();
+                }.reversed()).get().getContinente();
         // Buscamos una de las tuplas con continente con menos fronteras, y nos quedamos
         // con ese Continente
 
@@ -424,15 +479,21 @@ public class Menu {
         // fronteras.
 
         if (tuplasFiltradas.isEmpty()) {
-            return false; // Ninguna tupla ha cumplido las condiciones, así que no se ha aplicado la regla. Devolvemos false.
+            return false; // Ninguna tupla ha cumplido las condiciones, así que no se ha aplicado la
+                          // regla. Devolvemos false.
         }
 
         tuplasFiltradas.forEach(tupla -> {
-            int numEjercitos = (int) Math.round(((float) tupla.getJugador().getEjercitosSinRepartir()) / (factorDivision.apply(tupla) * (float) tupla.getNumPaises()));
-            tupla.getJugador().getPaises().stream().filter(pais -> pais.getContinente().equals(tupla.getContinente())).forEach(pais -> {
-                tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais);
-            });
+            int numEjercitos = (int) Math.round(((float) tupla.getJugador().getEjercitosSinRepartir())
+                    / (factorDivision.apply(tupla) * (float) tupla.getNumPaises()));
+            tupla.getJugador().getPaises().stream().filter(pais -> pais.getContinente().equals(tupla.getContinente()))
+                    .forEach(pais -> {
+                        tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais);
+                    });
         });
+
+        asignar1EjercitoAPaisesCon1Ejercito(Mapa.getMapa().getContinentes());
+
         return true; // Sí se ha aplicado la regla
     }
 

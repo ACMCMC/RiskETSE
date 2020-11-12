@@ -195,8 +195,10 @@ public class Mapa {
         }).collect(Collectors.toSet()));
     }
 
-    public Set<Frontera> getFronteras(Continente c) {
-        return (this.fronteras.parallelStream().filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c))).collect(Collectors.toSet()));
+    public Set<Frontera> getFronterasIntercontinentales(Continente c) {
+        return (this.fronteras.parallelStream()
+        .filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c)))
+        .filter(frontera -> !frontera.getPaises().stream().allMatch(pais -> pais.getContinente().equals(c))).collect(Collectors.toSet()));
     }
 
     /**
@@ -252,6 +254,8 @@ public class Mapa {
         List<Casilla> ruta = buscarRuta(casillaInicio, casillaFin);
 
         procesarRuta(ruta);
+
+        this.addFrontera(paisA, paisB);
     }
 
     private void procesarRuta(List<Casilla> ruta) {
