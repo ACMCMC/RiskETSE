@@ -16,16 +16,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Comparator;
 
 /**
  *
@@ -485,7 +482,7 @@ public class Menu {
 
         tuplasFiltradas.forEach(tupla -> {
             int numEjercitos = (int) Math.round(((float) tupla.getJugador().getEjercitosSinRepartir())
-                    / (factorDivision.apply(tupla) * (float) tupla.getNumPaises()));
+                    / (factorDivision.apply(tupla) * (float) tupla.getNumPaises())); // Calculo el número de ejércitos que hay que asignar a cada uno de los países
             tupla.getJugador().getPaises().stream().filter(pais -> pais.getContinente().equals(tupla.getContinente()))
                     .forEach(pais -> {
                         tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais);
