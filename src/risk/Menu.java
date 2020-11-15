@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.Function;
@@ -23,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import risk.RiskException.RiskExceptionEnum;
 
 /**
  *
@@ -173,12 +176,18 @@ public class Menu {
                             }
                         }
                         break;
-                    case "repartir":
-                        if (partes.length == 2) {
-                            if (partes[1].equals("ejercitos")) {
-                                repartirEjercitos();
-                            }
+                    case "atacar":
+                        if (partes.length == 3) {
+                            atacar(partes[1], partes[2]);
                         }
+                        break;
+                    case "repartir":
+                        if (partes.length == 2 && partes[1].equals("ejercitos")) {
+                            repartirEjercitos();
+                        } else {
+                            comandoIncorrecto();
+                        }
+                        break;
                     default:
                         comandoIncorrecto();
                 }
@@ -620,22 +629,76 @@ public class Menu {
         Jugador jugador;
         Ejercito ejercito;
         Integer numeroConquistas;
-
+        
         nombreHumano = Mapa.getMapa().getPais(abrevPais).getNombreHumano();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
-
+        
         abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
-
+        
         // continente=Mapa.getContinente(abrevPais);
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
-                .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
-
+        .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
+        
         // FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera",
         // obtenerFronteras()).build());
-
+        
         abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
+    }
+    
+    private void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
+        Pais paisAtacante = Mapa.getMapa().getPais(nombrePaisAtacante);
+        Pais paisDefensor = Mapa.getMapa().getPais(nombrePaisDefensor);
+        int ejercitosPaisAtaqueAntes;
+        int ejercitosPaisDefensaAntes;
+        Optional<Continente> continenteConquistado;
+        
+        if (paisAtacante == null || paisDefensor == null) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_EXISTE).getMessage());
+            return;
+        }
+        if (!paisAtacante.getJugador().get().equals(Partida.getPartida().getJugadorActual())) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR).getMessage());
+            return;
+        }
+        if (paisDefensor.getJugador().get().equals(Partida.getPartida().getJugadorActual())) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_PERTENECE_JUGADOR).getMessage());
+            return;
+        }
+        if (!Mapa.getMapa().getFrontera(paisAtacante, paisDefensor).isPresent()) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAISES_NO_SON_FRONTERA).getMessage());
+            return;
+        }
+        if (paisAtacante.getNumEjercitos() <= 1) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES).getMessage());
+            return;
+        }
+
+        ejercitosPaisAtaqueAntes = paisAtacante.getNumEjercitos();
+        ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
+
+        Map<Pais,Set<Integer>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, paisDefensor);
+
+        if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del país defendido, esto implica que es el jugador que ataca
+            continenteConquistado = Optional.of(paisDefensor.getContinente());
+        } else {
+            continenteConquistado = Optional.empty();
+        }
+
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
+        .autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante))
+        .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor))
+        .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
+            {add(ejercitosPaisAtaqueAntes); add(paisAtacante.getNumEjercitos()); }
+        })
+        .autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
+            {add(ejercitosPaisDefensaAntes); add(paisDefensor.getNumEjercitos()); }
+        })
+        .autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().get().getNombre())
+        .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().get().getNombre())
+        .autoAdd("continenteConquistado", continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
+        .build());
     }
 
 }

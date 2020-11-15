@@ -56,6 +56,20 @@ public class Pais {
         this.ejercitos.add(ejercito);
     }
 
+    /**
+     * Elimina un Ejercito cualquiera de este Pais
+     */
+    public void removeEjercito() {
+        this.ejercitos.remove(this.ejercitos.stream().findFirst().orElse(null));
+    }
+
+    /**
+     * Elimina un Ejercito concreto de este Pais
+     */
+    public void removeEjercito(Ejercito ejercito) {
+        this.ejercitos.remove(ejercito);
+    }
+
     public Optional<Jugador> getJugador() {
         return Optional.ofNullable(this.jugador);
     }

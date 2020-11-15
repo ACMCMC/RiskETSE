@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,6 @@ public class Mapa {
                 casillas.put(casillaInsertar.getCoordenadas(), casillaInsertar);
             }
         }
-
     }
 
     /**
@@ -479,8 +479,8 @@ public class Mapa {
     /**
      * Devuelve la Frontera entre dos países, o {@code null} si no existe
      */
-    public Frontera getFrontera(Pais paisA, Pais paisB) {
-        return (this.fronteras.contains(new Frontera(paisA, paisB)) ? new Frontera(paisA, paisB) : null);
+    public Optional<Frontera> getFrontera(Pais paisA, Pais paisB) {
+        return Optional.ofNullable(this.fronteras.contains(new Frontera(paisA, paisB)) ? new Frontera(paisA, paisB) : null);
     }
 
     /**
