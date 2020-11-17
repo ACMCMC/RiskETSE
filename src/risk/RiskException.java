@@ -38,7 +38,7 @@ public class RiskException {
                 .autoAdd("descripción", this.getCodigoTexto()).build();
     }
 
-    public enum RiskExceptionEnum {
+    public static enum RiskExceptionEnum {
         COMANDO_NO_PERMITIDO(99, "Comando no permitido en este momento"), COLOR_NO_PERMITIDO(100, "Color no permitido"),
         COMANDO_INCORRECTO(101, "Comando incorrecto"), CONTINENTE_NO_EXISTE(102, "El continente no existe"),
         JUGADOR_NO_EXISTE(103, "El jugador no existe"), JUGADOR_YA_EXISTE(104, "El jugador ya existe"),

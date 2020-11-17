@@ -17,7 +17,8 @@ public class OutputBuilder {
 
     private static final int nivelSangrado = 4; // El nivel de sangrado por defecto
     private static final String NEW_LINE = System.getProperty("line.separator");
-    private final int DEPTH_LEVEL;
+    private final int DEPTH_LEVEL; // Nivel de recursividad para imprimir objetos
+    private final boolean separateLines; // Si se introduce una línea nueva por cada elemento de una lista, o no
 
     /**
      * @deprecated Como en este proyecto no hay campos públicos, no nos va a servir.
@@ -193,8 +194,9 @@ public class OutputBuilder {
     public OutputBuilder() {
         variables = new ArrayList<String>();
         DEPTH_LEVEL = 0; // Por defecto, no se desencapsula nada
+        separateLines = false;
     }
-
+    
     /**
      * Un OutputBuilder que buscará hasta la profundidad indicada
      * @param depthLevel
@@ -202,6 +204,7 @@ public class OutputBuilder {
     private OutputBuilder(int depthLevel) {
         variables = new ArrayList<String>();
         DEPTH_LEVEL = depthLevel;
+        separateLines = false;
     }
 
     /**
@@ -328,13 +331,17 @@ public class OutputBuilder {
             }
 
             if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
-                stringBuilder.append(",").append(NEW_LINE); // Terminamos la línea
-                stringBuilder.append(new String(new char[2]).replace('\0', ' ')); // Añadimos los espacios del principio
-                                                                                  // de la línea siguiente
+                if (separateLines) {
+                    stringBuilder.append(",").append(NEW_LINE); // Carácter de coma, y de espacio
+                    stringBuilder.append(new String(new char[2]).replace('\0', ' ')); // Añadimos los espacios del principio
+                    // de la línea siguiente
+                } else {
+                    stringBuilder.append(",").append(" "); // Carácter de coma, y de espacio
+                }
             }
         }
 
-        stringBuilder.append(NEW_LINE); // Nueva línea
+        stringBuilder.append(" "); // Nueva línea
         stringBuilder.append("]");
 
         return stringBuilder.toString();
