@@ -195,6 +195,8 @@ public class Menu {
         } catch (Exception excepcion) {
             excepcion.printStackTrace();
         }
+
+        FileOutputHelper.escribirFinComandos();
     }
 
     /**
