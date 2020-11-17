@@ -80,7 +80,6 @@ public class Mapa {
      * 
      * 
      * @throws FileNotFoundException
-     * @throws RiskException
      */
     public static void crearMapa(File file) throws FileNotFoundException {
         if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
@@ -100,7 +99,6 @@ public class Mapa {
     /**
      * Returns the Mapa singleton
      * @return
-     * @throws RiskException
      */
     public static Mapa getMapa() {
         return mapaSingleton;
@@ -113,7 +111,6 @@ public class Mapa {
     /**
      * Lee un archivo con los colores de los continentes y les asigna ese color
      * @param archivoColores
-     * @throws RiskException
      */
     public void asignarColoresContinentes(File archivoColores) {
         String linea;

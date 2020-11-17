@@ -370,7 +370,7 @@ public class OutputBuilder {
      * adecuadamente
      * 
      * @param key
-     * @param valor
+     * @param obj
      * @return
      */
     public OutputBuilder autoAdd(String key, Object obj) {

@@ -24,7 +24,7 @@ public class Continente {
     /**
      * Crea un nuevo Continente, sin países asignados
      * @param codigo
-     * @param color
+     * @param nombreHumano
      */
     public Continente(String codigo, String nombreHumano) {
         this.setColor(Color.INDEFINIDO);
