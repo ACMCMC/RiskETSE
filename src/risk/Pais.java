@@ -114,6 +114,14 @@ public class Pais {
         return this.continente;
     }
 
+    /**
+     * Devuelve el número de veces que el Pais ha sido conquistado
+     * @return
+     */
+    public int getNumVecesConquistado() {
+        return this.vecesConquistado;
+    }
+
     @Override
     public String toString() {
         return getCodigo();
