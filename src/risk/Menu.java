@@ -187,6 +187,12 @@ public class Menu {
                         } else {
                             comandoIncorrecto();
                         }
+                    case "describir":
+                        if (partes.length == 3){
+                            if(partes[1].equals("pais")){
+                                describirPais(partes[2]);
+                            }
+                        }
                         break;
                     default:
                         comandoIncorrecto();
@@ -374,11 +380,11 @@ public class Menu {
      */
     private void repartirEjercitos() {
         /*
-         * R1 Si inicialmente existe un continente en el que más del 50% de los países
-         * están ocupados por un mismo jugador, entonces en cada país se colocará
-         * automáticamente el siguiente número de ejércitos de dicho jugador:
+         * R1 Si inicialmente existe un continente en el que más del 50% de los países
+         * están ocupados por un mismo jugador, entonces en cada país se colocará
+         * automáticamente el siguiente número de ejércitos de dicho jugador:
          * #ejercitos = ejercitos_disponibles/(factor_division ∗ numero_paises_ocupados)
-         * donde factor_división es 1,5 si el continente es Oceanía o América del Sur
+         * donde factor_división es 1,5 si el continente es Oceanía o América del Sur
          * y 1 para el resto de los continentes.
          */
 
@@ -418,10 +424,10 @@ public class Menu {
                 });
 
         /*
-         * Si después de haber aplicado la regla R7 aún queda ejércitos disponibles,
-         * entonces se colocará 1 ejército en cada uno de los países que tienen un
-         * único ejército, priorizando aquellos países que pertenecen a continentes
-         * con menos países frontera.
+         * Si después de haber aplicado la regla R7 aún queda ejércitos disponibles,
+         * entonces se colocará 1 ejército en cada uno de los países que tienen un
+         * único ejército, priorizando aquellos países que pertenecen a continentes
+         * con menos países frontera.
          */
         asignar1EjercitoAPaisesCon1Ejercito(Mapa.getMapa().getContinentes());
     }
