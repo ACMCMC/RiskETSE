@@ -21,21 +21,25 @@ public class Jugador {
     /**
      * De los ejércitos sin repartir que tiene el jugador, asignar {@code numEjercitos} al país elegido.
      * @param numEjercitos los ejércitos que se van a asignar
+     * @return el número de ejércitos que se han asignado
      */
-    public void asignarEjercitosAPais(int numEjercitos, Pais pais) {
+    public int asignarEjercitosAPais(int numEjercitos, Pais pais) {
         if (this.getEjercitosSinRepartir() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la asignación
             for (int i = 0; i < numEjercitos; i++) {
                 pais.addEjercito(new Ejercito());
             }
             this.setEjercitosSinRepartir(this.getEjercitosSinRepartir() - numEjercitos);
+            return (numEjercitos);
         } else if (this.getEjercitosSinRepartir() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí podemos asignar todos los que quedan
             int ejercitosSinRepartir = this.getEjercitosSinRepartir(); // No es realmente necesario, pero me parece buena práctica porque si modificásemos el número de ejércitos sin repartir dentro del for, entonces habría problemas
                     for (int i = 0; i < ejercitosSinRepartir; i++) {
                         pais.addEjercito(new Ejercito());
                     }
             this.setEjercitosSinRepartir(0);
+            return (ejercitosSinRepartir);
         } else { // No hay ejércitos disponibles
-            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES).toString());
+            // TODO: Cuando se puedan usar, poner aquí una Exception para lanzar
+            return (0);
         }
     }
 

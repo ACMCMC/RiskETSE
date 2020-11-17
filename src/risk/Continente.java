@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Clase Continente. Almacena el codigo, su color, y los países asociados al continente.
@@ -94,6 +96,14 @@ public class Continente {
      */
     public Pais getPais(String codigo) {
         return this.paises.get(codigo);
+    }
+
+    /**
+     * Devuelve un Set de los jugadores que tienen al menos un país en este continente
+     * @return
+     */
+    public Set<Jugador> getJugadores() {
+        return this.getPaises().stream().map(pais -> pais.getJugador().get()).collect(Collectors.toSet());
     }
 
     /**
