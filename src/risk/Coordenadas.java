@@ -30,21 +30,13 @@ public class Coordenadas implements Comparable {
 
     Coordenadas coords = (Coordenadas) o;
 
-    if (
-      this.getY() > coords.getY()
-    ) return 1; // La coordenada de este objeto está más abajo, así que devolvemos que es mayor
+    if (this.getY() > coords.getY()) return 1; // La coordenada de este objeto está más abajo, así que devolvemos que es mayor
 
-    if (
-      this.getY() < coords.getY()
-    ) return -1; // La coordenada de este objeto está más arriba, así que devolvemos que es menor
+    if (this.getY() < coords.getY()) return -1; // La coordenada de este objeto está más arriba, así que devolvemos que es menor
 
-    if (
-      this.getX() > coords.getX()
-    ) return 1; // La coordenada de este objeto está en el mismo nivel, pero más a la derecha, así que devolvemos que es mayor
+    if (this.getX() > coords.getX()) return 1; // La coordenada de este objeto está en el mismo nivel, pero más a la derecha, así que devolvemos que es mayor
 
-    if (
-      this.getX() < coords.getX()
-    ) return -1; // La coordenada de este objeto está en el mismo nivel, pero más a la izquierda, así que devolvemos que es menor
+    if (this.getX() < coords.getX()) return -1; // La coordenada de este objeto está en el mismo nivel, pero más a la izquierda, así que devolvemos que es menor
 
     return 0; // Las coordenadas son iguales
   }
