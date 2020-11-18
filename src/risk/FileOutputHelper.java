@@ -13,8 +13,8 @@ public abstract class FileOutputHelper {
 
     private static File outputFile = new File("EOF.txt");
     private static BufferedWriter bufferedWriter;
-    private static File errorOutputFile = new File("errorOutput.txt");
-    private static BufferedWriter errorBufferedWriter;
+    //private static File errorOutputFile = new File("errorOutput.txt");
+    //private static BufferedWriter errorBufferedWriter;
 
     static {
         try {
