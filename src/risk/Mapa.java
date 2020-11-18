@@ -496,6 +496,23 @@ public class Mapa {
     }
 
     /**
+     * Contiene los códigos Unicode necesarios para imprimir el mapa
+     */
+    private static enum CodigosMapa {
+        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'), BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'), BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'), LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B');
+
+        char codigo;
+        CodigosMapa(char codigo) {
+            this.codigo = codigo;
+        }
+
+        @Override
+        public String toString() {
+            return Character.toString(codigo);
+        }
+    }
+
+    /**
      * Añade una Frontera entre dos países. Si ya existe la Frontera, no hace nada
      * @param paisA
      * @param paisB
@@ -527,19 +544,6 @@ public class Mapa {
         System.out.print(toString());
     }
     
-    private static enum CodigosMapa {
-        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'), BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'), BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'), LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B');
-
-        char codigo;
-        CodigosMapa(char codigo) {
-            this.codigo = codigo;
-        }
-
-        @Override
-        public String toString() {
-            return Character.toString(codigo);
-        }
-    }
 
     /**
      * Devuelve una representación del Mapa como String
