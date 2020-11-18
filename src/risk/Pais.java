@@ -9,149 +9,149 @@ import java.util.Optional;
 import java.util.Set;
 
 public class Pais {
-    private String codigo;
-    private String nombreHumano;
-    private Continente continente;
-    private Jugador jugador;
-    private Set<Ejercito> ejercitos; // Los ejércitos que están en este país. Pertenecen al jugador que tiene este país.
-    private int vecesConquistado;
 
-    Pais(String nombre, String nombreHumano, Continente continente) {
-        this.setCodigo(nombre);
-        this.setNombreHumano(nombreHumano);
-        this.setContinente(continente);
-        this.setJugador(null);
-        this.ejercitos = new HashSet<>();
-        addToContinente();
-    }
-    
-    /**
-     * Añade este Pais a su Continente
-     */
-    private void addToContinente() {
-        continente.addPais(this);
-    }
+  private String codigo;
+  private String nombreHumano;
+  private Continente continente;
+  private Jugador jugador;
+  private Set<Ejercito> ejercitos; // Los ejércitos que están en este país. Pertenecen al jugador que tiene este país.
+  private int vecesConquistado;
 
-    /**
-     * Devuelve el número de ejércitos que hay en este Pais
-     * @return
-     */
-    public int getNumEjercitos() {
-        return this.ejercitos.size();
-    }
+  Pais(String nombre, String nombreHumano, Continente continente) {
+    this.setCodigo(nombre);
+    this.setNombreHumano(nombreHumano);
+    this.setContinente(continente);
+    this.setJugador(null);
+    this.ejercitos = new HashSet<>();
+    addToContinente();
+  }
 
-    /**
-     * Devuelve un Set de los Ejercitos de este Pais
-     * @return un HashSet con los Ejercitos del Pais, pero no el HashSet original
-     */
-    public Set<Ejercito> getEjercitos() {
-        return new HashSet<>(this.ejercitos);
-    }
+  /**
+   * Añade este Pais a su Continente
+   */
+  private void addToContinente() {
+    continente.addPais(this);
+  }
 
-    /**
-     * Añade un Ejercito al Set de Ejercitos de este Pais
-     * @param ejercito
-     */
-    public void addEjercito(Ejercito ejercito) {
-        this.ejercitos.add(ejercito);
-    }
+  /**
+   * Devuelve el número de ejércitos que hay en este Pais
+   * @return
+   */
+  public int getNumEjercitos() {
+    return this.ejercitos.size();
+  }
 
-    /**
-     * Elimina un Ejercito cualquiera de este Pais
-     */
-    public void removeEjercito() {
-        this.ejercitos.remove(this.ejercitos.stream().findFirst().orElse(null));
-    }
+  /**
+   * Devuelve un Set de los Ejercitos de este Pais
+   * @return un HashSet con los Ejercitos del Pais, pero no el HashSet original
+   */
+  public Set<Ejercito> getEjercitos() {
+    return new HashSet<>(this.ejercitos);
+  }
 
-    /**
-     * Elimina un Ejercito concreto de este Pais
-     */
-    public void removeEjercito(Ejercito ejercito) {
-        this.ejercitos.remove(ejercito);
-    }
+  /**
+   * Añade un Ejercito al Set de Ejercitos de este Pais
+   * @param ejercito
+   */
+  public void addEjercito(Ejercito ejercito) {
+    this.ejercitos.add(ejercito);
+  }
 
-    public Optional<Jugador> getJugador() {
-        return Optional.ofNullable(this.jugador);
-    }
+  /**
+   * Elimina un Ejercito cualquiera de este Pais
+   */
+  public void removeEjercito() {
+    this.ejercitos.remove(this.ejercitos.stream().findFirst().orElse(null));
+  }
 
-    public void setJugador(Jugador jugador) {
-        this.jugador = jugador;
-    }
+  /**
+   * Elimina un Ejercito concreto de este Pais
+   */
+  public void removeEjercito(Ejercito ejercito) {
+    this.ejercitos.remove(ejercito);
+  }
 
-    /**
-     * Devuelve el nombre humano del país
-     * @return
-     */
-    public String getNombreHumano() {
-        return this.nombreHumano;
-    }
+  public Optional<Jugador> getJugador() {
+    return Optional.ofNullable(this.jugador);
+  }
 
-    private void setNombreHumano(String nombreHumano) {
+  public void setJugador(Jugador jugador) {
+    this.jugador = jugador;
+  }
+
+  /**
+   * Devuelve el nombre humano del país
+   * @return
+   */
+  public String getNombreHumano() {
+    return this.nombreHumano;
+  }
+
+  private void setNombreHumano(String nombreHumano) {
     this.nombreHumano = nombreHumano;
-    }
+  }
 
-    /**
-     * Devuelve el código del país
-     * @return
-     */
-    public String getCodigo() {
-        return this.codigo;
-    }
-    
-    private void setCodigo(String codigo) {
-		this.codigo = codigo;
-    }
-    
-    private void setContinente(Continente continente) {
-		this.continente = continente;
-    }
-    
-    /**
-     * Devuelve el Continente asociado a este país
-     * @return
-     */
-    public Continente getContinente() {
-        return this.continente;
-    }
+  /**
+   * Devuelve el código del país
+   * @return
+   */
+  public String getCodigo() {
+    return this.codigo;
+  }
 
-    /**
-     * Devuelve el número de veces que el Pais ha sido conquistado
-     * @return
-     */
-    public int getNumVecesConquistado() {
-        return this.vecesConquistado;
-    }
+  private void setCodigo(String codigo) {
+    this.codigo = codigo;
+  }
 
-    @Override
-    public String toString() {
-        return getCodigo();
-    }
-    
-    @Override
-    public boolean equals(Object pais){
-        if (this==pais){
-            return true;
-        }
-        if (pais==null){
-            return false;
-        }
-        if(getClass() != pais.getClass()){
-            return false;
-        }
-        final Pais other = (Pais) pais;
-        if(!this.getCodigo().equals(other.getCodigo())){
-            return false;
-        }
-        if(!this.getContinente().equals(other.getContinente())){
-            return false;
-        }
-        if(!this.getNombreHumano().equals(other.getNombreHumano())){
-            return false;
-        }
-        if(!this.getJugador().equals(other.getJugador())) {
-            return false;
-        }
-        return true;
-    }
+  private void setContinente(Continente continente) {
+    this.continente = continente;
+  }
 
+  /**
+   * Devuelve el Continente asociado a este país
+   * @return
+   */
+  public Continente getContinente() {
+    return this.continente;
+  }
+
+  /**
+   * Devuelve el número de veces que el Pais ha sido conquistado
+   * @return
+   */
+  public int getNumVecesConquistado() {
+    return this.vecesConquistado;
+  }
+
+  @Override
+  public String toString() {
+    return getCodigo();
+  }
+
+  @Override
+  public boolean equals(Object pais) {
+    if (this == pais) {
+      return true;
+    }
+    if (pais == null) {
+      return false;
+    }
+    if (getClass() != pais.getClass()) {
+      return false;
+    }
+    final Pais other = (Pais) pais;
+    if (!this.getCodigo().equals(other.getCodigo())) {
+      return false;
+    }
+    if (!this.getContinente().equals(other.getContinente())) {
+      return false;
+    }
+    if (!this.getNombreHumano().equals(other.getNombreHumano())) {
+      return false;
+    }
+    if (!this.getJugador().equals(other.getJugador())) {
+      return false;
+    }
+    return true;
+  }
 }
