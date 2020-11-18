@@ -394,7 +394,7 @@ public class Menu {
     * @param abrevPais
     */
     private void describirPais(String abrevPais){
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Mapa.getMapa().getPais(abrevPais).getNombreHumano()).autoAdd("abreviatura", Mapa.getMapa().getPais(abrevPais).getCodigo()).autoAdd("continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(abrevPais))).autoAdd("jugador", Mapa.getMapa().getPais(abrevPais).getJugador()).autoAdd("numeroEjercitos", Mapa.getMapa().getPais(abrevPais).getNumEjercitos()).build());
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Mapa.getMapa().getPais(abrevPais).getNombreHumano()).autoAdd("abreviatura", Mapa.getMapa().getPais(abrevPais).getCodigo()).autoAdd("continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(abrevPais))).autoAdd("jugador", Mapa.getMapa().getPais(abrevPais).getJugador().get().getNombre().autoAdd("numeroEjercitos", Mapa.getMapa().getPais(abrevPais).getNumEjercitos()).build());
         //.autoAdd("numeroVecesOcupado", Mapa.getMapa().getPais(abrevPais).getNumVecesConquistado())
     }
 
