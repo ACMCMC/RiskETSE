@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,6 @@ public class Mapa {
                 casillas.put(casillaInsertar.getCoordenadas(), casillaInsertar);
             }
         }
-
     }
 
     /**
@@ -185,10 +185,34 @@ public class Mapa {
         }
     }
 
+    /**
+     * Devuelve un Set de los Paises del Mapa
+     * @return
+     */
     public Set<Pais> getPaises() {
         return (this.paises.entrySet().parallelStream().map((entrada) -> {
             return (entrada.getValue());
         }).collect(Collectors.toSet()));
+    }
+
+    /**
+     * Devuelve el Set de las Fronteras de Paises de este continente con Paises de otros continentes
+     * @param c
+     * @return
+     */
+    public Set<Frontera> getFronterasIntercontinentales(Continente c) {
+        return (this.fronteras.parallelStream()
+        .filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c)))
+        .filter(frontera -> !frontera.getPaises().stream().allMatch(pais -> pais.getContinente().equals(c))).collect(Collectors.toSet()));
+    }
+
+    /**
+     * Devuelve el número de Paises de otros Continentes que tienen alguna Frontera con el continente {@code c}. Si varios Paises de este Continente tocan el mismo Pais de otro Continente, solo se cuenta una vez.
+     * @param c
+     * @return
+     */
+    public int getNumFronterasIntercontinentales(Continente c) {
+        return getFronterasIntercontinentales(c).stream().collect(Collectors.groupingBy(frontera -> frontera.getPaises().stream().filter(pais -> !pais.getContinente().equals(c)).findFirst().get())).size();
     }
 
     /**
@@ -244,6 +268,8 @@ public class Mapa {
         List<Casilla> ruta = buscarRuta(casillaInicio, casillaFin);
 
         procesarRuta(ruta);
+
+        this.addFrontera(paisA, paisB);
     }
 
     private void procesarRuta(List<Casilla> ruta) {
@@ -453,8 +479,8 @@ public class Mapa {
     /**
      * Devuelve la Frontera entre dos países, o {@code null} si no existe
      */
-    public Frontera getFrontera(Pais paisA, Pais paisB) {
-        return (this.fronteras.contains(new Frontera(paisA, paisB)) ? new Frontera(paisA, paisB) : null);
+    public Optional<Frontera> getFrontera(Pais paisA, Pais paisB) {
+        return Optional.ofNullable(this.fronteras.contains(new Frontera(paisA, paisB)) ? new Frontera(paisA, paisB) : null);
     }
 
     /**
@@ -488,6 +514,13 @@ public class Mapa {
      */
     public Pais getPais(String codigo) {
         return this.paises.get(codigo);
+    }
+
+    /**
+     * Devuelve un Set de todos los Continentes del mapa
+     */
+    public Set<Continente> getContinentes() {
+        return this.continentes.entrySet().parallelStream().map(entry -> entry.getValue()).collect(Collectors.toSet());
     }
 
     /**

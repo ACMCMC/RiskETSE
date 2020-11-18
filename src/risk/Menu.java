@@ -9,10 +9,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import risk.RiskException.RiskExceptionEnum;
 
 /**
  *
@@ -44,13 +57,13 @@ public class Menu {
                                                                                                // mientras no sea esa.
                 System.out.println(PROMPT + orden);
                 FileOutputHelper
-                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
+                        .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
             }
             System.out.println(PROMPT + orden);
             crearMapa();
-            anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles son las fronteras indirectas
+            anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles son
+                                         // las fronteras indirectas
             Mapa.getMapa().imprimirMapa(); // Imprimimos el mapa una vez creado
-
 
             boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
             while ((orden = bufferLector.readLine()) != null
@@ -78,6 +91,8 @@ public class Menu {
                             new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS).toString());
                 }
             }
+
+            Partida.getPartida().asignarEjercitosSinRepartir();
 
             while ((orden = bufferLector.readLine()) != null) {
                 System.out.println(PROMPT + orden);
@@ -161,11 +176,16 @@ public class Menu {
                             }
                         }
                         break;
+                    case "atacar":
+                        if (partes.length == 3) {
+                            atacar(partes[1], partes[2]);
+                        }
+                        break;
                     case "repartir":
-                        if (partes.length == 2) {
-                            if (partes[1].equals("ejercitos")) {
-                                repartirEjercitos();
-                            }
+                        if (partes.length == 2 && partes[1].equals("ejercitos")) {
+                            repartirEjercitos();
+                        } else {
+                            comandoIncorrecto();
                         }
                     case "describir":
                         if (partes.length == 3){
@@ -232,13 +252,15 @@ public class Menu {
                     if (false) {
                         // TODO: Las misiones no están asignadas ERROR
                     } else {
-                        Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador).get());
-                        FileOutputHelper.printToOutput(
-                                OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                                        .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
-                                        .autoAdd("frontera",
-                                                Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
-                                        .build());
+                        Mapa.getMapa().getPais(nombrePais)
+                                .setJugador(Partida.getPartida().getJugador(nombreJugador).get());
+                        Partida.getPartida().getJugador(nombreJugador).get().asignarEjercitosAPais(1,
+                                Mapa.getMapa().getPais(nombrePais));
+                        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
+                                .autoAdd("pais", nombrePais)
+                                .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
+                                .autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
+                                .build());
                     }
                 }
             }
@@ -291,7 +313,8 @@ public class Menu {
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
                 FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
                         .autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getNombre())
-                        .autoAdd("color", Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getColor().getNombre())
+                        .autoAdd("color",
+                                Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getColor().getNombre())
                         .build());
             }
 
@@ -318,10 +341,211 @@ public class Menu {
     }
 
     /**
+     * Una tupla que representa Continentes, Jugadores, el numero de paises de ese
+     * jugador dentro del continente, y el porcentaje de países del continente que
+     * posee ese jugador
+     */
+    private static class TuplaContinenteJugadorPorcentaje {
+        final Continente c;
+        final Jugador j;
+        final int n;
+        final float p;
+
+        TuplaContinenteJugadorPorcentaje(Continente c, Jugador j, int n, float p) {
+            this.c = c;
+            this.j = j;
+            this.n = n;
+            this.p = p;
+        }
+
+        Continente getContinente() {
+            return c;
+        }
+
+        Jugador getJugador() {
+            return j;
+        }
+
+        int getNumPaises() {
+            return n;
+        }
+
+        float getPorcentaje() {
+            return p;
+        }
+    }
+
+    /**
      * Se encarga automáticamente de realizar el reparto de los ejércitos.
      */
     private void repartirEjercitos() {
-        // TODO Completar esta parte
+        /*
+         * R1 Si inicialmente existe un continente en el que más del 50% de los países
+         * están ocupados por un mismo jugador, entonces en cada país se colocará
+         * automáticamente el siguiente número de ejércitos de dicho jugador:
+         * #ejercitos = ejercitos_disponibles/(factor_division ∗ numero_paises_ocupados)
+         * donde factor_división es 1,5 si el continente es Oceanía o América del Sur
+         * y 1 para el resto de los continentes.
+         */
+
+        Set<TuplaContinenteJugadorPorcentaje> tuplas = obtenerTuplasContinenteJugadorPorcentaje();
+        if (!aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.5, tupla -> {
+            if (tupla.getContinente().equals(Mapa.getMapa().getContinente("Oceanía"))
+                    || tupla.getContinente().equals(Mapa.getMapa().getContinente("AméricaSur"))) {
+                return new Float(1.5);
+            } else {
+                return new Float(1);
+            }
+        })) {
+            aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.25 && tupla.getPorcentaje() < 0.5,
+                    tupla -> new Float(2));
+        }
+
+        Map<Jugador, List<TuplaContinenteJugadorPorcentaje>> tuplasJugs = tuplas.parallelStream()
+                .collect(Collectors.groupingBy(TuplaContinenteJugadorPorcentaje::getJugador));
+        // Un Map que relaciona Jugadores con sus tuplas
+        tuplasJugs.entrySet().parallelStream()
+                .filter(entry -> entry.getValue().stream().allMatch(tupla -> tupla.getPorcentaje() < 0.25))
+                // Nos quedamos solo con las entradas del Map en las que todas las tuplas dicen
+                // que el jugador tiene menos del 25% del porcentaje (es decir, solo nos
+                // quedamos con los jugadores que tienen todos los porcentajes de menos del 25%)
+                .forEach(entrada -> { // Por cada jugador...
+                    entrada.getValue().forEach(tupla -> {
+                        // Por cada tupla (continente, porque el jugador va a ser el mismo en cada
+                        // iteración de este bucle)...
+                        int numEjercitos = (Partida.getPartida().getJugadores().size() < 5 ? 2 : 3)
+                                * tupla.getNumPaises();
+                        // La regla del PDF de cuántos países hay que asignar (R7)
+                        tupla.getContinente().getPaises().stream()
+                                .filter(pais -> pais.getJugador().get().equals(tupla.getJugador()))
+                                .forEach(pais -> tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais));
+                        // Le asignamos numEjercitos a todos los países del jugador, en ese continente
+                    });
+                });
+
+        /*
+         * Si después de haber aplicado la regla R7 aún queda ejércitos disponibles,
+         * entonces se colocará 1 ejército en cada uno de los países que tienen un
+         * único ejército, priorizando aquellos países que pertenecen a continentes
+         * con menos países frontera.
+         */
+        asignar1EjercitoAPaisesCon1Ejercito(Mapa.getMapa().getContinentes());
+    }
+
+    private void asignar1EjercitoAPaisesCon1Ejercito(Set<Continente> setContinentes) {
+        PriorityQueue<Continente> colaAsignar = new PriorityQueue<>(new Comparator<Continente>() {
+
+            @Override
+            public int compare(Continente o1, Continente o2) {
+                int numFronterasO1 = Mapa.getMapa().getNumFronterasIntercontinentales(o1);
+                int numFronterasO2 = Mapa.getMapa().getNumFronterasIntercontinentales(o2);
+                return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? -1 : 1);
+            }
+
+        }.reversed());
+        colaAsignar.addAll(setContinentes); // Ponemos los continentes en una cola de prioridad, ordenándolos por los
+                                            // que tengan menos fronteras
+        Stream.generate(colaAsignar::poll);
+        colaAsignar.stream().sorted(colaAsignar.comparator()).forEach(continente -> {
+            continente.getPaises().parallelStream().filter(pais -> pais.getEjercitos().size() == 1)
+                    .forEach(pais -> pais.getJugador().get().asignarEjercitosAPais(1, pais));
+        });
+    }
+
+    private boolean aplicarReglasPorcentajes(Set<TuplaContinenteJugadorPorcentaje> setTuplas,
+            Predicate<TuplaContinenteJugadorPorcentaje> predicadoFiltrado,
+            Function<TuplaContinenteJugadorPorcentaje, Float> factorDivision) {
+
+        Set<TuplaContinenteJugadorPorcentaje> tuplasFiltradas = setTuplas.parallelStream().filter(predicadoFiltrado)
+                .collect(Collectors.toSet()); // Aplicamos el predicado de filtrado a las tuplas
+        float procentajeMaximo = tuplasFiltradas.parallelStream()
+                .max(Comparator.comparing(TuplaContinenteJugadorPorcentaje::getPorcentaje)).get().getPorcentaje();
+        // Obtenemos el porcentaje máximo de las tuplas que resultaron del filtrado, ya
+        // que sólo vamos a aplicar la regla en un continente
+
+        tuplasFiltradas = tuplasFiltradas.stream().filter(tupla -> {
+            return (Float.compare(tupla.getPorcentaje(), procentajeMaximo) == 0);
+        }).collect(Collectors.toSet());
+        // Ahora sólo nos quedan las tuplas de continentes con jugadores que cumplen el
+        // predicado de filtrado y están empatadas entre sí (puede haber varios
+        // jugadores dentro de la misma tupla)
+
+        Continente continenteMenosFronteras = tuplasFiltradas.stream()
+                .min(new Comparator<TuplaContinenteJugadorPorcentaje>() {
+                    @Override
+                    public int compare(TuplaContinenteJugadorPorcentaje o1, TuplaContinenteJugadorPorcentaje o2) {
+                        int numFronterasO1 = Mapa.getMapa().getNumFronterasIntercontinentales(o1.getContinente());
+                        int numFronterasO2 = Mapa.getMapa().getNumFronterasIntercontinentales(o2.getContinente());
+                        return (numFronterasO1 == numFronterasO2 ? 0 : numFronterasO1 > numFronterasO2 ? -1 : 1);
+                    }
+                }.reversed()).get().getContinente();
+        // Buscamos una de las tuplas con continente con menos fronteras, y nos quedamos
+        // con ese Continente
+
+        tuplasFiltradas = tuplasFiltradas.stream()
+                .filter(tupla -> tupla.getContinente().equals(continenteMenosFronteras)).collect(Collectors.toSet());
+        // Ahora sólo nos quedan las tuplas de continentes con jugadores que cumplen el
+        // predicado de filtrado y están empatadas entre sí (puede haber varios
+        // jugadores dentro de la misma tupla, incluso si no hay continentes empatados
+        // entre sí), y de los posibles continentes empatados, el que tiene menos
+        // fronteras.
+
+        if (tuplasFiltradas.isEmpty()) {
+            return false; // Ninguna tupla ha cumplido las condiciones, así que no se ha aplicado la
+                          // regla. Devolvemos false.
+        }
+
+        tuplasFiltradas.forEach(tupla -> {
+            int numEjercitos = (int) Math.round(((float) tupla.getJugador().getEjercitosSinRepartir())
+                    / (factorDivision.apply(tupla) * (float) tupla.getNumPaises())); // Calculo el número de ejércitos que hay que asignar a cada uno de los países
+            tupla.getJugador().getPaises().stream().filter(pais -> pais.getContinente().equals(tupla.getContinente()))
+                    .forEach(pais -> {
+                        tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais);
+                    });
+        });
+
+        asignar1EjercitoAPaisesCon1Ejercito(Mapa.getMapa().getContinentes());
+
+        return true; // Sí se ha aplicado la regla
+    }
+
+    /**
+     * Elabora tuplas de la forma (Continente, Jugador, Numero de paises,
+     * Porcentaje). Expresan que el jugador tiene un determinado porcentaje de los
+     * países del Continente de la tupla
+     * 
+     * @return un Set de Tuplas
+     */
+    private Set<TuplaContinenteJugadorPorcentaje> obtenerTuplasContinenteJugadorPorcentaje() {
+        Set<TuplaContinenteJugadorPorcentaje> tuplas = Mapa.getMapa().getContinentes().parallelStream()
+                .map(continente -> { // Por cada continente...
+                    List<Jugador> listaJugadoresContinente = continente.getPaises().stream()
+                            .map(pais -> pais.getJugador().get()).collect(Collectors.toList()); // Elaboro una lista de
+                                                                                                // los jugadores de ese
+                                                                                                // continente; eso lo
+                                                                                                // obtengo a través de
+                                                                                                // los países del
+                                                                                                // continente
+                    Set<TuplaContinenteJugadorPorcentaje> setTuplas = listaJugadoresContinente.stream().distinct()
+                            .map(jugador -> {
+                                float porcentaje = ((float) Collections.frequency(listaJugadoresContinente, jugador))
+                                        / ((float) listaJugadoresContinente.size()); // Este es el porcentaje de los
+                                                                                     // países dentro de este continente
+                                                                                     // que posee el jugador
+                                return (new TuplaContinenteJugadorPorcentaje(continente, jugador,
+                                        Collections.frequency(listaJugadoresContinente, jugador), porcentaje)); // Generamos
+                                                                                                                // la
+                                                                                                                // tupla
+                            }).collect(Collectors.toSet()); // Guardamos todas las tuplas de este continente en un mismo
+                                                            // Set
+                    return (setTuplas); // Devolvemos ese Set
+                }).flatMap(Set::stream).collect(Collectors.toSet()); // Hasta aquí teníamos un
+                                                                     // Set<Set<TuplaContinenteJugadorPorcentaje>>, ya
+                                                                     // que tenemos las tuplas en un Set por cada
+                                                                     // Continente. Pero realmente no nos interesa
+                                                                     // tenerlas en Sets separados, así que las
+                                                                     // convertimos a un único Set
+        return tuplas;
     }
 
     /**
@@ -369,33 +593,118 @@ public class Menu {
      * Añade manualmente las fronteras indirectas
      */
     private void anadirFronterasIndirectas() {
-        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Brasil"), Mapa.getMapa().getPais("ANorte"));
-        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("EurOcc"), Mapa.getMapa().getPais("ANorte"));
-        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Groenlan"), Mapa.getMapa().getPais("Islandia"));
-        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("Kamchatka"), Mapa.getMapa().getPais("Alaska"));
-        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("EurSur"), Mapa.getMapa().getPais("Egipto"));
-        Mapa.getMapa().anadirFronteraIndirecta(Mapa.getMapa().getPais("SAsiático"), Mapa.getMapa().getPais("Indonesia"));
+        Set<String[]> fronterasPaises = new HashSet<>();
+
+        fronterasPaises.add(new String[] { "Brasil", "ANorte" });
+        fronterasPaises.add(new String[] { "EurOcc", "ANorte" });
+        fronterasPaises.add(new String[] { "Groenlan", "Islandia" });
+        fronterasPaises.add(new String[] { "Kamchatka", "Alaska" });
+        fronterasPaises.add(new String[] { "EurSur", "Egipto" });
+        fronterasPaises.add(new String[] { "SAsiático", "Indonesia" });
+
+        fronterasPaises.parallelStream().map(paises -> {
+            List<Pais> par = new ArrayList<>();
+            par.add(Mapa.getMapa().getPais(paises[0]));
+            par.add(Mapa.getMapa().getPais(paises[1]));
+            return (par);
+        }).forEach(par -> Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1)));
     }
-    
+
     /**
-    * Imprime el color asociado a un pais
-    * @param abrevPais
-    */
-    private void obtenerColor(String abrevPais){
+     * Imprime el color asociado a un pais
+     * 
+     * @param abrevPais
+     */
+    private void obtenerColor(String abrevPais) {
         Color color;
-        color=Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
+        color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
         FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
     }
-    
+
     /**
-    * Muestra las caracteristicas de un pais: nombre, abreviatura, continente,
-    * fronteras, jugador al que pertenece, numero de ejercitos que lo ocupan y
-    * el numero de veces que ha sido conquistado
-    * @param abrevPais
-    */
-    private void describirPais(String abrevPais){
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Mapa.getMapa().getPais(abrevPais).getNombreHumano()).autoAdd("abreviatura", Mapa.getMapa().getPais(abrevPais).getCodigo()).autoAdd("continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(abrevPais))).autoAdd("jugador", Mapa.getMapa().getPais(abrevPais).getJugador().get().getNombre().autoAdd("numeroEjercitos", Mapa.getMapa().getPais(abrevPais).getNumEjercitos()).build());
-        //.autoAdd("numeroVecesOcupado", Mapa.getMapa().getPais(abrevPais).getNumVecesConquistado())
+     * Muestra las caracteristicas de un pais: nombre, abreviatura, continente,
+     * fronteras, jugador al que pertenece, numero de ejercitos que lo ocupan y el
+     * numero de veces que ha sido conquistado
+     * 
+     * @param abrevPais
+     */
+    private void describirPais(String abrevPais) {
+        String nombreHumano;
+        String abreviatura;
+        // Continente continente;
+        Jugador jugador;
+        Ejercito ejercito;
+        Integer numeroConquistas;
+        
+        nombreHumano = Mapa.getMapa().getPais(abrevPais).getNombreHumano();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
+        
+        abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
+        
+        // continente=Mapa.getContinente(abrevPais);
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
+        .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
+        
+        // FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera",
+        // obtenerFronteras()).build());
+        
+        abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
+    }
+    
+    private void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
+        Pais paisAtacante = Mapa.getMapa().getPais(nombrePaisAtacante);
+        Pais paisDefensor = Mapa.getMapa().getPais(nombrePaisDefensor);
+        int ejercitosPaisAtaqueAntes;
+        int ejercitosPaisDefensaAntes;
+        Optional<Continente> continenteConquistado;
+        
+        if (paisAtacante == null || paisDefensor == null) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_EXISTE).getMessage());
+            return;
+        }
+        if (!paisAtacante.getJugador().get().equals(Partida.getPartida().getJugadorActual())) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR).getMessage());
+            return;
+        }
+        if (paisDefensor.getJugador().get().equals(Partida.getPartida().getJugadorActual())) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_PERTENECE_JUGADOR).getMessage());
+            return;
+        }
+        if (!Mapa.getMapa().getFrontera(paisAtacante, paisDefensor).isPresent()) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAISES_NO_SON_FRONTERA).getMessage());
+            return;
+        }
+        if (paisAtacante.getNumEjercitos() <= 1) {
+            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES).getMessage());
+            return;
+        }
+
+        ejercitosPaisAtaqueAntes = paisAtacante.getNumEjercitos();
+        ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
+
+        Map<Pais,Set<Integer>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, paisDefensor);
+
+        if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del país defendido, esto implica que es el jugador que ataca
+            continenteConquistado = Optional.of(paisDefensor.getContinente());
+        } else {
+            continenteConquistado = Optional.empty();
+        }
+
+        FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
+        .autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante))
+        .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor))
+        .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
+            {add(ejercitosPaisAtaqueAntes); add(paisAtacante.getNumEjercitos()); }
+        })
+        .autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
+            {add(ejercitosPaisDefensaAntes); add(paisDefensor.getNumEjercitos()); }
+        })
+        .autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().get().getNombre())
+        .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().get().getNombre())
+        .autoAdd("continenteConquistado", continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
+        .build());
     }
 
 }

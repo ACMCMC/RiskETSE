@@ -14,7 +14,7 @@ public class Pais {
     private Continente continente;
     private Jugador jugador;
     private Set<Ejercito> ejercitos; // Los ejércitos que están en este país. Pertenecen al jugador que tiene este país.
-    private Integer vecesConquistado;
+    private int vecesConquistado;
 
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
@@ -22,6 +22,14 @@ public class Pais {
         this.setContinente(continente);
         this.setJugador(null);
         this.ejercitos = new HashSet<>();
+        addToContinente();
+    }
+    
+    /**
+     * Añade este Pais a su Continente
+     */
+    private void addToContinente() {
+        continente.addPais(this);
     }
 
     /**
@@ -46,6 +54,20 @@ public class Pais {
      */
     public void addEjercito(Ejercito ejercito) {
         this.ejercitos.add(ejercito);
+    }
+
+    /**
+     * Elimina un Ejercito cualquiera de este Pais
+     */
+    public void removeEjercito() {
+        this.ejercitos.remove(this.ejercitos.stream().findFirst().orElse(null));
+    }
+
+    /**
+     * Elimina un Ejercito concreto de este Pais
+     */
+    public void removeEjercito(Ejercito ejercito) {
+        this.ejercitos.remove(ejercito);
     }
 
     public Optional<Jugador> getJugador() {
