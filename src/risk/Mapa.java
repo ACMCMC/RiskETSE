@@ -526,12 +526,27 @@ public class Mapa {
     public void imprimirMapa() {
         System.out.print(toString());
     }
+    
+    private static enum CodigosMapa {
+        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'), BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'), BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'), LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B');
+
+        char codigo;
+        CodigosMapa(char codigo) {
+            this.codigo = codigo;
+        }
+
+        @Override
+        public String toString() {
+            return Character.toString(codigo);
+        }
+    }
 
     /**
      * Devuelve una representación del Mapa como String
      */
     @Override
     public String toString() {
+        String tramoHorizontal = new String(new char[getSizeX()]).replace('\0', CodigosMapa.LINEA_HORIZONTAL.codigo);
         StringBuilder stringBuilder = new StringBuilder();
         // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
         for (int y = 0; y < getSizeY(); y++) {
@@ -539,34 +554,34 @@ public class Mapa {
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
                     stringBuilder.append(Color.ROJO.getSecTexto());
-                    stringBuilder.append("|");
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD); // También podría ser CRUZ_BOLD
                     stringBuilder.append(Color.getSecColorReset());
                 } else {
-                    stringBuilder.append("|");
+                    stringBuilder.append(CodigosMapa.CRUZ);
                 }
-                stringBuilder.append("===========");
+                stringBuilder.append(tramoHorizontal);
             }
-            stringBuilder.append("|");
+            stringBuilder.append(CodigosMapa.BORDE_DER_MIDDLE);
             stringBuilder.append(NEW_LINE);
 
             for (int x = 0; x < getSizeX(); x++) {
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
                     stringBuilder.append(Color.ROJO.getSecTexto());
-                    stringBuilder.append("|");
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
                     stringBuilder.append(Color.getSecColorReset());
                 } else {
-                    stringBuilder.append("|");
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
                 }
                 if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
                         stringBuilder.append(Color.ROJO.getSecTexto());
-                        stringBuilder.append(new String(new char[11]).replace("\0", "-")); // Imprimimos espacios
+                        stringBuilder.append(new String(new char[getSizeX()]).replace('\0', CodigosMapa.LINEA_HORIZONTAL_BOLD.codigo)); // Imprimimos espacios
                         stringBuilder.append(Color.getSecColorReset());
                     } else if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                         stringBuilder.append(Color.ROJO.getSecTexto());
-                        stringBuilder.append("|");
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
                         stringBuilder.append(Color.getSecColorReset());
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
@@ -580,23 +595,23 @@ public class Mapa {
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
             }
-            stringBuilder.append("|");
+            stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
             stringBuilder.append(NEW_LINE);
 
             for (int x = 0; x < getSizeX(); x++) { // Imprimimos los ejércitos de cada jugador
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
                     stringBuilder.append(Color.ROJO.getSecTexto());
-                    stringBuilder.append("|");
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
                     stringBuilder.append(Color.getSecColorReset());
                 } else {
-                    stringBuilder.append("|");
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
                 }
                 if (casilla.esMaritima()) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                         stringBuilder.append(Color.ROJO.getSecTexto());
-                        stringBuilder.append("|");
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
                         stringBuilder.append(Color.getSecColorReset());
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
@@ -613,10 +628,12 @@ public class Mapa {
                 }
                 
             }
-            stringBuilder.append("|");
+            stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
             stringBuilder.append(NEW_LINE);
         }
-        stringBuilder.append(new String(new char[getSizeX()]).replace("\0", "|===========") + "|");
+        stringBuilder.append(CodigosMapa.BORDE_IZQ_BOTTOM + tramoHorizontal);
+        stringBuilder.append(new String(new char[getSizeX()-1]).replace("\0", CodigosMapa.BORDE_MIDDLE_BOTTOM + tramoHorizontal));
+        stringBuilder.append(CodigosMapa.BORDE_DER_BOTTOM);
         stringBuilder.append(NEW_LINE);
         return stringBuilder.toString();
     }
