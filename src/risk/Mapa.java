@@ -499,7 +499,7 @@ public class Mapa {
      * Contiene los códigos Unicode necesarios para imprimir el mapa
      */
     private static enum CodigosMapa {
-        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'), BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'), BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'), LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B');
+        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'), BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'), BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'), LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B'), LINEA_VERTICALTOHORIZONTAL_BOLD('\u250F'), LINEA_HORIZONTALTOVERTICAL_BOLD('\u251B');
 
         char codigo;
         CodigosMapa(char codigo) {
@@ -554,25 +554,43 @@ public class Mapa {
         StringBuilder stringBuilder = new StringBuilder();
         // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
         for (int y = 0; y < getSizeY(); y++) {
-            for (int x = 0; x < getSizeX(); x++) {
-                Casilla casilla = this.getCasilla(new Coordenadas(x,y));
-                if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
-                    stringBuilder.append(Color.ROJO.getSecTexto());
-                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD); // También podría ser CRUZ_BOLD
-                    stringBuilder.append(Color.getSecColorReset());
-                } else {
-                    stringBuilder.append(CodigosMapa.CRUZ);
+            if (y == 0) { // Si esta es la primera fila, su borde superior debe ser de color negro y en un formato distinto
+                for (int x = 0; x < getSizeX(); x++) {
+                    if (x==0) {
+                        stringBuilder.append(CodigosMapa.BORDE_IZQ_TOP);
+                    } else {
+                        stringBuilder.append(CodigosMapa.BORDE_MIDDLE_TOP);
+                    }
+                    stringBuilder.append(tramoHorizontal);
                 }
-                stringBuilder.append(tramoHorizontal);
+                stringBuilder.append(CodigosMapa.BORDE_DER_TOP);
+            } else { // Para el resto de filas...
+                for (int x = 0; x < getSizeX(); x++) {
+                    Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD); // También podría ser CRUZ_BOLD
+                        stringBuilder.append(Color.getSecColorReset());
+                    } else if (x == 0) {
+                        stringBuilder.append(CodigosMapa.BORDE_IZQ_MIDDLE);
+                    } else {
+                        stringBuilder.append(CodigosMapa.CRUZ);
+                    }
+                    stringBuilder.append(tramoHorizontal);
+                }
+                stringBuilder.append(CodigosMapa.BORDE_DER_MIDDLE);
             }
-            stringBuilder.append(CodigosMapa.BORDE_DER_MIDDLE);
             stringBuilder.append(NEW_LINE);
 
-            for (int x = 0; x < getSizeX(); x++) {
+            for (int x = 0; x < getSizeX(); x++) { // Línea del nombre de país
                 Casilla casilla = this.getCasilla(new Coordenadas(x,y));
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
                     stringBuilder.append(Color.ROJO.getSecTexto());
-                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) { // Si la ruta va a la casilla de arriba, y no pasa por esta casilla
+                        stringBuilder.append(CodigosMapa.LINEA_HORIZONTALTOVERTICAL_BOLD);
+                    } else {
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICALTOHORIZONTAL_BOLD);
+                    }
                     stringBuilder.append(Color.getSecColorReset());
                 } else {
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
