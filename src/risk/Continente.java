@@ -81,13 +81,16 @@ public class Continente {
     return this.nombreHumano;
   }
 
-    /**
-     * Devuelve un Set de los jugadores que tienen al menos un país en este continente
-     * @return
-     */
-    public Set<Jugador> getJugadores() {
-        return this.getPaises().stream().map(pais -> pais.getJugador()).collect(Collectors.toSet());
-    }
+  /**
+   * Devuelve un Set de los jugadores que tienen al menos un país en este continente
+   * @return
+   */
+  public Set<Jugador> getJugadores() {
+    return this.getPaises()
+      .stream()
+      .map(pais -> pais.getJugador())
+      .collect(Collectors.toSet());
+  }
 
   /**
    * Devuelve el Pais de codigo especificado
