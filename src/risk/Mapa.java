@@ -57,94 +57,86 @@ public class Mapa {
             }
         }
     }
-  }
 
-  /**
-   * Devuelve el tamaño horizontal del mapa
-   * @return
-   */
-  public int getSizeX() {
-    return this.SIZE_X;
-  }
-
-  /**
-   * Devuelve el tamaño vertical del mapa
-   * @return
-   */
-  public int getSizeY() {
-    return this.SIZE_Y;
-  }
-
-  //TODO:_ cambiar
-  /**
-   *
-   *
-   * @throws FileNotFoundException
-   */
-  public static void crearMapa(File file) throws FileNotFoundException {
-    if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
-      FileOutputHelper.printToErrOutput(
-        new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO)
-          .toString()
-      );
-      return;
+    /**
+     * Devuelve el tamaño horizontal del mapa
+     * @return
+     */
+    public int getSizeX() {
+        return this.SIZE_X;
     }
 
-    mapaSingleton.asignarPaisesACasillas(file); // Could throw a FileNotFoundException, but we leave exception handling to the caller
+    /**
+     * Devuelve el tamaño vertical del mapa
+     * @return
+     */
+    public int getSizeY() {
+        return this.SIZE_Y;
+    }
 
-    mapaSingleton.anadirFronterasDirectas();
 
-    mapaSingleton.asignarColoresContinentes(FILE_COLORES_CONTINENTES);
-
-    isMapaCreado = true;
-  }
-
-  /**
-   * Returns the Mapa singleton
-   * @return
-   */
-  public static Mapa getMapa() {
-    return mapaSingleton;
-  }
-
-  private void addContinente(Continente continente) {
-    this.continentes.put(continente.getCodigo(), continente);
-  }
-
-  /**
-   * Lee un archivo con los colores de los continentes y les asigna ese color
-   * @param archivoColores
-   */
-  public void asignarColoresContinentes(File archivoColores) {
-    String linea;
-    String[] valores;
-    BufferedReader bufferedReader;
-
-    try {
-      bufferedReader = new BufferedReader(new FileReader(archivoColores));
-
-      while ((linea = bufferedReader.readLine()) != null) {
-        valores = linea.split(";");
-        if (getContinente(valores[0]) != null) {
-          getContinente(valores[0])
-            .setColor(Color.getColorByString(valores[1]));
-        } else {
-          addContinente(
-            new Continente(
-              valores[0],
-              valores[0],
-              Color.getColorByString(valores[1])
-            )
-          ); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+    //TODO:_ cambiar
+    /**
+     * 
+     * 
+     * @throws FileNotFoundException
+     */
+    public static void crearMapa(File file) throws FileNotFoundException {
+        if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
+            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO).toString());
+            return;
         }
-      }
-      bufferedReader.close();
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+
+        mapaSingleton.asignarPaisesACasillas(file); // Could throw a FileNotFoundException, but we leave exception handling to the caller
+
+        mapaSingleton.anadirFronterasDirectas();
+
+        mapaSingleton.asignarColoresContinentes(FILE_COLORES_CONTINENTES);
+
+        isMapaCreado = true;
+    }
+
+    /**
+     * Returns the Mapa singleton
+     * @return
+     */
+    public static Mapa getMapa() {
+        return mapaSingleton;
+    }
+
+    private void addContinente(Continente continente) {
+        this.continentes.put(continente.getCodigo(), continente);
+    }
+
+    /**
+     * Lee un archivo con los colores de los continentes y les asigna ese color
+     * @param archivoColores
+     */
+    public void asignarColoresContinentes(File archivoColores) {
+        String linea;
+        String[] valores;
+        BufferedReader bufferedReader;
+
+
+            try {
+            bufferedReader = new BufferedReader(new FileReader(archivoColores));
+        
+            while ((linea = bufferedReader.readLine()) != null) {
+                valores = linea.split(";");
+                if (getContinente(valores[0]) != null ) {
+                    getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
+                } else {
+                    addContinente(new Continente(valores[0], valores[0], Color.getColorByString(valores[1]))); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+                }
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -188,32 +180,14 @@ public class Mapa {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva casilla con país
-        Casilla casillaPais = new Casilla(
-          new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)),
-          new Pais(codigoPais, nombreHumanoPais, continenteDelPais)
-        );
-        casillas.replace(casillaPais.getCoordenadas(), casillaPais);
-        paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista de países
-      }
-      bufferedReader.close();
-    } catch (FileNotFoundException ex) {
-      throw ex; // Lanzamos de vuelta la excepción
-    } catch (IOException e) {
-      e.printStackTrace();
     }
-  }
 
-  /**
-   * Devuelve un Set de los Paises del Mapa
-   * @return
-   */
-  public Set<Pais> getPaises() {
-    return (
-      this.paises.entrySet()
-        .parallelStream()
-        .map(
-          entrada -> {
+    /**
+     * Devuelve un Set de los Paises del Mapa
+     * @return
+     */
+    public Set<Pais> getPaises() {
+        return (this.paises.entrySet().parallelStream().map((entrada) -> {
             return (entrada.getValue());
         }).collect(Collectors.toSet()));
     }
@@ -278,189 +252,189 @@ public class Mapa {
                     }
                 }
             }
-          }
-          if ((x + 1) < getSizeX()) { // Tampoco miramos la de la de la derecha si esta casilla ya es la de la derecha del todo
-            if (!getCasilla(new Coordenadas(x + 1, yModificado)).esMaritima()) {
-              addFrontera(
-                getCasilla(new Coordenadas(x, yModificado)).getPais(),
-                getCasilla(new Coordenadas(x + 1, yModificado)).getPais()
-              );
-            }
-          }
-          if (yModificado > 0) { // No comprobamos las de más arriba de arriba de todo del mapa
-            if (!getCasilla(new Coordenadas(x, yModificado - 1)).esMaritima()) {
-              addFrontera(
-                getCasilla(new Coordenadas(x, yModificado)).getPais(),
-                getCasilla(new Coordenadas(x, yModificado - 1)).getPais()
-              );
-            }
-          }
-          if ((yModificado + 1) < getSizeY()) { // No comprobamos las de más abajo de abajo de todo del mapa
-            if (!getCasilla(new Coordenadas(x, yModificado + 1)).esMaritima()) {
-              addFrontera(
-                getCasilla(new Coordenadas(x, yModificado)).getPais(),
-                getCasilla(new Coordenadas(x, yModificado + 1)).getPais()
-              );
-            }
-          }
         }
-      }
     }
-  }
+    
+    /**
+     * Añade una frontera indirecta al mapa. Busca una ruta entre los dos países, y pinta los bordes de las casillas de acuerdo con la ruta.
+     */
+    public void anadirFronteraIndirecta(Pais paisA, Pais paisB) {
+        Casilla casillaInicio = getCasillaPais(paisA);
+        Casilla casillaFin = getCasillaPais(paisB);
 
-  /**
-   * Añade una frontera indirecta al mapa. Busca una ruta entre los dos países, y pinta los bordes de las casillas de acuerdo con la ruta.
-   */
-  public void anadirFronteraIndirecta(Pais paisA, Pais paisB) {
-    Casilla casillaInicio = getCasillaPais(paisA);
-    Casilla casillaFin = getCasillaPais(paisB);
+        List<Casilla> ruta = buscarRuta(casillaInicio, casillaFin);
 
-    List<Casilla> ruta = buscarRuta(casillaInicio, casillaFin);
+        procesarRuta(ruta);
 
-    procesarRuta(ruta);
-
-    this.addFrontera(paisA, paisB);
-  }
-
-  private void procesarRuta(List<Casilla> ruta) {
-    for (int i = 0; i < (ruta.size() - 1); i++) {
-      Coordenadas coordsActuales = ruta.get(i).getCoordenadas();
-      Coordenadas coordsSiguientes = ruta.get(i + 1).getCoordenadas();
-      int deltaX = coordsSiguientes.getX() - coordsActuales.getX();
-      int deltaY = coordsSiguientes.getY() - coordsActuales.getY();
-
-      if (deltaX < 0) { // Como el mapa es un toro (si llegamos a la derecha de todo volvemos a la izquierda, podría darse el caso de que la siguiente casilla esté mas a la izquierda y por eso deltaX sea negativo. En ese caso, lo que hacemos es sumarle el tamaño en X del mapa)
-        deltaX = deltaX + getSizeX();
-      }
-
-      if (deltaX == 0) {
-        if (
-          !getCasilla(coordsActuales)
-            .getBorde()
-            .equals(Casilla.BordeCasilla.VERTICAL_LEFT)
-        ) {
-          getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.VERTICAL);
-        }
-      } else if (deltaX == 1) { // No debería darse el caso de que deltaX < 0, porque en la ruta siempre nos movemos hacia la derecha
-        if (deltaY < 0) { // La siguiente casilla está arriba a la derecha
-          if (
-            !getCasilla(coordsActuales)
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) &&
-            !getCasilla(coordsActuales)
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)
-          ) {
-            getCasilla(coordsActuales)
-              .setBorde(Casilla.BordeCasilla.HORIZONTAL);
-          }
-          getCasilla(
-            new Coordenadas(
-              (coordsActuales.getX() + 1) % getSizeX(),
-              coordsActuales.getY()
-            )
-          )
-            .setBorde(Casilla.BordeCasilla.LEFT_TOP);
-          getCasilla(
-            new Coordenadas(
-              (coordsActuales.getX() + 1) % getSizeX(),
-              (coordsActuales.getY() - 1) % getSizeY()
-            )
-          )
-            .setBorde(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL);
-        } else if (deltaY == 0) { // La siguiente casilla está justo a la derecha
-          if (
-            !getCasilla(coordsActuales)
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) &&
-            !getCasilla(coordsActuales)
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)
-          ) {
-            getCasilla(coordsActuales)
-              .setBorde(Casilla.BordeCasilla.HORIZONTAL);
-          }
-        } else { // La siguiente casilla está abajo a la derecha
-          if (
-            !getCasilla(coordsActuales)
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) &&
-            !getCasilla(coordsActuales)
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)
-          ) {
-            getCasilla(coordsActuales)
-              .setBorde(Casilla.BordeCasilla.HORIZONTAL);
-          }
-          getCasilla(
-            new Coordenadas(
-              (coordsActuales.getX() + 1) % getSizeX(),
-              coordsActuales.getY()
-            )
-          )
-            .setBorde(Casilla.BordeCasilla.LEFT_BOTTOM);
-          getCasilla(
-            new Coordenadas(
-              (coordsActuales.getX() + 1) % getSizeX(),
-              (coordsActuales.getY() + 1) % getSizeY()
-            )
-          )
-            .setBorde(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL);
-        }
-      }
+        this.addFrontera(paisA, paisB);
     }
-  }
 
-  /**
-   * Busca la mejor ruta entre dos casillas. Traza una línea imaginaria, y luego la convierte en coordenadas. El mapa se trata como un toro (empieza donde acaba)
-   */
-  private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
-    List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
+    private void procesarRuta(List<Casilla> ruta) {
+        for (int i = 0; i < (ruta.size() - 1); i++) {
+            Coordenadas coordsActuales = ruta.get(i).getCoordenadas();
+            Coordenadas coordsSiguientes = ruta.get(i+1).getCoordenadas();
+            int deltaX = coordsSiguientes.getX() - coordsActuales.getX();
+            int deltaY = coordsSiguientes.getY() - coordsActuales.getY();
 
-    int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
-    int difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // La diferencia de anchura entre las casillas
+            if (deltaX < 0) { // Como el mapa es un toro (si llegamos a la derecha de todo volvemos a la izquierda, podría darse el caso de que la siguiente casilla esté mas a la izquierda y por eso deltaX sea negativo. En ese caso, lo que hacemos es sumarle el tamaño en X del mapa)
+                deltaX = deltaX + getSizeX();
+            }
+            
+            if (deltaX == 0) {
 
-    if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha). Eso sí, solo lo hacemos si la distancia en X entre las casillas no es más que la mitad del mapa (si es más que la mitad del mapa, es mejor que se le de la vuelta)
-      if (!(Math.abs(difX) < (getSizeX() / 2))) { // No intercambiamos sino que damos la vuelta al mapa
-        difX = difX + getSizeX();
-      } else { // Vamos a intercambiar los parámetros de búsqueda, porque la distancia entre las dos casillas es menor que la mitad del mapa
-        ruta = buscarRuta(fin, inicio);
-        Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
+                if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.VERTICAL_LEFT)) {
+                    getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.VERTICAL);
+                }
+
+            } else if (deltaX == 1) { // No debería darse el caso de que deltaX < 0, porque en la ruta siempre nos movemos hacia la derecha
+                if (deltaY < 0) { // La siguiente casilla está arriba a la derecha
+                    if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
+                        getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
+                    }
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_TOP);
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), (coordsActuales.getY() - 1) % getSizeY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL);
+                } else if (deltaY == 0) { // La siguiente casilla está justo a la derecha
+                    if ( !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
+                        getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
+                    }
+                } else { // La siguiente casilla está abajo a la derecha
+                    if (!getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) && !getCasilla(coordsActuales).getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ) {
+                        getCasilla(coordsActuales).setBorde(Casilla.BordeCasilla.HORIZONTAL);
+                    }
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), coordsActuales.getY())).setBorde(Casilla.BordeCasilla.LEFT_BOTTOM);
+                    getCasilla(new Coordenadas((coordsActuales.getX()+1) % getSizeX(), (coordsActuales.getY()+1) % getSizeY())).setBorde(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Busca la mejor ruta entre dos casillas. Traza una línea imaginaria, y luego la convierte en coordenadas. El mapa se trata como un toro (empieza donde acaba)
+     */
+    private List<Casilla> buscarRuta(Casilla inicio, Casilla fin) {
+        List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
+    
+        int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
+        int difY = fin.getCoordenadas().getY() - inicio.getCoordenadas().getY(); // La diferencia de anchura entre las casillas
+        
+        if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha). Eso sí, solo lo hacemos si la distancia en X entre las casillas no es más que la mitad del mapa (si es más que la mitad del mapa, es mejor que se le de la vuelta)
+            if (!(Math.abs(difX) < (getSizeX()/2))) { // No intercambiamos sino que damos la vuelta al mapa
+                difX = difX + getSizeX();
+            } else { // Vamos a intercambiar los parámetros de búsqueda, porque la distancia entre las dos casillas es menor que la mitad del mapa
+                ruta = buscarRuta(fin, inicio);
+                Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
+                return ruta;
+            }
+        }
+    
+        ruta = new ArrayList<>(); // Creamos una lista vacía para guardar la ruta
+
+        /**
+         * Vamos a dibujar una línea entre el borde izquierdo de la casilla de inicio y el derecho de la del final (es decir, difX + 1).  La altura será desde el borde superior o inferior del inicio, hasta el superior o inferior del final (difY +1). Después, calcularemos por dónde corta la línea a cada casilla.
+         */
+
+        double difAbsY = Math.abs(difY);
+
+        double tangenteAbs = ((double) (difAbsY+1))/((double)(difX+1)); // El valor absoluto de la tangente
+
+        for (int x = 0; x <= difX; x++ ) {
+            // Calculamos el punto de corte en la izquierda y en la derecha de la casilla, para saber cómo corta la recta
+            double yIzquierda = x * tangenteAbs; // El valor de Y en la recta, en el borde izquierdo de la casilla
+            double yDerecha = (x+1) * tangenteAbs; // El valor de Y en la recta, en el borde derecho de la casilla
+
+            double deltaY = yDerecha - yIzquierda;
+
+            int positivo; // Si tenemos que ir hacia arriba, positivo será -1 (ya que cuanto más arriba, Y vale menos)
+            if (difY < 0) {
+                positivo = -1;
+            } else {
+                positivo = 1;
+            }
+
+            for (int i = 0; i < Math.ceil(deltaY); i++) { // Si en una unidad de la línea en X subimos más de una unidad en Y, añadimos todas esas casillas
+                Coordenadas coordenadasCasilla = new Coordenadas((inicio.getCoordenadas().getX() + x) % getSizeX(), inicio.getCoordenadas().getY() + (positivo) * (((int)(yIzquierda)) + i)); // X es módulo el tamaño en X del mapa, porque puede que le demos la vuelta (acabar en la derecha y seguir en la izquierda).
+                
+                ruta.add(Mapa.getMapa().getCasilla(coordenadasCasilla));
+            }
+
+        }
+
         return ruta;
-      }
     }
-
-    ruta = new ArrayList<>(); // Creamos una lista vacía para guardar la ruta
 
     /**
-     * Vamos a dibujar una línea entre el borde izquierdo de la casilla de inicio y el derecho de la del final (es decir, difX + 1).  La altura será desde el borde superior o inferior del inicio, hasta el superior o inferior del final (difY +1). Después, calcularemos por dónde corta la línea a cada casilla.
+     * Ejecuta un algoritmo sencillo para buscar la ruta más corta entre dos Casillas. SIEMPRE nos movemos hacia la derecha al buscar.
+     * @param inicio
+     * @param fin
+     * @return La lista de las casillas por las que pasa la ruta
      */
+    private List<Casilla> buscarRutaIterativo(Casilla inicio, Casilla fin) {
+        List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
 
-    double difAbsY = Math.abs(difY);
+        int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
+        int difY; // La diferencia de anchura entre las casillas
+        
+        if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha)
+            ruta = buscarRuta(fin, inicio);
+            Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
+            return ruta;
+        }
 
-    double tangenteAbs = ((double) (difAbsY + 1)) / ((double) (difX + 1)); // El valor absoluto de la tangente
+        ruta = new ArrayList<>(); // Creamos una lista vacía para guardar la ruta
+        ruta.add(inicio); // Salimos de la primera casilla
+        
+        double discriminante_45grados = (Math.PI / 4); // 45 grados, en readianes
+        double direccion;// Calculamos el arcotangente de la tangente (X/Y)
+        
+        Coordenadas coordenadasActuales = inicio.getCoordenadas(); // Salimos de las coordenadas iniciales
+        Coordenadas coordenadasSiguientes; // Las coordenadas de la casilla a la que nos vamos a mover
+        
+        while (!coordenadasActuales.equals(fin.getCoordenadas()) && (coordenadasActuales.getX() < 20) && (coordenadasActuales.getY() < 20)){ // Repetimos el bucle hasta llegar a las coordenadas finales
+            /**
+             * Si el arcotangente es mayor de 45 grados, nos dirigiremos en dirección Y; si es menor, nos moveremos en X (ya que la dirección hasta el fin es más plana). Si es igual, nos moveremos simultáneamente en X e Y.
+             */
+            System.out.println("X: " + coordenadasActuales.getX() + ", Y: " + coordenadasActuales.getY());
+            
+            difX = fin.getCoordenadas().getX() - coordenadasActuales.getX(); // Volvemos a calcular la diferencia de altura entre las casillas
+            difY = fin.getCoordenadas().getY() - coordenadasActuales.getY(); // Volvemos a calcular la diferencia de anchura entre las casillas
+            
+            direccion = Math.atan(((double)difY)/((double)difX)); // La dirección es el arcotangente de la tangente, es decir, los grados de la línea que une donde estamos con el final
+            
+            System.out.println(difX + " [difX], " + difY + "[difY]");
+            System.out.println(direccion + ", " + discriminante_45grados);
+            
+            int comparacion = Double.compare(Math.abs(direccion), discriminante_45grados); // Comparamos la dirección con el discriminante. Comparamos el valor absoluto de la dirección solamente, ya que queremos saber si es más o menos de 45 grados.
+            
+            if (comparacion == 0) { // Si la dirección hacia el final es 45 grados, subimos o bajamos simultáneamente en X e Y
+                
+                if (direccion > 0) { //Nos movemos hacia arriba
+                    coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() + 1, coordenadasActuales.getY() + 1);
+                } else { // Nos movemos hacia abajo
+                    coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() + 1, coordenadasActuales.getY() - 1);
+                }
+                
+            } else if (comparacion > 0) { // La dirección es mayor de 45 grados, nos movemos en Y
+                
+                if (direccion > 0) { //Nos movemos hacia arriba
+                    coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX(), coordenadasActuales.getY() + 1);
+                } else { // Nos movemos hacia abajo
+                    coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX(), coordenadasActuales.getY() - 1);
+                }
+                
+            } else { // La dirección es menor de 45 grados, nos movemos hacia la derecha en X
+                
+                coordenadasSiguientes = new Coordenadas(coordenadasActuales.getX() + 1, coordenadasActuales.getY());
 
-    for (int x = 0; x <= difX; x++) {
-      // Calculamos el punto de corte en la izquierda y en la derecha de la casilla, para saber cómo corta la recta
-      double yIzquierda = x * tangenteAbs; // El valor de Y en la recta, en el borde izquierdo de la casilla
-      double yDerecha = (x + 1) * tangenteAbs; // El valor de Y en la recta, en el borde derecho de la casilla
+            }
 
-      double deltaY = yDerecha - yIzquierda;
+            ruta.add(getCasilla(coordenadasSiguientes)); // Añadimos la casilla siguiente a la ruta
 
-      int positivo; // Si tenemos que ir hacia arriba, positivo será -1 (ya que cuanto más arriba, Y vale menos)
-      if (difY < 0) {
-        positivo = -1;
-      } else {
-        positivo = 1;
-      }
 
-      for (int i = 0; i < Math.ceil(deltaY); i++) { // Si en una unidad de la línea en X subimos más de una unidad en Y, añadimos todas esas casillas
-        Coordenadas coordenadasCasilla = new Coordenadas(
-          (inicio.getCoordenadas().getX() + x) % getSizeX(),
-          inicio.getCoordenadas().getY() +
-          (positivo) *
-          (((int) (yIzquierda)) + i)
-        ); // X es módulo el tamaño en X del mapa, porque puede que le demos la vuelta (acabar en la derecha y seguir en la izquierda).
+            coordenadasActuales = coordenadasSiguientes; // Ahora estamos en las siguientes coordenadas
+        }
+
+        return ruta;
+    }
 
     /**
      * Devuelve la Casilla asociada a un Pais
@@ -481,125 +455,42 @@ public class Mapa {
         }
     }
 
-    return ruta;
-  }
-
-  /**
-   * Ejecuta un algoritmo sencillo para buscar la ruta más corta entre dos Casillas. SIEMPRE nos movemos hacia la derecha al buscar.
-   * @param inicio
-   * @param fin
-   * @return La lista de las casillas por las que pasa la ruta
-   */
-  private List<Casilla> buscarRutaIterativo(Casilla inicio, Casilla fin) {
-    List<Casilla> ruta; // La lista de las Casillas que componen nuestra ruta
-
-    int difX = fin.getCoordenadas().getX() - inicio.getCoordenadas().getX(); // La diferencia de altura entre las casillas
-    int difY; // La diferencia de anchura entre las casillas
-
-    if (difX < 0) { // Si la casilla de fin está a la izquierda de la de inicio, llamamos a esta misma función pero con los parámetros intercambiados (para buscar la ruta de izquierda a derecha)
-      ruta = buscarRuta(fin, inicio);
-      Collections.reverse(ruta); // Le damos la vuelta a la ruta, porque la hemos buscado al revés
-      return ruta;
+    /**
+     * Devuelve la Casilla en las coordenadas especificadas
+     * @param coordenadas
+     * @return
+     */
+    public Casilla getCasilla(Coordenadas coordenadas) {
+        return this.casillas.get(coordenadas);
     }
 
-    ruta = new ArrayList<>(); // Creamos una lista vacía para guardar la ruta
-    ruta.add(inicio); // Salimos de la primera casilla
-
-    double discriminante_45grados = (Math.PI / 4); // 45 grados, en readianes
-    double direccion; // Calculamos el arcotangente de la tangente (X/Y)
-
-    Coordenadas coordenadasActuales = inicio.getCoordenadas(); // Salimos de las coordenadas iniciales
-    Coordenadas coordenadasSiguientes; // Las coordenadas de la casilla a la que nos vamos a mover
-
-    while (
-      !coordenadasActuales.equals(fin.getCoordenadas()) &&
-      (coordenadasActuales.getX() < 20) &&
-      (coordenadasActuales.getY() < 20)
-    ) { // Repetimos el bucle hasta llegar a las coordenadas finales
-      /**
-       * Si el arcotangente es mayor de 45 grados, nos dirigiremos en dirección Y; si es menor, nos moveremos en X (ya que la dirección hasta el fin es más plana). Si es igual, nos moveremos simultáneamente en X e Y.
-       */
-      System.out.println(
-        "X: " +
-        coordenadasActuales.getX() +
-        ", Y: " +
-        coordenadasActuales.getY()
-      );
-
-      difX = fin.getCoordenadas().getX() - coordenadasActuales.getX(); // Volvemos a calcular la diferencia de altura entre las casillas
-      difY = fin.getCoordenadas().getY() - coordenadasActuales.getY(); // Volvemos a calcular la diferencia de anchura entre las casillas
-
-      direccion = Math.atan(((double) difY) / ((double) difX)); // La dirección es el arcotangente de la tangente, es decir, los grados de la línea que une donde estamos con el final
-
-      System.out.println(difX + " [difX], " + difY + "[difY]");
-      System.out.println(direccion + ", " + discriminante_45grados);
-
-      int comparacion = Double.compare(
-        Math.abs(direccion),
-        discriminante_45grados
-      ); // Comparamos la dirección con el discriminante. Comparamos el valor absoluto de la dirección solamente, ya que queremos saber si es más o menos de 45 grados.
-
-      if (comparacion == 0) { // Si la dirección hacia el final es 45 grados, subimos o bajamos simultáneamente en X e Y
-        if (direccion > 0) { //Nos movemos hacia arriba
-          coordenadasSiguientes =
-            new Coordenadas(
-              coordenadasActuales.getX() + 1,
-              coordenadasActuales.getY() + 1
-            );
-        } else { // Nos movemos hacia abajo
-          coordenadasSiguientes =
-            new Coordenadas(
-              coordenadasActuales.getX() + 1,
-              coordenadasActuales.getY() - 1
-            );
-        }
-      } else if (comparacion > 0) { // La dirección es mayor de 45 grados, nos movemos en Y
-        if (direccion > 0) { //Nos movemos hacia arriba
-          coordenadasSiguientes =
-            new Coordenadas(
-              coordenadasActuales.getX(),
-              coordenadasActuales.getY() + 1
-            );
-        } else { // Nos movemos hacia abajo
-          coordenadasSiguientes =
-            new Coordenadas(
-              coordenadasActuales.getX(),
-              coordenadasActuales.getY() - 1
-            );
-        }
-      } else { // La dirección es menor de 45 grados, nos movemos hacia la derecha en X
-        coordenadasSiguientes =
-          new Coordenadas(
-            coordenadasActuales.getX() + 1,
-            coordenadasActuales.getY()
-          );
-      }
-
-      ruta.add(getCasilla(coordenadasSiguientes)); // Añadimos la casilla siguiente a la ruta
-
-      coordenadasActuales = coordenadasSiguientes; // Ahora estamos en las siguientes coordenadas
+    /**
+     * Devuelve el Continente con el código especificado
+     * @param codigo
+     * @return
+     */
+    public Continente getContinente(String codigo) {
+        return this.continentes.get(codigo);
     }
 
-    return ruta;
-  }
+    /**
+     * Devuelve la Frontera entre dos países, o {@code null} si no existe
+     */
+    public Optional<Frontera> getFrontera(Pais paisA, Pais paisB) {
+        return Optional.ofNullable(this.fronteras.contains(new Frontera(paisA, paisB)) ? new Frontera(paisA, paisB) : null);
+    }
 
-  /**
-   * Devuelve la Casilla asociada a un Pais
-   * @param pais
-   * @return
-   */
-  public Casilla getCasillaPais(Pais pais) {
-    try {
-      return (
-        this.casillas.entrySet()
-          .parallelStream()
-          .filter(
-            entrada -> {
-              if (!entrada.getValue().esMaritima()) {
-                return (entrada.getValue().getPais().equals(pais));
-              } else { // La casilla es marítima, no puede tener asociado un país
+    /**
+     * Devuelve las Fronteras de un Pais
+     * @param pais
+     * @return
+     */
+    public Set<Frontera> getFronteras(Pais pais) {
+        return (this.fronteras.parallelStream().filter((Frontera f) -> {
+            if (f.getPaises().contains(pais)) {
+                return true;
+            } else {
                 return false;
-              }
             }
         }).collect(Collectors.toSet()));
     }
@@ -768,10 +659,4 @@ public class Mapa {
         stringBuilder.append(NEW_LINE);
         return stringBuilder.toString();
     }
-    stringBuilder.append(
-      new String(new char[getSizeX()]).replace("\0", "|===========") + "|"
-    );
-    stringBuilder.append(NEW_LINE);
-    return stringBuilder.toString();
-  }
 }

@@ -5,63 +5,70 @@
 package risk;
 
 public class Coordenadas implements Comparable {
-
-  private final int X;
-  private final int Y;
-
-  Coordenadas(int X, int Y) {
-    this.X = X;
-    this.Y = Y;
-  }
-
-  public int getX() {
-    return this.X;
-  }
-
-  public int getY() {
-    return this.Y;
-  }
-
-  @Override
-  public int compareTo(Object o) {
-    if (!o.getClass().equals(this.getClass())) { // Para comparar, miramos que sean de la misma clase
-      return 0;
+    
+    private final int X;
+    private final int Y;
+    
+    Coordenadas (int X, int Y) {
+        this.X = X;
+        this.Y = Y;
+    }
+    
+    public int getX() {
+        return this.X;
     }
 
-    Coordenadas coords = (Coordenadas) o;
+    public int getY() {
+        return this.Y;
+    }
 
-    if (this.getY() > coords.getY()) return 1; // La coordenada de este objeto está más abajo, así que devolvemos que es mayor
+    @Override
+    public int compareTo(Object o) {
+        if ( !o.getClass().equals(this.getClass()) ) { // Para comparar, miramos que sean de la misma clase
+            return 0;
+        }
 
-    if (this.getY() < coords.getY()) return -1; // La coordenada de este objeto está más arriba, así que devolvemos que es menor
+        Coordenadas coords = (Coordenadas) o;
 
-    if (this.getX() > coords.getX()) return 1; // La coordenada de este objeto está en el mismo nivel, pero más a la derecha, así que devolvemos que es mayor
+        if (this.getY() > coords.getY()) // La coordenada de este objeto está más abajo, así que devolvemos que es mayor
+        return 1;
 
-    if (this.getX() < coords.getX()) return -1; // La coordenada de este objeto está en el mismo nivel, pero más a la izquierda, así que devolvemos que es menor
+        if (this.getY() < coords.getY()) // La coordenada de este objeto está más arriba, así que devolvemos que es menor
+        return -1;
 
-    return 0; // Las coordenadas son iguales
-  }
+        if (this.getX() > coords.getX()) // La coordenada de este objeto está en el mismo nivel, pero más a la derecha, así que devolvemos que es mayor
+        return 1;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
+        if (this.getX() < coords.getX()) // La coordenada de este objeto está en el mismo nivel, pero más a la izquierda, así que devolvemos que es menor
+        return -1;
 
-    if (o == null) return false;
+        return 0; // Las coordenadas son iguales
 
-    if (!o.getClass().equals(this.getClass())) return false; // No son iguales si son de distinta clase
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+        return true;
 
-    if (
-      ((Coordenadas) o).getX() == this.getX() &&
-      ((Coordenadas) o).getY() == this.getY()
-    ) return true; // Son iguales si tienen las mismas coordenadas
+        if (o == null)
+        return false;
 
-    return false; // No son iguales por defecto
-  }
+        if ( !o.getClass().equals(this.getClass()) )
+        return false; // No son iguales si son de distinta clase
 
-  /**
-   * Función de hashCode. Debe devolver el mismo valor para un par (x,y) igual
-   */
-  @Override
-  public int hashCode() {
-    return (100 * getX() + getY());
-  }
+        if (((Coordenadas) o).getX() == this.getX() && ((Coordenadas) o).getY() == this.getY())
+        return true; // Son iguales si tienen las mismas coordenadas
+
+        return false; // No son iguales por defecto
+    }
+
+    /**
+     * Función de hashCode. Debe devolver el mismo valor para un par (x,y) igual
+     */
+    @Override
+    public int hashCode() {
+        return (100*getX() + getY());
+    }
+
 }
