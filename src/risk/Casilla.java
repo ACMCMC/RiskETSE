@@ -1,15 +1,6 @@
-/**
- * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
- */
-
 package risk;
 
-public class Casilla {
-
-    private Coordenadas coordenadas;
-    private Pais pais; // Si es una casilla marítima, pais es null
-    private BordeCasilla borde; // Parámetro auxiliar para pintar los bordes
-
+public abstract class Casilla {
     /**
      * Representa los bordes de la casilla. Se usa después para representar el mapa
     */
@@ -25,22 +16,23 @@ public class Casilla {
         NONE
     }
 
+    private BordeCasilla borde; // Parámetro auxiliar para pintar los bordes
+
+    private Coordenadas coordenadas;
+
     Casilla(Coordenadas coordenadas) {
         setCoordenadas(coordenadas);
         setBorde(BordeCasilla.NONE);
-        setPais(null); // Esta casilla no tiene asociado un país, es una casilla marítima
     }
     
     Casilla(Coordenadas coordenadas, BordeCasilla tipoBorde) {
         setCoordenadas(coordenadas);
         setBorde(tipoBorde);
-        setPais(null); // Esta casilla no tiene asociado un país, es una casilla marítima
     }
     
     Casilla(Coordenadas coordenadas, Pais pais) {
         setCoordenadas(coordenadas);
         setBorde(BordeCasilla.NONE);
-        setPais(pais);
     }
 
     public void setBorde(BordeCasilla borde) {
@@ -59,27 +51,6 @@ public class Casilla {
         this.coordenadas = coordenadas;
     }
 
-    public Pais getPais() {
-        return this.pais;
-    }
-
-    private void setPais(Pais pais) {
-        this.pais = pais;
-    }
-
-    public boolean esMaritima() {
-        return (this.pais == null);
-    }
-
-    @Override
-    public String toString() {
-        if (this.esMaritima()) {
-            return("Casilla marítima -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
-        } else {
-            return("Casilla del país: " + this.getPais().getCodigo() + " -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
-        }
-    }
-    
     @Override
     public boolean equals(Object casilla){
         if (this==casilla){
@@ -95,10 +66,10 @@ public class Casilla {
         if(!this.getCoordenadas().equals(other.getCoordenadas())){
             return false;
         }
-        if(!this.getPais().equals(other.getPais())){
-            return false;
-        }
         
         return true;
     }
+
+    @Deprecated
+    public abstract boolean esMaritima();
 }
