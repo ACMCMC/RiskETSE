@@ -105,9 +105,13 @@ public class Jugador {
     return this.nombre;
   }
 
-  private void setNombre(String nombre) {
-    this.nombre = nombre;
-  }
+    /**
+     * Devuelve un Set de los Paises de este Jugador
+     */
+    public Set<Pais> getPaises() {
+        Set<Pais> paisesJugador = Mapa.getMapa().getPaises().parallelStream().filter(pais -> {return(pais.getJugador()!=null ? pais.getJugador().equals(this) : false);}).collect(Collectors.toSet());
+        return paisesJugador;
+    }
 
   public Color getColor() {
     return this.color;

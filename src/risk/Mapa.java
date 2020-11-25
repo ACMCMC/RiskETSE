@@ -23,39 +23,39 @@ import java.util.stream.Collectors;
 
 public class Mapa {
 
-  private static final File FILE_COLORES_CONTINENTES = new File(
-    "coloresContinentes.csv"
-  );
-  private static final String NEW_LINE = System.getProperty("line.separator");
+    private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");
+    private static final String NEW_LINE = System.getProperty("line.separator");
 
-  private static final Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
-  private static boolean isMapaCreado = false; // Will be false at first, until the asignarPaises() method gets executed
+    private static final Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
+    private static boolean isMapaCreado = false; // Will be false at first, until the asignarPaises() method gets executed
 
-  private final int SIZE_X = 11;
-  private final int SIZE_Y = 8;
+    private final int SIZE_X = 11;
+    private final int SIZE_Y = 8;
 
-  private Map<Coordenadas, Casilla> casillas;
-  private Map<String, Pais> paises;
-  private Map<String, Continente> continentes;
-  private Set<Frontera> fronteras;
+    private Map<Coordenadas, Casilla> casillas;
+    private Map<String, Pais> paises;
+    private Map<String, Continente> continentes;
+    private Set<Frontera> fronteras;
 
-  /**
-   * Crea un mapa lleno de casillas marítimas
-   * @param archivoRelacionPaises
-   * @throws FileNotFoundException
-   */
-  private Mapa() {
-    casillas = new HashMap<Coordenadas, Casilla>();
-    paises = new HashMap<String, Pais>();
-    continentes = new HashMap<String, Continente>();
-    fronteras = new HashSet<Frontera>();
+    /**
+     * Crea un mapa lleno de casillas marítimas
+     * @param archivoRelacionPaises
+     * @throws FileNotFoundException
+     */
+    private Mapa() {
 
-    // llenamos el Mapa de casillas, todas marítimas en principio
-    for (int y = 0; y < getSizeY(); y++) {
-      for (int x = 0; x < getSizeX(); x++) {
-        Casilla casillaInsertar = new Casilla(new Coordenadas(x, y));
-        casillas.put(casillaInsertar.getCoordenadas(), casillaInsertar);
-      }
+        casillas = new HashMap<Coordenadas, Casilla>();
+        paises = new HashMap<String, Pais>();
+        continentes = new HashMap<String, Continente>();
+        fronteras = new HashSet<Frontera>();
+
+        // llenamos el Mapa de casillas, todas marítimas en principio
+        for (int y = 0; y < getSizeY(); y++) {
+            for (int x = 0; x < getSizeX(); x++) {
+                Casilla casillaInsertar = new CasillaMaritima(new Coordenadas(x, y));
+                casillas.put(casillaInsertar.getCoordenadas(), casillaInsertar);
+            }
+        }
     }
   }
 
@@ -146,39 +146,47 @@ public class Mapa {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-  }
 
-  /**
-   * Reemplaza las casillas del mapa por las casillas con el país que se indique en el archivo, por cada una de las entradas del archivo. El archivo tiene que tener formato [nombreHumanoPais];[codigoPais];[nombreHumanoContinente];[codigoContinente];[X];[Y]
-   * @param archivoPaises
-   * @throws FileNotFoundException
-   */
-  private void asignarPaisesACasillas(File archivoRelacionPaises)
-    throws FileNotFoundException {
-    String linea;
-    String[] valores;
-    BufferedReader bufferedReader;
+    /**
+     * Reemplaza las casillas del mapa por las casillas con el país que se indique en el archivo, por cada una de las entradas del archivo. El archivo tiene que tener formato [nombreHumanoPais];[codigoPais];[nombreHumanoContinente];[codigoContinente];[X];[Y]
+     * @param archivoPaises
+     * @throws FileNotFoundException
+     */
+    private void asignarPaisesACasillas(File archivoRelacionPaises) throws FileNotFoundException {
 
-    try { // Reemplazamos las casillas del mapa por las que nos pone el archivo
-      bufferedReader =
-        new BufferedReader(new FileReader(archivoRelacionPaises));
-      while ((linea = bufferedReader.readLine()) != null) {
-        valores = linea.split(";");
+        String linea;
+        String[] valores;
+        BufferedReader bufferedReader;
 
-        String nombreHumanoPais, codigoPais, nombreHumanoContinente, codigoContinente, posX, posY;
-        nombreHumanoPais = valores[0];
-        codigoPais = valores[1];
-        nombreHumanoContinente = valores[2];
-        codigoContinente = valores[3];
-        posX = valores[4];
-        posY = valores[5];
+        try { // Reemplazamos las casillas del mapa por las que nos pone el archivo
+            bufferedReader = new BufferedReader(new FileReader(archivoRelacionPaises));
+            while ((linea = bufferedReader.readLine()) != null) {
+                valores = linea.split(";");
 
-        Continente continenteDelPais = getContinente(codigoContinente);
-        if (continenteDelPais == null) {
-          // Creamos el continente, porque no está en la lista
-          continenteDelPais =
-            new Continente(codigoContinente, nombreHumanoContinente);
-          continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
+                String nombreHumanoPais, codigoPais, nombreHumanoContinente, codigoContinente, posX, posY;
+                nombreHumanoPais = valores[0];
+                codigoPais = valores[1];
+                nombreHumanoContinente = valores[2];
+                codigoContinente = valores[3];
+                posX = valores[4];
+                posY = valores[5];
+
+                Continente continenteDelPais = getContinente(codigoContinente);
+                if (continenteDelPais == null) {
+                    // Creamos el continente, porque no está en la lista
+                    continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
+                    continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
+                }
+                // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva casilla con país
+                CasillaPais casillaPais = new CasillaPais(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)), new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
+                casillas.replace(casillaPais.getCoordenadas(), casillaPais);
+                paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista de países
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException ex) {
+            throw ex; // Lanzamos de vuelta la excepción
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva casilla con país
         Casilla casillaPais = new Casilla(
@@ -207,83 +215,68 @@ public class Mapa {
         .map(
           entrada -> {
             return (entrada.getValue());
-          }
-        )
-        .collect(Collectors.toSet())
-    );
-  }
+        }).collect(Collectors.toSet()));
+    }
 
-  /**
-   * Devuelve el Set de las Fronteras de Paises de este continente con Paises de otros continentes
-   * @param c
-   * @return
-   */
-  public Set<Frontera> getFronterasIntercontinentales(Continente c) {
-    return (
-      this.fronteras.parallelStream()
-        .filter(
-          frontera ->
-            frontera
-              .getPaises()
-              .stream()
-              .anyMatch(pais -> pais.getContinente().equals(c))
-        )
-        .filter(
-          frontera ->
-            !frontera
-              .getPaises()
-              .stream()
-              .allMatch(pais -> pais.getContinente().equals(c))
-        )
-        .collect(Collectors.toSet())
-    );
-  }
+    /**
+     * Devuelve el Set de las Fronteras de Paises de este continente con Paises de otros continentes
+     * @param c
+     * @return
+     */
+    public Set<Frontera> getFronterasIntercontinentales(Continente c) {
+        return (this.fronteras.parallelStream()
+        .filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c)))
+        .filter(frontera -> !frontera.getPaises().stream().allMatch(pais -> pais.getContinente().equals(c))).collect(Collectors.toSet()));
+    }
 
-  /**
-   * Devuelve el número de Paises de otros Continentes que tienen alguna Frontera con el continente {@code c}. Si varios Paises de este Continente tocan el mismo Pais de otro Continente, solo se cuenta una vez.
-   * @param c
-   * @return
-   */
-  public int getNumFronterasIntercontinentales(Continente c) {
-    return getFronterasIntercontinentales(c)
-      .stream()
-      .collect(
-        Collectors.groupingBy(
-          frontera ->
-            frontera
-              .getPaises()
-              .stream()
-              .filter(pais -> !pais.getContinente().equals(c))
-              .findFirst()
-              .get()
-        )
-      )
-      .size();
-  }
+    /**
+     * Devuelve el número de Paises de otros Continentes que tienen alguna Frontera con el continente {@code c}. Si varios Paises de este Continente tocan el mismo Pais de otro Continente, solo se cuenta una vez.
+     * @param c
+     * @return
+     */
+    public int getNumFronterasIntercontinentales(Continente c) {
+        return getFronterasIntercontinentales(c).stream().collect(Collectors.groupingBy(frontera -> frontera.getPaises().stream().filter(pais -> !pais.getContinente().equals(c)).findFirst().get())).size();
+    }
 
-  /**
-   * Recorre el mapa, añadiendo las fronteras entre los países que tienen conexión directa.
-   *
-   * Para ser más eficientes, el mapa se recorre de derecha a izquierda, saltando cada dos líneas, así:
-   *
-   * |x| |x| |x| | (1er pass)
-   * | |x| |x| |x| (1er pass)
-   * |x| |x| |x| | (2do pass)
-   * | |x| |x| |x| (2do pass)
-   * |x| |x| |x| | (3er pass) ...
-   */
-  private void anadirFronterasDirectas() {
-    for (int y = 0; y < (getSizeY()); y += 2) { // Recorremos en vertical saltando una línea, hasta una línea antes del final
-      for (int x = 0; x < getSizeX(); x++) {
-        int yModificado = y + (x % 2); // Si x es impar, y se aumenta una unidad (así conseguimos recorrer el mapa en zigzag)
-        if (!getCasilla(new Coordenadas(x, yModificado)).esMaritima()) { // Solo vamos a mirar las fonteras de esta casilla si tiene un país (no es marítima)
-          // Vamos mirando las casillas en contacto directo con esta, y si no son marítimas, las añadimos a la lista de fronteras
-          if (x > 0) { // No miramos la casilla de la izquierda en la que ya está a la izquierda
-            if (!getCasilla(new Coordenadas(x - 1, yModificado)).esMaritima()) {
-              addFrontera(
-                getCasilla(new Coordenadas(x, yModificado)).getPais(),
-                getCasilla(new Coordenadas(x - 1, yModificado)).getPais()
-              );
+    /**
+     * Recorre el mapa, añadiendo las fronteras entre los países que tienen conexión directa.
+     * 
+     * Para ser más eficientes, el mapa se recorre de derecha a izquierda, saltando cada dos líneas, así:
+     * 
+     * |x| |x| |x| | (1er pass)
+     * | |x| |x| |x| (1er pass)
+     * |x| |x| |x| | (2do pass)
+     * | |x| |x| |x| (2do pass)
+     * |x| |x| |x| | (3er pass) ...
+     */
+    private void anadirFronterasDirectas() {
+        for (int y = 0; y < (getSizeY()); y += 2) { // Recorremos en vertical saltando una línea, hasta una línea antes del final
+            for (int x = 0; x < getSizeX(); x++) {
+                int yModificado = y + (x%2); // Si x es impar, y se aumenta una unidad (así conseguimos recorrer el mapa en zigzag)
+                if (getCasilla(new Coordenadas(x, yModificado)) instanceof CasillaPais) { // Solo vamos a mirar las fonteras de esta casilla si tiene un país (no es marítima)
+
+                    // Vamos mirando las casillas en contacto directo con esta, y si no son marítimas, las añadimos a la lista de fronteras
+                    if (x > 0) { // No miramos la casilla de la izquierda en la que ya está a la izquierda
+                        if (getCasilla(new Coordenadas(x-1, yModificado)) instanceof CasillaPais) {
+                            addFrontera(((CasillaPais) getCasilla(new Coordenadas(x, yModificado))).getPais(), ((CasillaPais) getCasilla(new Coordenadas(x-1, yModificado))).getPais());
+                        }
+                    }
+                    if ( (x + 1) < getSizeX()) { // Tampoco miramos la de la de la derecha si esta casilla ya es la de la derecha del todo
+                        if (getCasilla(new Coordenadas(x+1, yModificado)) instanceof CasillaPais) {
+                            addFrontera(((CasillaPais) getCasilla(new Coordenadas(x, yModificado))).getPais(), ((CasillaPais) getCasilla(new Coordenadas(x+1, yModificado))).getPais());
+                        }
+                    }
+                    if (yModificado > 0) { // No comprobamos las de más arriba de arriba de todo del mapa
+                        if (getCasilla(new Coordenadas(x, yModificado-1)) instanceof CasillaPais) {
+                            addFrontera(((CasillaPais) getCasilla(new Coordenadas(x, yModificado))).getPais(), ((CasillaPais) getCasilla(new Coordenadas(x, yModificado-1))).getPais());
+                        }
+                    }
+                    if ((yModificado + 1) < getSizeY()) {// No comprobamos las de más abajo de abajo de todo del mapa
+                        if (getCasilla(new Coordenadas(x, yModificado+1)) instanceof CasillaPais) {
+                            addFrontera(((CasillaPais) getCasilla(new Coordenadas(x, yModificado))).getPais(), ((CasillaPais) getCasilla(new Coordenadas(x, yModificado+1))).getPais());
+                        }
+                    }
+                }
             }
           }
           if ((x + 1) < getSizeX()) { // Tampoco miramos la de la de la derecha si esta casilla ya es la de la derecha del todo
@@ -469,8 +462,23 @@ public class Mapa {
           (((int) (yIzquierda)) + i)
         ); // X es módulo el tamaño en X del mapa, porque puede que le demos la vuelta (acabar en la derecha y seguir en la izquierda).
 
-        ruta.add(Mapa.getMapa().getCasilla(coordenadasCasilla));
-      }
+    /**
+     * Devuelve la Casilla asociada a un Pais
+     * @param pais
+     * @return
+     */
+    public Casilla getCasillaPais(Pais pais) {
+        try {
+            return (this.casillas.entrySet().parallelStream().filter((entrada) -> {
+                if (entrada.getValue() instanceof CasillaPais) {
+                    return (((CasillaPais)entrada.getValue()).getPais().equals(pais));
+                } else { // La casilla es marítima, no puede tener asociado un país
+                    return false;
+                }
+            }).findFirst().get().getValue());
+        } catch (NoSuchElementException ex) {
+            return null;
+        }
     }
 
     return ruta;
@@ -593,209 +601,172 @@ public class Mapa {
                 return false;
               }
             }
-          )
-          .findFirst()
-          .get()
-          .getValue()
-      );
-    } catch (NoSuchElementException ex) {
-      return null;
+        }).collect(Collectors.toSet()));
     }
-  }
 
-  /**
-   * Devuelve la Casilla en las coordenadas especificadas
-   * @param coordenadas
-   * @return
-   */
-  public Casilla getCasilla(Coordenadas coordenadas) {
-    return this.casillas.get(coordenadas);
-  }
+    /**
+     * Contiene los códigos Unicode necesarios para imprimir el mapa
+     */
+    private static enum CodigosMapa {
+        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'), BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'), BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'), LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B'), LINEA_VERTICALTOHORIZONTAL_BOLD('\u250F'), LINEA_HORIZONTALTOVERTICAL_BOLD('\u251B');
 
-  /**
-   * Devuelve el Continente con el código especificado
-   * @param codigo
-   * @return
-   */
-  public Continente getContinente(String codigo) {
-    return this.continentes.get(codigo);
-  }
+        char codigo;
+        CodigosMapa(char codigo) {
+            this.codigo = codigo;
+        }
 
-  /**
-   * Devuelve la Frontera entre dos países, o {@code null} si no existe
-   */
-  public Optional<Frontera> getFrontera(Pais paisA, Pais paisB) {
-    return Optional.ofNullable(
-      this.fronteras.contains(new Frontera(paisA, paisB))
-        ? new Frontera(paisA, paisB)
-        : null
-    );
-  }
+        @Override
+        public String toString() {
+            return Character.toString(codigo);
+        }
+    }
 
-  /**
-   * Devuelve las Fronteras de un Pais
-   * @param pais
-   * @return
-   */
-  public Set<Frontera> getFronteras(Pais pais) {
-    return (
-      this.fronteras.parallelStream()
-        .filter(
-          (Frontera f) -> {
-            if (f.getPaises().contains(pais)) {
-              return true;
-            } else {
-              return false;
+    /**
+     * Añade una Frontera entre dos países. Si ya existe la Frontera, no hace nada
+     * @param paisA
+     * @param paisB
+     */
+    private void addFrontera(Pais paisA, Pais paisB) {
+        this.fronteras.add(new Frontera(paisA, paisB));
+    }
+
+    /**
+     * Devuelve el Pais con el código especificado
+     * @param codigo
+     * @return
+     */
+    public Pais getPais(String codigo) {
+        return this.paises.get(codigo);
+    }
+
+    /**
+     * Devuelve un Set de todos los Continentes del mapa
+     */
+    public Set<Continente> getContinentes() {
+        return this.continentes.entrySet().parallelStream().map(entry -> entry.getValue()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Imprime el Mapa por pantalla
+     */
+    public void imprimirMapa() {
+        System.out.print(toString());
+    }
+    
+
+    /**
+     * Devuelve una representación del Mapa como String
+     */
+    @Override
+    public String toString() {
+        String tramoHorizontal = new String(new char[getSizeX()]).replace('\0', CodigosMapa.LINEA_HORIZONTAL.codigo);
+        StringBuilder stringBuilder = new StringBuilder();
+        // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
+        for (int y = 0; y < getSizeY(); y++) {
+            if (y == 0) { // Si esta es la primera fila, su borde superior debe ser de color negro y en un formato distinto
+                for (int x = 0; x < getSizeX(); x++) {
+                    if (x==0) {
+                        stringBuilder.append(CodigosMapa.BORDE_IZQ_TOP);
+                    } else {
+                        stringBuilder.append(CodigosMapa.BORDE_MIDDLE_TOP);
+                    }
+                    stringBuilder.append(tramoHorizontal);
+                }
+                stringBuilder.append(CodigosMapa.BORDE_DER_TOP);
+            } else { // Para el resto de filas...
+                for (int x = 0; x < getSizeX(); x++) {
+                    Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD); // También podría ser CRUZ_BOLD
+                        stringBuilder.append(Color.getSecColorReset());
+                    } else if (x == 0) {
+                        stringBuilder.append(CodigosMapa.BORDE_IZQ_MIDDLE);
+                    } else {
+                        stringBuilder.append(CodigosMapa.CRUZ);
+                    }
+                    stringBuilder.append(tramoHorizontal);
+                }
+                stringBuilder.append(CodigosMapa.BORDE_DER_MIDDLE);
             }
-          }
-        )
-        .collect(Collectors.toSet())
-    );
-  }
+            stringBuilder.append(NEW_LINE);
 
-  /**
-   * Añade una Frontera entre dos países. Si ya existe la Frontera, no hace nada
-   * @param paisA
-   * @param paisB
-   */
-  private void addFrontera(Pais paisA, Pais paisB) {
-    this.fronteras.add(new Frontera(paisA, paisB));
-  }
+            for (int x = 0; x < getSizeX(); x++) { // Línea del nombre de país
+                Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
+                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) { // Si la ruta va a la casilla de arriba, y no pasa por esta casilla
+                        stringBuilder.append(CodigosMapa.LINEA_HORIZONTALTOVERTICAL_BOLD);
+                    } else {
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICALTOHORIZONTAL_BOLD);
+                    }
+                    stringBuilder.append(Color.getSecColorReset());
+                } else {
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
+                }
+                if (casilla instanceof CasillaMaritima) { // No podemos imprimir el nombre del país, porque la casilla es marítima
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(new String(new char[getSizeX()]).replace('\0', CodigosMapa.LINEA_HORIZONTAL_BOLD.codigo)); // Imprimimos espacios
+                        stringBuilder.append(Color.getSecColorReset());
+                    } else if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
+                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                    } else {
+                        stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
+                    }
+                } else {
+                    stringBuilder.append(" "); // Imprimimos un espacio al final para separar
+                    stringBuilder.append(((CasillaPais)casilla).getPais().getContinente().getColor().getSecFondo());
+                    stringBuilder.append(String.format("%-9s", ((CasillaPais)casilla).getPais().getCodigo()));
+                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(" "); // Imprimimos un espacio al final para separar
+                }
+            }
+            stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
+            stringBuilder.append(NEW_LINE);
 
-  /**
-   * Devuelve el Pais con el código especificado
-   * @param codigo
-   * @return
-   */
-  public Pais getPais(String codigo) {
-    return this.paises.get(codigo);
-  }
-
-  /**
-   * Devuelve un Set de todos los Continentes del mapa
-   */
-  public Set<Continente> getContinentes() {
-    return this.continentes.entrySet()
-      .parallelStream()
-      .map(entry -> entry.getValue())
-      .collect(Collectors.toSet());
-  }
-
-  /**
-   * Imprime el Mapa por pantalla
-   */
-  public void imprimirMapa() {
-    System.out.print(toString());
-  }
-
-  /**
-   * Devuelve una representación del Mapa como String
-   */
-  @Override
-  public String toString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    // Hacer dos fors de casillas recorriendo todo el mapa, el for de dentro es el ancho y el for de fuera es el alto
-    for (int y = 0; y < getSizeY(); y++) {
-      for (int x = 0; x < getSizeX(); x++) {
-        Casilla casilla = this.getCasilla(new Coordenadas(x, y));
-        if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
-          stringBuilder.append(Color.ROJO.getSecTexto());
-          stringBuilder.append("|");
-          stringBuilder.append(Color.getSecColorReset());
-        } else {
-          stringBuilder.append("|");
+            for (int x = 0; x < getSizeX(); x++) { // Imprimimos los ejércitos de cada jugador
+                Casilla casilla = this.getCasilla(new Coordenadas(x,y));
+                if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM) || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
+                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
+                    stringBuilder.append(Color.getSecColorReset());
+                } else {
+                    stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
+                }
+                if (casilla instanceof CasillaMaritima) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
+                    if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
+                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(new String(new char[5]).replace("\0", " "));
+                    } else {
+                        stringBuilder.append(new String(new char[11]).replace("\0", " "));
+                    }
+                } else if (((CasillaPais) casilla).getPais().getJugador()==null) { // No podemos imprimir el número de ejércitos, porque no tiene asignado un jugador
+                    stringBuilder.append(new String(new char[11]).replace("\0", " "));
+                } else { // El país de esta casilla sí tiene asignado un jugador
+                    stringBuilder.append(" ");
+                    stringBuilder.append(((CasillaPais) casilla).getPais().getJugador().getColor().getSecTexto());
+                    stringBuilder.append(String.format("%-9s", ((CasillaPais) casilla).getPais().getNumEjercitos()));
+                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(" "); // Imprimimos un espacio al final para separar
+                }
+                
+            }
+            stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
+            stringBuilder.append(NEW_LINE);
         }
-        stringBuilder.append("===========");
-      }
-      stringBuilder.append("|");
-      stringBuilder.append(NEW_LINE);
-
-      for (int x = 0; x < getSizeX(); x++) {
-        Casilla casilla = this.getCasilla(new Coordenadas(x, y));
-        if (
-          casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP) ||
-          casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL) ||
-          casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)
-        ) {
-          stringBuilder.append(Color.ROJO.getSecTexto());
-          stringBuilder.append("|");
-          stringBuilder.append(Color.getSecColorReset());
-        } else {
-          stringBuilder.append("|");
-        }
-        if (casilla.esMaritima()) { // No podemos imprimir el nombre del país, porque la casilla es marítima
-          if (
-            casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL) ||
-            casilla
-              .getBorde()
-              .equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL) ||
-            casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)
-          ) {
-            stringBuilder.append(Color.ROJO.getSecTexto());
-            stringBuilder.append(new String(new char[11]).replace("\0", "-")); // Imprimimos espacios
-            stringBuilder.append(Color.getSecColorReset());
-          } else if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
-            stringBuilder.append(new String(new char[5]).replace("\0", " "));
-            stringBuilder.append(Color.ROJO.getSecTexto());
-            stringBuilder.append("|");
-            stringBuilder.append(Color.getSecColorReset());
-            stringBuilder.append(new String(new char[5]).replace("\0", " "));
-          } else {
-            stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
-          }
-        } else {
-          stringBuilder.append(" "); // Imprimimos un espacio al final para separar
-          stringBuilder.append(
-            casilla.getPais().getContinente().getColor().getSecFondo()
-          );
-          stringBuilder.append(
-            String.format("%-9s", casilla.getPais().getCodigo())
-          );
-          stringBuilder.append(Color.getSecColorReset());
-          stringBuilder.append(" "); // Imprimimos un espacio al final para separar
-        }
-      }
-      stringBuilder.append("|");
-      stringBuilder.append(NEW_LINE);
-
-      for (int x = 0; x < getSizeX(); x++) { // Imprimimos los ejércitos de cada jugador
-        Casilla casilla = this.getCasilla(new Coordenadas(x, y));
-        if (
-          casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM) ||
-          casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)
-        ) {
-          stringBuilder.append(Color.ROJO.getSecTexto());
-          stringBuilder.append("|");
-          stringBuilder.append(Color.getSecColorReset());
-        } else {
-          stringBuilder.append("|");
-        }
-        if (casilla.esMaritima()) { // No podemos imprimir el número de ejércitos, porque la casilla es marítima, o porque no tiene asignado un jugador
-          if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
-            stringBuilder.append(new String(new char[5]).replace("\0", " "));
-            stringBuilder.append(Color.ROJO.getSecTexto());
-            stringBuilder.append("|");
-            stringBuilder.append(Color.getSecColorReset());
-            stringBuilder.append(new String(new char[5]).replace("\0", " "));
-          } else {
-            stringBuilder.append(new String(new char[11]).replace("\0", " "));
-          }
-        } else if (!casilla.getPais().getJugador().isPresent()) { // No podemos imprimir el número de ejércitos, porque no tiene asignado un jugador
-          stringBuilder.append(new String(new char[11]).replace("\0", " "));
-        } else {
-          stringBuilder.append(" ");
-          stringBuilder.append(
-            casilla.getPais().getJugador().get().getColor().getSecTexto()
-          );
-          stringBuilder.append(
-            String.format("%-9s", casilla.getPais().getNumEjercitos())
-          );
-          stringBuilder.append(Color.getSecColorReset());
-          stringBuilder.append(" "); // Imprimimos un espacio al final para separar
-        }
-      }
-      stringBuilder.append("|");
-      stringBuilder.append(NEW_LINE);
+        stringBuilder.append(CodigosMapa.BORDE_IZQ_BOTTOM + tramoHorizontal);
+        stringBuilder.append(new String(new char[getSizeX()-1]).replace("\0", CodigosMapa.BORDE_MIDDLE_BOTTOM + tramoHorizontal));
+        stringBuilder.append(CodigosMapa.BORDE_DER_BOTTOM);
+        stringBuilder.append(NEW_LINE);
+        return stringBuilder.toString();
     }
     stringBuilder.append(
       new String(new char[getSizeX()]).replace("\0", "|===========") + "|"

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -82,13 +81,13 @@ public class Continente {
     return this.nombreHumano;
   }
 
-  /**
-   * Añade un Pais a este continente
-   * @param pais
-   */
-  public void addPais(Pais pais) {
-    this.paises.put(pais.getCodigo(), pais);
-  }
+    /**
+     * Devuelve un Set de los jugadores que tienen al menos un país en este continente
+     * @return
+     */
+    public Set<Jugador> getJugadores() {
+        return this.getPaises().stream().map(pais -> pais.getJugador()).collect(Collectors.toSet());
+    }
 
   /**
    * Devuelve el Pais de codigo especificado
