@@ -20,9 +20,11 @@ public class Partida {
 
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
+    private Map<Jugador,CartaMision> misionesJugadores;
 
     private Partida() {
         this.jugadores = new HashMap<>();
+        this.misionesJugadores = new HashMap<>();
         this.colaJugadores = new LinkedList<>();
     }
 
@@ -43,8 +45,24 @@ public class Partida {
         this.colaJugadores.add(jugador);
     }
 
+    /**
+     * Devuelve un Jugador con el nombre especificado
+     * @param nombre
+     * @return
+     */
     public Optional<Jugador> getJugador(String nombre) {
         return(Optional.ofNullable(this.jugadores.get(nombre)));
+    }
+
+    /**
+     * Asigna una carta de misión a un Jugador, que tiene que estar registrado
+     * @param cartaMision
+     * @param jugador
+     */
+    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) {
+        if (jugadores.containsValue(jugador)) { // Podría darse el caso de que el Jugador no esté en la Partida
+            this.misionesJugadores.put(jugador, cartaMision);
+        }
     }
 
     /**
@@ -108,7 +126,7 @@ public class Partida {
             }
         }
         if (defensor.getNumEjercitos()==0) {
-            defensor.setJugador(atacante.getJugador().get());
+            defensor.setJugador(atacante.getJugador());
             while (ejercitosAtacados > 0 && atacante.getNumEjercitos() > 1) { // Trasladamos el número de ejércitos con los que hemos atacado al defensor
                 Ejercito ejercitoTrasladar = atacante.getEjercitos().iterator().next();
                 defensor.addEjercito(ejercitoTrasladar);
