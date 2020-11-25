@@ -47,7 +47,7 @@ public class OutputBuilder {
 
     /**
      * Recorre todos los métodos que empiezan por get del objeto y el valor que
-     * devuelven, y genera un JSON con el resultado 
+     * devuelven, y genera un JSON con el resultado
      * 
      * @param obj
      * @return
@@ -119,52 +119,33 @@ public class OutputBuilder {
 
                     String objeto;
                     if (Iterable.class.isAssignableFrom(m.getReturnType())) {
-                        // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una
-                        // lista
-                        stringBuilder.append("[ ");
-                        int cantidadDeSangradoLocal = stringBuilder.toString()
-                                .split(NEW_LINE)[stringBuilder.toString().split(NEW_LINE).length - 1].length(); // Vamos
-                                                                                                                // a
-                                                                                                                // mirar
-                                                                                                                // dónde
-                                                                                                                // empezaba
-                                                                                                                // la
-                                                                                                                // última
-                                                                                                                // línea
-                                                                                                                // para
-                                                                                                                // saber
-                                                                                                                // con
-                                                                                                                // cuántos
-                                                                                                                // espacios
-                                                                                                                // tenemos
-                                                                                                                // que
-                                                                                                                // hacer
-                                                                                                                // el
-                                                                                                                // sangrado
-                        Iterator<Object> iterator = ((Iterable<Object>) m.invoke(obj)).iterator();
-                        while (iterator.hasNext()) {
-                            stringBuilder.append("\"").append(
-                                    OutputBuilder.buildFromObjectGetters(iterator.next(), cantidadDeSangradoLocal))
-                                    .append("\"");
-                            if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
-                                stringBuilder.append(",").append(NEW_LINE); // Terminamos la
-                                                                            // línea
-                                stringBuilder.append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' ')); // Añadimos
-                                // una
-                                // nueva
-                                // línea
-                                // toda
-                                // de
-                                // espacios
+                        Object objetoIterable = m.invoke(obj);
+                        if (objetoIterable instanceof Iterable<?>) {
+                            // Esta es una comprobación totalmente redundante, solo es para que no sale un warning del compilador, porque no detecta que ya comprobamos que el objeto es iterable más arriba
+
+                            // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una lista
+                            stringBuilder.append("[ ");
+                            int cantidadDeSangradoLocal = stringBuilder.toString()
+                                    .split(NEW_LINE)[stringBuilder.toString().split(NEW_LINE).length - 1].length();
+                            // Vamos a mirar dónde empezaba la última línea para saber con cuántos espacios
+                            // tenemos que hacer el sangrado
+                            Iterator<Object> iterator = ((Iterable) objetoIterable).iterator();
+                            while (iterator.hasNext()) {
+                                stringBuilder.append("\"").append(
+                                        OutputBuilder.buildFromObjectGetters(iterator.next(), cantidadDeSangradoLocal))
+                                        .append("\"");
+                                if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
+                                    stringBuilder.append(",").append(NEW_LINE); // Terminamos la
+                                                                                // línea
+                                    stringBuilder.append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' '));
+                                    // Añadimos una nueva línea toda de espacios
+                                }
                             }
+                            stringBuilder.append(NEW_LINE); // Nueva línea
+                            stringBuilder.append(new String(new char[cantidadDeSangradoLocal - 2]).replace('\0', ' '));
+                            // 2 caracteres de sangrado menos
+                            stringBuilder.append("]");
                         }
-                        stringBuilder.append(NEW_LINE); // Nueva línea
-                        stringBuilder.append(new String(new char[cantidadDeSangradoLocal - 2]).replace('\0', ' ')); // 2
-                                                                                                                    // caracteres
-                                                                                                                    // de
-                                                                                                                    // sangrado
-                                                                                                                    // menos
-                        stringBuilder.append("]");
                     } else {
                         try {
                             objeto = m.invoke(obj).toString();
@@ -186,7 +167,8 @@ public class OutputBuilder {
         return stringBuilder.toString();
     }
 
-    private List<String> variables; // Cada variable es un elemento de esta lista. Es una lista porque nos importa el orden de adición (no es esencial, pero de esta forma es más predecible)
+    private List<String> variables; // Cada variable es un elemento de esta lista. Es una lista porque nos importa
+                                    // el orden de adición (no es esencial, pero de esta forma es más predecible)
 
     /**
      * Si queremos construir el objeto JSON manualmente, usamos un OutputBuilder
@@ -196,9 +178,10 @@ public class OutputBuilder {
         DEPTH_LEVEL = 0; // Por defecto, no se desencapsula nada
         separateLines = false;
     }
-    
+
     /**
      * Un OutputBuilder que buscará hasta la profundidad indicada
+     * 
      * @param depthLevel
      */
     private OutputBuilder(int depthLevel) {
@@ -333,7 +316,8 @@ public class OutputBuilder {
             if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
                 if (separateLines) {
                     stringBuilder.append(",").append(NEW_LINE); // Carácter de coma, y de espacio
-                    stringBuilder.append(new String(new char[2]).replace('\0', ' ')); // Añadimos los espacios del principio
+                    stringBuilder.append(new String(new char[2]).replace('\0', ' ')); // Añadimos los espacios del
+                                                                                      // principio
                     // de la línea siguiente
                 } else {
                     stringBuilder.append(",").append(" "); // Carácter de coma, y de espacio
@@ -370,7 +354,7 @@ public class OutputBuilder {
      * adecuadamente
      * 
      * @param key
-     * @param valor
+     * @param obj
      * @return
      */
     public OutputBuilder autoAdd(String key, Object obj) {
@@ -389,7 +373,7 @@ public class OutputBuilder {
         if (Iterable.class.isAssignableFrom(obj.getClass())) { // Si el objeto es iterable, lo tratamos como una
                                                                // lista...
             String lista = getListFromIterable((Iterable<Object>) obj);
-            
+
             lista = anadirSangrado(lista, sangrado);
             stringBuilder.append(lista);
         } else if (obj.getClass().isPrimitive()) { // El objeto es un primitivo
@@ -420,12 +404,17 @@ public class OutputBuilder {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{").append(NEW_LINE);
 
-        Iterator<String> iterator = variables.iterator(); // Recorremos toda la lista de variables y las vamos añadiendo al String final
+        Iterator<String> iterator = variables.iterator(); // Recorremos toda la lista de variables y las vamos añadiendo
+                                                          // al String final
 
         while (iterator.hasNext()) {
 
             stringBuilder.append(new String(new char[nivelSangrado]).replace('\0', ' '));
-            stringBuilder.append(anadirSangrado(iterator.next(), nivelSangrado)); // Añadimos el valor asociado, pero sangrando todas las líneas a partir de la primera (si son varias líneas, el sangrado no aparece automáticamente)
+            stringBuilder.append(anadirSangrado(iterator.next(), nivelSangrado)); // Añadimos el valor asociado, pero
+                                                                                  // sangrando todas las líneas a partir
+                                                                                  // de la primera (si son varias
+                                                                                  // líneas, el sangrado no aparece
+                                                                                  // automáticamente)
 
             if (iterator.hasNext()) {
                 stringBuilder.append(","); // Ponemos la coma si hay más elementos

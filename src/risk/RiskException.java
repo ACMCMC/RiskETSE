@@ -4,7 +4,7 @@
 
 package risk;
 
-public class RiskException {
+public class RiskException extends Exception {
 
     final int codigo;
     final String codigoTexto;

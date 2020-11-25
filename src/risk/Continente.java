@@ -7,9 +7,8 @@ package risk;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.stream.Collector;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +23,7 @@ public class Continente {
     /**
      * Crea un nuevo Continente, sin países asignados
      * @param codigo
-     * @param color
+     * @param nombreHumano
      */
     public Continente(String codigo, String nombreHumano) {
         this.setColor(Color.INDEFINIDO);
@@ -103,7 +102,7 @@ public class Continente {
      * @return
      */
     public Set<Jugador> getJugadores() {
-        return this.getPaises().stream().map(pais -> pais.getJugador().get()).collect(Collectors.toSet());
+        return this.getPaises().stream().map(pais -> pais.getJugador()).collect(Collectors.toSet());
     }
 
     /**
