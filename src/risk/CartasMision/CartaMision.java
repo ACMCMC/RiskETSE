@@ -1,6 +1,6 @@
-package risk;
+package risk.CartasMision;
 
-public class CartaMision {
+public interface CartaMision {
     private enum EnumCartaMision {
         M1("Conquistar 24 países de la preferencia del jugador"), M2("M2"), M31("Conquistar Asia y América del Sur"),
         M32("Conquistar Asia y África"), M33("Conquistar América del Norte y África"),
