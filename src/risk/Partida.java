@@ -15,6 +15,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.CartasMision.CartaMision;
+
 public class Partida {
     private static final Partida partidaSingleton = new Partida();
 
