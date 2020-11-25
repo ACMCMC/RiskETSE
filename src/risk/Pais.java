@@ -70,8 +70,12 @@ public class Pais {
         this.ejercitos.remove(ejercito);
     }
 
-    public Optional<Jugador> getJugador() {
-        return Optional.ofNullable(this.jugador);
+    /**
+     * Devuelve el jugador de este Pais, o null
+     * @return
+     */
+    public Jugador getJugador() {
+        return this.jugador;
     }
 
     public void setJugador(Jugador jugador) {

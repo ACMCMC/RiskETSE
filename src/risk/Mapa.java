@@ -639,11 +639,11 @@ public class Mapa {
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " "));
                     }
-                } else if (!casilla.getPais().getJugador().isPresent()) { // No podemos imprimir el número de ejércitos, porque no tiene asignado un jugador
+                } else if (casilla.getPais().getJugador()==null) { // No podemos imprimir el número de ejércitos, porque no tiene asignado un jugador
                     stringBuilder.append(new String(new char[11]).replace("\0", " "));
-                } else {
+                } else { // El país de esta casilla sí tiene asignado un jugador
                     stringBuilder.append(" ");
-                    stringBuilder.append(casilla.getPais().getJugador().get().getColor().getSecTexto());
+                    stringBuilder.append(casilla.getPais().getJugador().getColor().getSecTexto());
                     stringBuilder.append(String.format("%-9s", casilla.getPais().getNumEjercitos()));
                     stringBuilder.append(Color.getSecColorReset());
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar

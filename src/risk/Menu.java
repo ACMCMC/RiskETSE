@@ -243,7 +243,7 @@ public class Menu {
             FileOutputHelper
                     .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
         } else {
-            if (Mapa.getMapa().getPais(nombrePais).getJugador().isPresent()) {
+            if (Mapa.getMapa().getPais(nombrePais).getJugador()!=null) {
                 FileOutputHelper.printToErrOutput(
                         new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
             } else {
@@ -419,7 +419,7 @@ public class Menu {
                                 * tupla.getNumPaises();
                         // La regla del PDF de cuántos países hay que asignar (R7)
                         tupla.getContinente().getPaises().stream()
-                                .filter(pais -> pais.getJugador().get().equals(tupla.getJugador()))
+                                .filter(pais -> pais.getJugador().equals(tupla.getJugador()))
                                 .forEach(pais -> tupla.getJugador().asignarEjercitosAPais(numEjercitos, pais));
                         // Le asignamos numEjercitos a todos los países del jugador, en ese continente
                     });
@@ -450,7 +450,7 @@ public class Menu {
         Stream.generate(colaAsignar::poll);
         colaAsignar.stream().sorted(colaAsignar.comparator()).forEach(continente -> {
             continente.getPaises().parallelStream().filter(pais -> pais.getEjercitos().size() == 1)
-                    .forEach(pais -> pais.getJugador().get().asignarEjercitosAPais(1, pais));
+                    .forEach(pais -> pais.getJugador().asignarEjercitosAPais(1, pais));
         });
     }
 
@@ -541,7 +541,7 @@ public class Menu {
         Set<TuplaContinenteJugadorPorcentaje> tuplas = Mapa.getMapa().getContinentes().parallelStream()
                 .map(continente -> { // Por cada continente...
                     List<Jugador> listaJugadoresContinente = continente.getPaises().stream()
-                            .map(pais -> pais.getJugador().get()).collect(Collectors.toList()); // Elaboro una lista de
+                            .map(pais -> pais.getJugador()).collect(Collectors.toList()); // Elaboro una lista de
                                                                                                 // los jugadores de ese
                                                                                                 // continente; eso lo
                                                                                                 // obtengo a través de
@@ -685,12 +685,12 @@ public class Menu {
             FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_EXISTE).getMessage());
             return;
         }
-        if (!paisAtacante.getJugador().get().equals(Partida.getPartida().getJugadorActual())) {
+        if (!paisAtacante.getJugador().equals(Partida.getPartida().getJugadorActual())) {
             FileOutputHelper
                     .printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR).getMessage());
             return;
         }
-        if (paisDefensor.getJugador().get().equals(Partida.getPartida().getJugadorActual())) {
+        if (paisDefensor.getJugador().equals(Partida.getPartida().getJugadorActual())) {
             FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_PERTENECE_JUGADOR).getMessage());
             return;
         }
@@ -730,8 +730,8 @@ public class Menu {
                                 add(ejercitosPaisDefensaAntes);
                                 add(paisDefensor.getNumEjercitos());
                             }
-                        }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().get().getNombre())
-                        .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().get().getNombre())
+                        }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
+                        .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
                         .autoAdd("continenteConquistado",
                                 continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
                         .build());

@@ -142,11 +142,8 @@ public class OutputBuilder {
                                 }
                             }
                             stringBuilder.append(NEW_LINE); // Nueva línea
-                            stringBuilder.append(new String(new char[cantidadDeSangradoLocal - 2]).replace('\0', ' ')); // 2
-                                                                                                                        // caracteres
-                                                                                                                        // de
-                                                                                                                        // sangrado
-                                                                                                                        // menos
+                            stringBuilder.append(new String(new char[cantidadDeSangradoLocal - 2]).replace('\0', ' '));
+                            // 2 caracteres de sangrado menos
                             stringBuilder.append("]");
                         }
                     } else {

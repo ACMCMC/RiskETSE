@@ -102,7 +102,7 @@ public class Continente {
      * @return
      */
     public Set<Jugador> getJugadores() {
-        return this.getPaises().stream().map(pais -> pais.getJugador().get()).collect(Collectors.toSet());
+        return this.getPaises().stream().map(pais -> pais.getJugador()).collect(Collectors.toSet());
     }
 
     /**
