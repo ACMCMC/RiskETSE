@@ -83,7 +83,7 @@ public class Mapa {
      */
     public static void crearMapa(File file) throws FileNotFoundException {
         if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
-            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO).toString());
+            IOHelperFactory.getInstance().printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO));
             return;
         }
 

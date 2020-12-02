@@ -36,9 +36,13 @@ public class Menu {
     // necesario acceder durante la ejecución del programa como, por ejemplo,
     // el mapa o los jugadores
 
-    static final Logger logger = Logger.getLogger(Menu.class.getCanonicalName());
-
     private static final String PROMPT = "$> ";
+
+    private IOHelper io;
+    {
+        // Inicialización de io; podemos hacerla antes del constructor
+        io = IOHelperFactory.getInstance();
+    }
 
     public Menu() {
         // Inicialización de algunos atributos
@@ -56,8 +60,8 @@ public class Menu {
                                                                                                // Mostramos un error
                                                                                                // mientras no sea esa.
                 System.out.println(PROMPT + orden);
-                FileOutputHelper
-                        .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO).toString());
+                io
+                        .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO));
             }
             System.out.println(PROMPT + orden);
             crearMapa();
@@ -87,8 +91,8 @@ public class Menu {
                         jugadoresCreados = true;
                     }
                 } else { // Si el comando no es crear jugador
-                    FileOutputHelper.printToErrOutput(
-                            new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS).toString());
+                    io.printToErrOutput(
+                            new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS));
                 }
             }
 
@@ -132,7 +136,6 @@ public class Menu {
                                     crearJugadores(new File(partes[2]));
                                 } catch (FileNotFoundException ex) {
                                     System.out.println("No existe el archivo especificado.");
-                                    logger.info("No existe el archivo especificado.");
                                 }
                             } else {
                                 crearJugador(partes[1], partes[2]);
@@ -168,7 +171,7 @@ public class Menu {
                     case "obtener":
                         if (partes.length == 3) {
                             if (partes[1].equals("color")) {
-                                FileOutputHelper.printToOutput(new OutputBuilder().manualAddString("color",
+                                io.printToOutput(new OutputBuilder().manualAddString("color",
                                         Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
                                         .toString());
                             } else if (partes[1].equals("frontera")) {
@@ -202,7 +205,7 @@ public class Menu {
             excepcion.printStackTrace();
         }
 
-        FileOutputHelper.escribirFinComandos();
+        io.escribirFinComandos();
     }
 
     /**
@@ -240,16 +243,16 @@ public class Menu {
      */
     public void asignarPais(String nombrePais, String nombreJugador) {
         if (Mapa.getMapa().getPais(nombrePais) == null) {
-            FileOutputHelper
-                    .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE).toString());
+            io
+                    .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE));
         } else {
             if (Mapa.getMapa().getPais(nombrePais).getJugador()!=null) {
-                FileOutputHelper.printToErrOutput(
-                        new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO).toString());
+                io.printToErrOutput(
+                        new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO));
             } else {
                 if (!Partida.getPartida().getJugador(nombreJugador).isPresent()) {
-                    FileOutputHelper.printToErrOutput(
-                            new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE).toString());
+                    io.printToErrOutput(
+                            new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE));
                 } else {
                     if (false) {
                         // TODO: Las misiones no están asignadas ERROR
@@ -258,7 +261,7 @@ public class Menu {
                                 .setJugador(Partida.getPartida().getJugador(nombreJugador).get());
                         Partida.getPartida().getJugador(nombreJugador).get().asignarEjercitosAPais(1,
                                 Mapa.getMapa().getPais(nombrePais));
-                        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
+                        io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
                                 .autoAdd("pais", nombrePais)
                                 .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
                                 .autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
@@ -277,7 +280,6 @@ public class Menu {
         try {
             Mapa.crearMapa(filePaisesCoordenadas);
         } catch (FileNotFoundException ex) {
-            logger.log(Level.WARNING, "No se ha encontrado el archivo {0}", filePaisesCoordenadas.getAbsolutePath());
         }
     }
 
@@ -285,16 +287,16 @@ public class Menu {
      * Imprime el error 99 (Comando no permitido en este momento)
      */
     private void comandoNoPermitido() {
-        FileOutputHelper
-                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO).toString());
+        io
+                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO));
     }
 
     /**
      * Imprime el error 101 (Comando incorrecto)
      */
     private void comandoIncorrecto() {
-        FileOutputHelper
-                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO).toString());
+        io
+                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO));
     }
 
     /**
@@ -313,7 +315,7 @@ public class Menu {
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
                 Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
-                FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
+                io.printToOutput(OutputBuilder.beginBuild()
                         .autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getNombre())
                         .autoAdd("color",
                                 Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getColor().getNombre())
@@ -338,7 +340,7 @@ public class Menu {
         // Código necesario para crear a un jugador a partir de su nombre y color
         Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
         Partida.getPartida().addJugador(jugador);
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre())
+        io.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre())
                 .manualAddString("color", jugador.getColor().getNombre()).build());
     }
 
@@ -592,7 +594,7 @@ public class Menu {
                     }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el
                                                                                // nombre en formato humano
                 }).collect(Collectors.toSet()); // Lo convertimos a un Set
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
                                                                                                                         // sacamos
                                                                                                                         // a
                                                                                                                         // la
@@ -607,7 +609,7 @@ public class Menu {
     private void obtenerContinente(String abrevPais) {
         String Continente;
         Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
     }
 
     /**
@@ -639,7 +641,7 @@ public class Menu {
     private void obtenerColor(String abrevPais) {
         Color color;
         color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
     }
 
     /**
@@ -658,20 +660,20 @@ public class Menu {
         Integer numeroConquistas;
 
         nombreHumano = Mapa.getMapa().getPais(abrevPais).getNombreHumano();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
 
         abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
 
         // continente=Mapa.getContinente(abrevPais);
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild()
+        io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
 
-        // FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera",
+        // io.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera",
         // obtenerFronteras()).build());
 
         abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
-        FileOutputHelper.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
     }
 
     private void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
@@ -682,25 +684,25 @@ public class Menu {
         Optional<Continente> continenteConquistado;
 
         if (paisAtacante == null || paisDefensor == null) {
-            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_EXISTE).getMessage());
+            io.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_EXISTE));
             return;
         }
         if (!paisAtacante.getJugador().equals(Partida.getPartida().getJugadorActual())) {
-            FileOutputHelper
-                    .printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR).getMessage());
+            io
+                    .printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR));
             return;
         }
         if (paisDefensor.getJugador().equals(Partida.getPartida().getJugadorActual())) {
-            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_PERTENECE_JUGADOR).getMessage());
+            io.printToErrOutput(new RiskException(RiskExceptionEnum.PAIS_PERTENECE_JUGADOR));
             return;
         }
         if (!Mapa.getMapa().getFrontera(paisAtacante, paisDefensor).isPresent()) {
-            FileOutputHelper.printToErrOutput(new RiskException(RiskExceptionEnum.PAISES_NO_SON_FRONTERA).getMessage());
+            io.printToErrOutput(new RiskException(RiskExceptionEnum.PAISES_NO_SON_FRONTERA));
             return;
         }
         if (paisAtacante.getNumEjercitos() <= 1) {
-            FileOutputHelper
-                    .printToErrOutput(new RiskException(RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES).getMessage());
+            io
+                    .printToErrOutput(new RiskException(RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES));
             return;
         }
 
@@ -717,7 +719,7 @@ public class Menu {
             continenteConquistado = Optional.empty();
         }
 
-        FileOutputHelper
+        io
                 .printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante))
                         .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor))
                         .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
