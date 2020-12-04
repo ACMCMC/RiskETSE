@@ -4,6 +4,9 @@
 
 package risk;
 
+import risk.RiskException.ExcepcionGeo;
+import risk.RiskException.RiskExceptionEnum;
+
 public enum Color {
     // El primer parámetro es el nombre del color, el segundo la secuencia para colorear texto de ese color, el tercero para colorear el fondo de ese color
     CYAN("CYAN", "\033[0;36m", "\033[46m"), VERDE("VERDE", "\033[0;32m", "\033[42m"), AMARILLO("AMARILLO", "\033[0;33m", "\033[43m"),
@@ -32,13 +35,13 @@ public enum Color {
         return this.secFondo;
     }
 
-    public static Color getColorByString(String nombreColor) {
+    public static Color getColorByString(String nombreColor) throws ExcepcionGeo {
         for (Color c : values()) {
             if (c.nombre.equals(nombreColor.toUpperCase())) {
                 return c;
             }
         }
-        return Color.INDEFINIDO;
+        throw (ExcepcionGeo) RiskExceptionEnum.COLOR_NO_PERMITIDO.get();
     }
 
     public static String getSecColorReset() {

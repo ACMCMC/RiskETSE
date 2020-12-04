@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import risk.RiskException.ExcepcionGeo;
+import risk.RiskException.ExcepcionJugador;
 import risk.RiskException.RiskException;
 import risk.RiskException.RiskExceptionEnum;
 
@@ -62,8 +63,7 @@ public class Menu {
                                                                                                // Mostramos un error
                                                                                                // mientras no sea esa.
                 System.out.println(PROMPT + orden);
-                io
-                        .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_NO_CREADO));
+                io.printToErrOutput(RiskExceptionEnum.MAPA_NO_CREADO.get());
             }
             System.out.println(PROMPT + orden);
             crearMapa();
@@ -93,8 +93,7 @@ public class Menu {
                         jugadoresCreados = true;
                     }
                 } else { // Si el comando no es crear jugador
-                    io.printToErrOutput(
-                            new RiskException(RiskException.RiskExceptionEnum.JUGADORES_NO_CREADOS));
+                    io.printToErrOutput(RiskExceptionEnum.JUGADORES_NO_CREADOS.get());
                 }
             }
 
@@ -244,33 +243,18 @@ public class Menu {
      * @param nombreJugador
      */
     public void asignarPais(String nombrePais, String nombreJugador) {
-        if (Mapa.getMapa().getPais(nombrePais) == null) {
-            io
-                    .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.PAIS_NO_EXISTE));
-        } else {
-            if (Mapa.getMapa().getPais(nombrePais).getJugador()!=null) {
-                io.printToErrOutput(
-                        new RiskException(RiskException.RiskExceptionEnum.PAIS_YA_ASIGNADO));
-            } else {
-                if (!Partida.getPartida().getJugador(nombreJugador).isPresent()) {
-                    io.printToErrOutput(
-                            new RiskException(RiskException.RiskExceptionEnum.JUGADOR_NO_EXISTE));
-                } else {
-                    if (false) {
-                        // TODO: Las misiones no están asignadas ERROR
-                    } else {
+        try {
                         Mapa.getMapa().getPais(nombrePais)
-                                .setJugador(Partida.getPartida().getJugador(nombreJugador).get());
-                        Partida.getPartida().getJugador(nombreJugador).get().asignarEjercitosAPais(1,
+                                .setJugador(Partida.getPartida().getJugador(nombreJugador));
+                        Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1,
                                 Mapa.getMapa().getPais(nombrePais));
                         io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
                                 .autoAdd("pais", nombrePais)
                                 .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
                                 .autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
                                 .build());
-                    }
-                }
-            }
+        } catch (RiskException e) {
+            io.printToErrOutput(e);
         }
     }
 
@@ -282,6 +266,8 @@ public class Menu {
         try {
             Mapa.crearMapa(filePaisesCoordenadas);
         } catch (FileNotFoundException ex) {
+        } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
         }
     }
 
@@ -289,16 +275,14 @@ public class Menu {
      * Imprime el error 99 (Comando no permitido en este momento)
      */
     private void comandoNoPermitido() {
-        io
-                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_NO_PERMITIDO));
+        io.printToErrOutput(RiskExceptionEnum.COMANDO_NO_PERMITIDO.get());
     }
 
     /**
      * Imprime el error 101 (Comando incorrecto)
      */
     private void comandoIncorrecto() {
-        io
-                .printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.COMANDO_INCORRECTO));
+        io.printToErrOutput(RiskExceptionEnum.COMANDO_INCORRECTO.get());
     }
 
     /**
@@ -316,12 +300,14 @@ public class Menu {
 
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
-                Partida.getPartida().addJugador(new Jugador(partesLinea[0], Color.getColorByString(partesLinea[1])));
-                io.printToOutput(OutputBuilder.beginBuild()
-                        .autoAdd("nombre", Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getNombre())
-                        .autoAdd("color",
-                                Partida.getPartida().getJugador(partesLinea[0]).orElse(null).getColor().getNombre())
-                        .build());
+                try {
+                    Color color = Color.getColorByString(partesLinea[1]);
+                    Partida.getPartida().addJugador(new Jugador(partesLinea[0], color));
+                    io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", partesLinea[0])
+                            .autoAdd("color", color.getNombre()).build());
+                } catch (RiskException e) {
+                    io.printToErrOutput(e);
+                }
             }
 
             bufferLector.close();
@@ -340,10 +326,14 @@ public class Menu {
      */
     private void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
+        try {
         Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
         Partida.getPartida().addJugador(jugador);
-        io.printToOutput(OutputBuilder.beginBuild().manualAddString("nombre", jugador.getNombre())
-                .manualAddString("color", jugador.getColor().getNombre()).build());
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
+                .autoAdd("color", color).build());
+        } catch (ExcepcionGeo | ExcepcionJugador e) {
+            io.printToErrOutput(e);
+        }
     }
 
     /**
@@ -384,7 +374,7 @@ public class Menu {
     /**
      * Se encarga automáticamente de realizar el reparto de los ejércitos.
      */
-    private void repartirEjercitos() {
+    private void repartirEjercitos() throws ExcepcionGeo {
         /*
          * R1 Si inicialmente existe un continente en el que más del 50% de los países
          * están ocupados por un mismo jugador, entonces en cada país se colocará
@@ -396,12 +386,14 @@ public class Menu {
 
         Set<TuplaContinenteJugadorPorcentaje> tuplas = obtenerTuplasContinenteJugadorPorcentaje();
         if (!aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.5, tupla -> {
-            if (tupla.getContinente().equals(Mapa.getMapa().getContinente("Oceanía"))
-                    || tupla.getContinente().equals(Mapa.getMapa().getContinente("AméricaSur"))) {
-                return new Float(1.5);
-            } else {
-                return new Float(1);
+            try {
+                if (tupla.getContinente().equals(Mapa.getMapa().getContinente("Oceanía"))
+                        || tupla.getContinente().equals(Mapa.getMapa().getContinente("AméricaSur"))) {
+                    return new Float(1.5);
+                }
+            } catch (ExcepcionGeo e) {
             }
+            return new Float(1);
         })) {
             aplicarReglasPorcentajes(tuplas, tupla -> tupla.getPorcentaje() >= 0.25 && tupla.getPorcentaje() < 0.5,
                     tupla -> new Float(2));
@@ -546,11 +538,11 @@ public class Menu {
                 .map(continente -> { // Por cada continente...
                     List<Jugador> listaJugadoresContinente = continente.getPaises().stream()
                             .map(pais -> pais.getJugador()).collect(Collectors.toList()); // Elaboro una lista de
-                                                                                                // los jugadores de ese
-                                                                                                // continente; eso lo
-                                                                                                // obtengo a través de
-                                                                                                // los países del
-                                                                                                // continente
+                                                                                          // los jugadores de ese
+                                                                                          // continente; eso lo
+                                                                                          // obtengo a través de
+                                                                                          // los países del
+                                                                                          // continente
                     Set<TuplaContinenteJugadorPorcentaje> setTuplas = listaJugadoresContinente.stream().distinct()
                             .map(jugador -> {
                                 float porcentaje = ((float) Collections.frequency(listaJugadoresContinente, jugador))
@@ -579,28 +571,36 @@ public class Menu {
      * @param codigoPais
      */
     private void obtenerFronteras(String codigoPais) {
-        Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos
-                                                                                                                      // un
-                                                                                                                      // Stream
-                                                                                                                      // de
-                                                                                                                      // las
-                                                                                                                      // Fronteras
-                                                                                                                      // de
-                                                                                                                      // ese
-                                                                                                                      // país
-                .map((Frontera frontera) -> {
-                    return (frontera.getPaises().stream().filter((Pais pais) -> {
-                        return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países
-                                                                                   // de esa frontera, el país que no
-                                                                                   // sea el de la consulta
-                    }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el
-                                                                               // nombre en formato humano
-                }).collect(Collectors.toSet()); // Lo convertimos a un Set
-        io.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
-                                                                                                                        // sacamos
-                                                                                                                        // a
-                                                                                                                        // la
-                                                                                                                        // salida
+        try {
+            Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos
+                                                                                                                          // un
+                                                                                                                          // Stream
+                                                                                                                          // de
+                                                                                                                          // las
+                                                                                                                          // Fronteras
+                                                                                                                          // de
+                                                                                                                          // ese
+                                                                                                                          // país
+                    .map((Frontera frontera) -> {
+                        return (frontera.getPaises().stream().filter((Pais pais) -> {
+                            try {
+                                return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países
+                                                                                           // de esa frontera, el país que no
+                                                                                           // sea el de la consulta
+                            } catch (RiskException e) {
+                                return false;
+                            }
+                        }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el
+                                                                                   // nombre en formato humano
+                    }).collect(Collectors.toSet()); // Lo convertimos a un Set
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
+                                                                                                              // sacamos
+                                                                                                              // a
+                                                                                                              // la
+                                                                                                              // salida
+        } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
     }
 
     /**
@@ -610,8 +610,12 @@ public class Menu {
      */
     private void obtenerContinente(String abrevPais) {
         String Continente;
-        Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
-        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
+        try {
+            Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
+        } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
     }
 
     /**
@@ -629,8 +633,11 @@ public class Menu {
 
         fronterasPaises.parallelStream().map(paises -> {
             List<Pais> par = new ArrayList<>();
-            par.add(Mapa.getMapa().getPais(paises[0]));
-            par.add(Mapa.getMapa().getPais(paises[1]));
+            try {
+                par.add(Mapa.getMapa().getPais(paises[0]));
+                par.add(Mapa.getMapa().getPais(paises[1]));
+            } catch (ExcepcionGeo e) { // Sería conveniente implementar manejo de excepciones
+            }
             return (par);
         }).forEach(par -> Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1)));
     }
@@ -642,8 +649,12 @@ public class Menu {
      */
     private void obtenerColor(String abrevPais) {
         Color color;
-        color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
-        io.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
+        try {
+            color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
+        } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
     }
 
     /**
@@ -664,17 +675,18 @@ public class Menu {
         try {
             nombreHumano = Mapa.getMapa().getPais(abrevPais).getNombreHumano();
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
-    
+
             abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
-    
+
             // continente=Mapa.getContinente(abrevPais);
             io.printToOutput(OutputBuilder.beginBuild()
-                    .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano()).build());
-    
+                    .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano())
+                    .build());
+
             // io.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera",
             // obtenerFronteras()).build());
-    
+
             abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
         } catch (ExcepcionGeo e) {
@@ -690,38 +702,38 @@ public class Menu {
             int ejercitosPaisAtaqueAntes;
             int ejercitosPaisDefensaAntes;
             Optional<Continente> continenteConquistado;
-    
+
             ejercitosPaisAtaqueAntes = paisAtacante.getNumEjercitos();
             ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
-    
+
             Map<Pais, Set<Integer>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, paisDefensor);
-    
+
             if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del
-                                                                           // país defendido, esto implica que es el jugador
+                                                                           // país defendido, esto implica que es el
+                                                                           // jugador
                                                                            // que ataca
                 continenteConquistado = Optional.of(paisDefensor.getContinente());
             } else {
                 continenteConquistado = Optional.empty();
             }
-    
-            io
-                    .printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante))
-                            .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor))
-                            .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
-                                {
-                                    add(ejercitosPaisAtaqueAntes);
-                                    add(paisAtacante.getNumEjercitos());
-                                }
-                            }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
-                                {
-                                    add(ejercitosPaisDefensaAntes);
-                                    add(paisDefensor.getNumEjercitos());
-                                }
-                            }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
-                            .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
-                            .autoAdd("continenteConquistado",
-                                    continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
-                            .build());
+
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante))
+                    .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor))
+                    .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
+                        {
+                            add(ejercitosPaisAtaqueAntes);
+                            add(paisAtacante.getNumEjercitos());
+                        }
+                    }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
+                        {
+                            add(ejercitosPaisDefensaAntes);
+                            add(paisDefensor.getNumEjercitos());
+                        }
+                    }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
+                    .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
+                    .autoAdd("continenteConquistado",
+                            continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
+                    .build());
         } catch (RiskException e) {
             io.printToErrOutput(e);
         }

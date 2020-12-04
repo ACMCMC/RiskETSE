@@ -49,7 +49,10 @@ public class Partida {
         }).collect(Collectors.toSet());
     }
 
-    public void addJugador(Jugador jugador) {
+    public void addJugador(Jugador jugador) throws ExcepcionJugador {
+        if (this.jugadores.containsKey(jugador.getNombre())) {
+            throw (ExcepcionJugador) RiskExceptionEnum.JUGADOR_YA_EXISTE.get();
+        }
         this.jugadores.put(jugador.getNombre(), jugador);
         this.colaJugadores.add(jugador);
     }

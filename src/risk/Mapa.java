@@ -125,7 +125,8 @@ public class Mapa {
                     getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
                 } catch (ExcepcionGeo e) { // No se ha encontrado el continente
                     if (e.equals(RiskExceptionEnum.CONTINENTE_NO_EXISTE.get())) {
-                        addContinente(new Continente(valores[0], valores[0], Color.getColorByString(valores[1]))); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+                            //addContinente(new Continente(valores[0], valores[0], Color.getColorByString(valores[1]))); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+                        e.printStackTrace();
                     }
                 }
             }
