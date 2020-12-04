@@ -1,0 +1,37 @@
+crear mapa
+crear mapa
+crear jugadores jugadores.csv
+crear Gondorff AZUL
+crear JT VERDE
+asignar paises paises.csv
+asignar misiones misiones.csv
+crear JT CYAN
+asignar paises paises.csv
+asignar mision Hooker M32
+asignar paises paises.csv
+asignar pais Gondorff Rusia
+repartir ejercitos 8 Alaska
+repartir ejercitos 5 Groenlan
+repartir ejercitos 5 Urales
+repartir ejercitos 3 Quebec
+repartir ejercitos 7 Ontario
+acabar turno
+repartir ejercitos 10 Venezuela
+repartir ejercitos 5 ANorte
+repartir ejercitos 6 Egipto
+repartir ejercitos 5 India
+acabar turno
+repartir ejercitos 15 Indonesia
+repartir ejercitos 6 NGuinea
+acabar turno
+repartir ejercitos 4 Islandia
+describir pais USAEste
+atacar Ontario 5x1x1 USAEste 4
+describir pais USAEste
+describir pais Ontario
+rearmar Alaska 4 Alberta
+asignar carta Infantería&Alaska
+atacar GBretaña 3 EurSur 4
+acabar turno
+describir jugador Gondorff
+describir continente AméricaNorte
