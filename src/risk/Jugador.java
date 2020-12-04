@@ -7,6 +7,9 @@ package risk;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.RiskException.ExcepcionJugador;
+import risk.RiskException.RiskExceptionEnum;
+
 public class Jugador {
     private String nombre;
     private Color color;
@@ -26,7 +29,7 @@ public class Jugador {
      * @param numEjercitos los ejércitos que se van a asignar
      * @return el número de ejércitos que se han asignado
      */
-    public int asignarEjercitosAPais(int numEjercitos, Pais pais) {
+    public int asignarEjercitosAPais(int numEjercitos, Pais pais) throws ExcepcionJugador {
         if (this.getEjercitosSinRepartir() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la
                                                               // asignación
             for (int i = 0; i < numEjercitos; i++) {
@@ -46,8 +49,7 @@ public class Jugador {
             this.setEjercitosSinRepartir(0);
             return (ejercitosSinRepartir);
         } else { // No hay ejércitos disponibles
-            // TODO: Cuando se puedan usar, poner aquí una Exception para lanzar
-            return (0);
+            throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();
         }
     }
 
