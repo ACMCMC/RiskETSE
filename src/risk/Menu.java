@@ -10,20 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import risk.RiskException.ExcepcionGeo;
 import risk.RiskException.ExcepcionJugador;
@@ -176,8 +168,10 @@ public class Menu {
                         }
                         break;
                     case "atacar":
-                        if (partes.length == 3) {
+                        if (partes.length==3) {
                             atacar(partes[1], partes[2]);
+                        } else if (partes.length==5) {
+                            atacar(partes[1], partes[2], partes[3], partes[4]);
                         } else {
                             comandoIncorrecto();
                         }
@@ -520,6 +514,17 @@ public class Menu {
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
+
+    }
+
+    /**
+     * Comando manual para realizar un ataque.
+     * @param nombrePais1
+     * @param dadosAtaque
+     * @param nombrePais2
+     * @param dadosDefensa
+     */
+    private void atacar(String nombrePais1, String dadosAtaque, String nombrePais2, String dadosDefensa) {
 
     }
 
