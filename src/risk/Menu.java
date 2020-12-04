@@ -179,6 +179,8 @@ public class Menu {
                     case "repartir":
                         if (partes.length == 2 && partes[1].equals("ejercitos")) {
                             repartirEjercitos();
+                        } else if (partes.length==4 && partes[1].equals("ejercitos")) {
+                            repartirEjercitos(partes[2], partes[3]);
                         } else {
                             comandoIncorrecto();
                         }
