@@ -20,6 +20,8 @@ public class OutputBuilder {
     private final int DEPTH_LEVEL; // Nivel de recursividad para imprimir objetos
     private final boolean separateLines; // Si se introduce una línea nueva por cada elemento de una lista, o no
 
+    private boolean quoteStrings;
+
     /**
      * @deprecated Como en este proyecto no hay campos públicos, no nos va a servir.
      *             Usar en su lugar buildFromObjectGetters Recorre todos los campos
@@ -121,9 +123,12 @@ public class OutputBuilder {
                     if (Iterable.class.isAssignableFrom(m.getReturnType())) {
                         Object objetoIterable = m.invoke(obj);
                         if (objetoIterable instanceof Iterable<?>) {
-                            // Esta es una comprobación totalmente redundante, solo es para que no sale un warning del compilador, porque no detecta que ya comprobamos que el objeto es iterable más arriba
+                            // Esta es una comprobación totalmente redundante, solo es para que no sale un
+                            // warning del compilador, porque no detecta que ya comprobamos que el objeto es
+                            // iterable más arriba
 
-                            // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una lista
+                            // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una
+                            // lista
                             stringBuilder.append("[ ");
                             int cantidadDeSangradoLocal = stringBuilder.toString()
                                     .split(NEW_LINE)[stringBuilder.toString().split(NEW_LINE).length - 1].length();
@@ -134,10 +139,12 @@ public class OutputBuilder {
                                 stringBuilder.append("\"").append(
                                         OutputBuilder.buildFromObjectGetters(iterator.next(), cantidadDeSangradoLocal))
                                         .append("\"");
-                                if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
+                                if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente
+                                                          // línea
                                     stringBuilder.append(",").append(NEW_LINE); // Terminamos la
                                                                                 // línea
-                                    stringBuilder.append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' '));
+                                    stringBuilder
+                                            .append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' '));
                                     // Añadimos una nueva línea toda de espacios
                                 }
                             }
@@ -177,6 +184,7 @@ public class OutputBuilder {
         variables = new ArrayList<String>();
         DEPTH_LEVEL = 0; // Por defecto, no se desencapsula nada
         separateLines = false;
+        quoteStrings = true;
     }
 
     /**
@@ -188,6 +196,7 @@ public class OutputBuilder {
         variables = new ArrayList<String>();
         DEPTH_LEVEL = depthLevel;
         separateLines = false;
+        quoteStrings = true;
     }
 
     /**
@@ -299,19 +308,19 @@ public class OutputBuilder {
         while (iterator.hasNext()) {
 
             Object currentObject = iterator.next();
-            if (currentObject.getClass().equals(String.class)) { // Lleva comillas de cierre solo si es un string
-                stringBuilder.append("\"");
-            }
-
+            
             if (DEPTH_LEVEL > 0) { // Si DEPTH_LEVEL es > 0, seguimos desencapsulando
                 stringBuilder.append(OutputBuilder.buildFromObjectGetters(currentObject, DEPTH_LEVEL - 1));
             } else { // Si DEPTH_LEVEL NO es > 0, así que usamos toString()
-                stringBuilder.append(currentObject.toString());
+                if (quoteStrings) { // Lleva comillas de apertura solo si es un string
+                    stringBuilder.append("\"");
+                    stringBuilder.append(currentObject.toString());
+                    stringBuilder.append("\"");
+                } else {
+                    stringBuilder.append(currentObject.toString());
+                }
             }
 
-            if (currentObject.getClass().equals(String.class)) { // Lleva comillas de cierre solo si es un string
-                stringBuilder.append("\"");
-            }
 
             if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
                 if (separateLines) {
@@ -332,7 +341,31 @@ public class OutputBuilder {
     }
 
     /**
-     * Añade manualmente un parámetro
+     * Desactiva el añadido automático de comillas en Strings
+     */
+    public OutputBuilder disableQuoting() {
+        this.quoteStrings = false;
+        return this;
+    }
+
+    /**
+     * Activa el añadido automático de comillas en Strings
+     */
+    public OutputBuilder enableQuoting() {
+        this.quoteStrings = true;
+        return this;
+    }
+
+    /**
+     * Cambia el estado del añadido automático de comillas en Strings
+     */
+    public OutputBuilder toggleQuoting() {
+        this.quoteStrings = quoteStrings ? false : true;
+        return this;
+    }
+
+    /**
+     * Añade manualmente unn parámetro de cadena de texto, con comillas
      * 
      * @param key
      * @param valor
@@ -341,9 +374,14 @@ public class OutputBuilder {
     public OutputBuilder manualAddString(String key, String valor) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(key);
-        stringBuilder.append(": \"");
+        stringBuilder.append(": ");
+        if (quoteStrings) {
+            stringBuilder.append("\"");
+        }
         stringBuilder.append(valor);
-        stringBuilder.append("\"");
+        if (quoteStrings) {
+            stringBuilder.append("\"");
+        }
 
         variables.add(stringBuilder.toString());
         return this;
@@ -358,6 +396,16 @@ public class OutputBuilder {
      * @return
      */
     public OutputBuilder autoAdd(String key, Object obj) {
+        if (key == null) {
+            return this;
+        }
+        if (obj == null) {
+            toggleQuoting();
+            manualAddString(key, "null");
+            toggleQuoting();
+            return this;
+        }
+
         if (obj.getClass().equals(String.class)) { // Si el objeto es un String, lo adjuntamos tal cual
             return manualAddString(key, (String) obj);
         }
