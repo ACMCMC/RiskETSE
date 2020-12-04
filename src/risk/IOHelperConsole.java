@@ -9,15 +9,16 @@ public class IOHelperConsole implements IOHelper {
     IOHelperConsole() {
         scanner = new Scanner(System.in);
     }
-
+    
     @Override
     public String readLine() {
+        System.out.print(IOHelper.PROMPT);
         return scanner.nextLine();
     }
 
     @Override
     public void printToErrOutput(Throwable th) {
-        System.out.println(th.getMessage());
+        System.out.println(th.toString());
     }
 
     @Override

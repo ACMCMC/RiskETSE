@@ -639,7 +639,11 @@ public class Mapa {
      * @return
      */
     public Pais getPais(String codigo) throws ExcepcionGeo {
-        return this.paises.get(codigo);
+        if (this.paises.containsKey(codigo)) {
+            return this.paises.get(codigo);
+        } else {
+            throw (ExcepcionGeo) RiskExceptionEnum.PAIS_NO_EXISTE.get();
+        }
     }
 
     /**
@@ -647,13 +651,6 @@ public class Mapa {
      */
     public Set<Continente> getContinentes() {
         return this.continentes.entrySet().parallelStream().map(entry -> entry.getValue()).collect(Collectors.toSet());
-    }
-
-    /**
-     * Imprime el Mapa por pantalla
-     */
-    public void imprimirMapa() {
-        System.out.print(toString());
     }
 
     /**

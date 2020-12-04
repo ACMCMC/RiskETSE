@@ -13,7 +13,7 @@ public enum Color {
     CYAN("CYAN", "\033[0;36m", "\033[46m"), VERDE("VERDE", "\033[0;32m", "\033[42m"),
     AMARILLO("AMARILLO", "\033[0;33m", "\033[43m"), VIOLETA("VIOLETA", "\033[0;35m", "\033[45m"),
     ROJO("ROJO", "\033[0;31m", "\033[41m"), AZUL("AZUL", "\033[0;36m", "\033[44m"),
-    INDEFINIDO((String) null, (String) null, (String) null);
+    INDEFINIDO("INDEFINIDO", "", "");
 
     private final String nombre;
     private final String secTexto;

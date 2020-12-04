@@ -39,8 +39,6 @@ public class Menu {
     // necesario acceder durante la ejecución del programa como, por ejemplo,
     // el mapa o los jugadores
 
-    private static final String PROMPT = "$> ";
-
     private IOHelper io;
     {
         // Inicialización de io; podemos hacerla antes del constructor
@@ -53,39 +51,32 @@ public class Menu {
         // Iniciar juego
         String orden = null;
         String[] partes;
-        BufferedReader bufferLector = null;
         try {
-            File fichero = new File("comandos.csv");
-            FileReader lector = new FileReader(fichero);
-            bufferLector = new BufferedReader(lector);
-            while ((orden = bufferLector.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene
+            while ((orden = io.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene
                                                                                                // que ser "crear mapa".
                                                                                                // Mostramos un error
                                                                                                // mientras no sea esa.
-                System.out.println(PROMPT + orden);
                 io.printToErrOutput(RiskExceptionEnum.MAPA_NO_CREADO.get());
             }
-            System.out.println(PROMPT + orden);
             crearMapa();
             anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles son
                                          // las fronteras indirectas
-            Mapa.getMapa().imprimirMapa(); // Imprimimos el mapa una vez creado
+            imprimirMapa(); // Imprimimos el mapa una vez creado
 
             boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
-            while ((orden = bufferLector.readLine()) != null
+            while ((orden = io.readLine()) != null
                     && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La segunda línea (y posiblemente
                 // las siguientes) tienen que ser
                 // "crear jugador nombre color".
                 // Mostramos un error mientras no sea
                 // esa. Tiene que haber al menos 3
                 // jugadores.
-                System.out.println(PROMPT + orden);
-                if (orden.startsWith("crear jugador")) { // Entramos por aquí si es crear jugador o crear jugadores
+                if (orden.startsWith("crear")) { // Entramos por aquí si es crear jugador o crear jugadores
                     partes = orden.split(" ");
-                    if (partes[1].equals("jugador") && partes.length == 4) {
-                        crearJugador(partes[2], partes[3]);
-                    } else if (partes[1].equals("jugadores") && partes.length == 3) {
+                    if (partes.length == 3 && partes[1].equals("jugadores")) {
                         crearJugadores(new File(partes[2]));
+                    } else if (partes.length == 3) {
+                        crearJugador(partes[1], partes[2]);
                     } else {
                         comandoIncorrecto();
                     }
@@ -99,8 +90,7 @@ public class Menu {
 
             Partida.getPartida().asignarEjercitosSinRepartir();
 
-            while ((orden = bufferLector.readLine()) != null) {
-                System.out.println(PROMPT + orden);
+            do {
                 partes = orden.split(" ");
                 String comando = partes[0];
                 // COMANDOS INICIALES PARA EMPEZAR A JUGAR
@@ -142,7 +132,7 @@ public class Menu {
                                 crearJugador(partes[1], partes[2]);
                             }
                         } else {
-                            System.out.println("\nComando incorrecto.");
+                            comandoIncorrecto();
                         }
                         break;
                     case "asignar":
@@ -150,7 +140,7 @@ public class Menu {
                         // CORREGIR
                         // *********************************************************************
                         if (partes.length != 3) {
-                            System.out.println("\nComando incorrecto.");
+                            comandoIncorrecto();
                         } else if (partes[1].equals("paises")) {
                             // asignarPaises es un método de la clase Menu que recibe como entrada el
                             // fichero
@@ -165,7 +155,7 @@ public class Menu {
                     case "ver":
                         if (partes.length == 2) {
                             if (partes[1].equals("mapa")) {
-                                Mapa.getMapa().imprimirMapa();
+                                imprimirMapa();
                             }
                         }
                         break;
@@ -201,7 +191,7 @@ public class Menu {
                     default:
                         comandoIncorrecto();
                 }
-            }
+            } while ((orden = io.readLine()) != null);
         } catch (Exception excepcion) {
             excepcion.printStackTrace();
         }
@@ -736,6 +726,10 @@ public class Menu {
         } catch (RiskException e) {
             io.printToErrOutput(e);
         }
+    }
+
+    private void imprimirMapa() {
+        io.printToOutput(Mapa.getMapa().toString());
     }
 
 }

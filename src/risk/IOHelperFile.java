@@ -27,8 +27,11 @@ public class IOHelperFile implements IOHelper {
 
     @Override
     public String readLine() {
+        String linea;
         try {
-            return bufferedReader.readLine();
+            linea = bufferedReader.readLine();
+            printToOutput(IOHelper.PROMPT + linea);
+            return linea;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -39,7 +42,7 @@ public class IOHelperFile implements IOHelper {
     @Override
     public void printToErrOutput(Throwable th) {
         try {
-            bufferedWriter.write(th.getMessage());
+            bufferedWriter.write(th.toString());
             bufferedWriter.write(System.getProperty("line.separator"));
             bufferedWriter.flush();
         } catch (IOException e) {

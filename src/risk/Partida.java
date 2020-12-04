@@ -50,7 +50,10 @@ public class Partida {
     }
 
     public void addJugador(Jugador jugador) throws ExcepcionJugador {
-        if (this.jugadores.containsKey(jugador.getNombre())) {
+        if (this.jugadores.entrySet().stream().anyMatch(jug -> jug.getValue().getColor().equals(jugador.getColor()))) { // Si existe un jugador con el mismo color, lanzamos la excepción 114
+            throw (ExcepcionJugador) RiskExceptionEnum.COLOR_YA_ASIGNADO.get();
+        }
+        if (this.jugadores.containsKey(jugador.getNombre())) { // Si el jugador ya existe, lanzamos la excepción 104
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADOR_YA_EXISTE.get();
         }
         this.jugadores.put(jugador.getNombre(), jugador);
