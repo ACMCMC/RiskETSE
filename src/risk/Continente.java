@@ -107,7 +107,6 @@ public class Continente {
 
     /**
      * Devuelve un Set de todos los países
-     * @return Set<Pais>
      */
     public Set<Pais> getPaises() {
         Set<Pais> setPaises = new HashSet<>();

@@ -21,6 +21,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.RiskException.ExcepcionGeo;
+import risk.RiskException.RiskExceptionEnum;
+
 public class Mapa {
 
     private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");
@@ -74,17 +77,12 @@ public class Mapa {
         return this.SIZE_Y;
     }
 
-
-    //TODO:_ cambiar
     /**
-     * 
-     * 
      * @throws FileNotFoundException
      */
-    public static void crearMapa(File file) throws FileNotFoundException {
+    public static void crearMapa(File file) throws FileNotFoundException, ExcepcionGeo {
         if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
-            FileOutputHelper.printToErrOutput(new RiskException(RiskException.RiskExceptionEnum.MAPA_YA_CREADO).toString());
-            return;
+            throw (ExcepcionGeo) RiskExceptionEnum.MAPA_YA_CREADO.get();
         }
 
         mapaSingleton.asignarPaisesACasillas(file); // Could throw a FileNotFoundException, but we leave exception handling to the caller
@@ -123,10 +121,13 @@ public class Mapa {
         
             while ((linea = bufferedReader.readLine()) != null) {
                 valores = linea.split(";");
-                if (getContinente(valores[0]) != null ) {
+                try {
                     getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
-                } else {
-                    addContinente(new Continente(valores[0], valores[0], Color.getColorByString(valores[1]))); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+                } catch (ExcepcionGeo e) { // No se ha encontrado el continente
+                    if (e.equals(RiskExceptionEnum.CONTINENTE_NO_EXISTE.get())) {
+                            //addContinente(new Continente(valores[0], valores[0], Color.getColorByString(valores[1]))); // En el archivo no sale el nombre humano del continente, así que ponemos que el nombre humano sea el del código
+                        e.printStackTrace();
+                    }
                 }
             }
             bufferedReader.close();
@@ -163,8 +164,10 @@ public class Mapa {
                 posX = valores[4];
                 posY = valores[5];
 
-                Continente continenteDelPais = getContinente(codigoContinente);
-                if (continenteDelPais == null) {
+                Continente continenteDelPais;
+                try {
+                    continenteDelPais = getContinente(codigoContinente);
+                } catch (ExcepcionGeo e) {
                     // Creamos el continente, porque no está en la lista
                     continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
                     continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
@@ -469,12 +472,16 @@ public class Mapa {
      * @param codigo
      * @return
      */
-    public Continente getContinente(String codigo) {
-        return this.continentes.get(codigo);
+    public Continente getContinente(String codigo) throws ExcepcionGeo {
+        if (this.continentes.containsKey(codigo)) {
+            return this.continentes.get(codigo);
+        } else {
+            throw (ExcepcionGeo) RiskExceptionEnum.CONTINENTE_NO_EXISTE.get();
+        }
     }
 
     /**
-     * Devuelve la Frontera entre dos países, o {@code null} si no existe
+     * Devuelve la Frontera entre dos países
      */
     public Optional<Frontera> getFrontera(Pais paisA, Pais paisB) {
         return Optional.ofNullable(this.fronteras.contains(new Frontera(paisA, paisB)) ? new Frontera(paisA, paisB) : null);
@@ -526,7 +533,7 @@ public class Mapa {
      * @param codigo
      * @return
      */
-    public Pais getPais(String codigo) {
+    public Pais getPais(String codigo) throws ExcepcionGeo {
         return this.paises.get(codigo);
     }
 
