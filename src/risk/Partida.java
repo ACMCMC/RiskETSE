@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import risk.CartasMision.CartaMision;
+import risk.Ejercito.Ejercito;
 import risk.RiskException.ExcepcionGeo;
 import risk.RiskException.ExcepcionJugador;
 import risk.RiskException.RiskException;
