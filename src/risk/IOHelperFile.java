@@ -11,7 +11,7 @@ public class IOHelperFile implements IOHelper {
 
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
-    
+
     IOHelperFile(String fileNameOutput, String fileNameInput) {
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(new File(fileNameOutput)));
@@ -24,29 +24,32 @@ public class IOHelperFile implements IOHelper {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public String readLine() {
+        String linea;
         try {
-            return bufferedReader.readLine();
+            linea = bufferedReader.readLine();
+            printToOutput(IOHelper.PROMPT + linea);
+            return linea;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
     }
-    
+
     @Override
     public void printToErrOutput(Throwable th) {
         try {
-            bufferedWriter.write(th.getMessage());
+            bufferedWriter.write(th.toString());
             bufferedWriter.write(System.getProperty("line.separator"));
             bufferedWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        }  
+        }
     }
-    
+
     @Override
     public void printToOutput(String output) {
         try {
@@ -57,7 +60,7 @@ public class IOHelperFile implements IOHelper {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void escribirFinComandos() {
         try {
@@ -78,5 +81,5 @@ public class IOHelperFile implements IOHelper {
             e.printStackTrace();
         }
     }
-    
+
 }

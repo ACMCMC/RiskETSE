@@ -24,7 +24,7 @@ public abstract class RiskException extends Exception {
 
     @Override
     public String toString() {
-        return risk.OutputBuilder.beginBuild().autoAdd("código de error", String.valueOf(this.getCodigo()))
+        return risk.OutputBuilder.beginBuild().autoAdd("código de error", this.getCodigo())
                 .autoAdd("descripción", this.getCodigoTexto()).build();
     }
 

@@ -1,16 +1,24 @@
 package risk;
 
+import java.util.Scanner;
+
 public class IOHelperConsole implements IOHelper {
 
+    private Scanner scanner;
+
+    IOHelperConsole() {
+        scanner = new Scanner(System.in);
+    }
+    
     @Override
     public String readLine() {
-        // TODO Auto-generated method stub
-        return null;
+        System.out.print(IOHelper.PROMPT);
+        return scanner.nextLine();
     }
 
     @Override
     public void printToErrOutput(Throwable th) {
-        System.out.println(th.getMessage());
+        System.out.println(th.toString());
     }
 
     @Override

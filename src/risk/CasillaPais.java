@@ -7,12 +7,12 @@ package risk;
 public class CasillaPais extends Casilla {
 
     private final Pais pais; // Nunca puede ser NULL
-    
+
     CasillaPais(Coordenadas coordenadas, Pais pais) {
         super(coordenadas);
         this.pais = pais;
     }
-    
+
     CasillaPais(Coordenadas coordenadas, BordeCasilla tipoBorde, Pais pais) {
         super(coordenadas, tipoBorde);
         this.pais = pais;
@@ -24,7 +24,8 @@ public class CasillaPais extends Casilla {
 
     @Override
     public String toString() {
-            return("Casilla del país: " + this.getPais().getCodigo() + " -> (" + this.getCoordenadas().getX() + "," + this.getCoordenadas().getY() + ")");
+        return ("Casilla del país: " + this.getPais().getCodigo() + " -> (" + this.getCoordenadas().getX() + ","
+                + this.getCoordenadas().getY() + ")");
     }
 
     @Override
@@ -35,7 +36,7 @@ public class CasillaPais extends Casilla {
         if (!(casilla instanceof CasillaPais)) { // Casilla nos dice que son iguales, comprobamos si es una CasillaPais
             return false;
         }
-        if(!this.getPais().equals(((CasillaPais)casilla).getPais())){
+        if (!this.getPais().equals(((CasillaPais) casilla).getPais())) {
             return false; // Si los países son distintos, no son iguales
         }
         return true; // Los países son los mismos

@@ -12,7 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Clase Continente. Almacena el codigo, su color, y los países asociados al continente.
+ * Clase Continente. Almacena el codigo, su color, y los países asociados al
+ * continente.
  */
 public class Continente {
     private Color color;
@@ -22,6 +23,7 @@ public class Continente {
 
     /**
      * Crea un nuevo Continente, sin países asignados
+     * 
      * @param codigo
      * @param nombreHumano
      */
@@ -34,6 +36,7 @@ public class Continente {
 
     /**
      * Crea un nuevo Continente, sin países asignados
+     * 
      * @param codigo
      * @param color
      */
@@ -58,6 +61,7 @@ public class Continente {
 
     /**
      * Devuelve el Color de este continente
+     * 
      * @return Color
      */
     public Color getColor() {
@@ -66,6 +70,7 @@ public class Continente {
 
     /**
      * Devuelve el codigo del continente
+     * 
      * @return String codigo
      */
     public String getCodigo() {
@@ -74,6 +79,7 @@ public class Continente {
 
     /**
      * Devuelve el nombre humano del continente
+     * 
      * @return String codigo
      */
     public String getNombreHumano() {
@@ -82,6 +88,7 @@ public class Continente {
 
     /**
      * Añade un Pais a este continente
+     * 
      * @param pais
      */
     public void addPais(Pais pais) {
@@ -90,6 +97,7 @@ public class Continente {
 
     /**
      * Devuelve el Pais de codigo especificado
+     * 
      * @param codigo
      * @return el Pais, o NULL
      */
@@ -98,11 +106,13 @@ public class Continente {
     }
 
     /**
-     * Devuelve un Set de los jugadores que tienen al menos un país en este continente
+     * Devuelve un Set de los jugadores que tienen al menos un país en este
+     * continente
+     * 
      * @return
      */
     public Set<Jugador> getJugadores() {
-        return this.getPaises().stream().map(pais -> pais.getJugador()).collect(Collectors.toSet());
+        return this.getPaises().stream().map(pais -> pais.getJugador()).filter(j -> j!=null).collect(Collectors.toSet());
     }
 
     /**
@@ -110,31 +120,38 @@ public class Continente {
      */
     public Set<Pais> getPaises() {
         Set<Pais> setPaises = new HashSet<>();
-        this.paises.entrySet().forEach((Entry<String, Pais> entry) -> {setPaises.add(entry.getValue());});
+        this.paises.entrySet().forEach((Entry<String, Pais> entry) -> {
+            setPaises.add(entry.getValue());
+        });
         return setPaises;
     }
-    
+
     @Override
-    public boolean equals(Object continente){
-        if(this==continente){
+    public boolean equals(Object continente) {
+        if (this == continente) {
             return true;
         }
-        if (continente==null){
+        if (continente == null) {
             return false;
         }
-        if(getClass() != continente.getClass()){
+        if (getClass() != continente.getClass()) {
             return false;
         }
         final Continente other = (Continente) continente;
-        if(!this.getCodigo().equals(other.getCodigo())){
+        if (!this.getCodigo().equals(other.getCodigo())) {
             return false;
         }
-        if(!this.getNombreHumano().equals(other.getNombreHumano())){
+        if (!this.getNombreHumano().equals(other.getNombreHumano())) {
             return false;
         }
-        if(!this.getColor().equals(other.getColor())){
+        if (!this.getColor().equals(other.getColor())) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return this.getNombreHumano();
     }
 }
