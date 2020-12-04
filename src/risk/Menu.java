@@ -244,15 +244,11 @@ public class Menu {
      */
     public void asignarPais(String nombrePais, String nombreJugador) {
         try {
-                        Mapa.getMapa().getPais(nombrePais)
-                                .setJugador(Partida.getPartida().getJugador(nombreJugador));
-                        Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1,
-                                Mapa.getMapa().getPais(nombrePais));
-                        io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
-                                .autoAdd("pais", nombrePais)
-                                .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
-                                .autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)))
-                                .build());
+            Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador));
+            Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, Mapa.getMapa().getPais(nombrePais));
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
+                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getCodigo())
+                    .autoAdd("frontera", Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais))).build());
         } catch (RiskException e) {
             io.printToErrOutput(e);
         }
@@ -327,10 +323,10 @@ public class Menu {
     private void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
         try {
-        Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
-        Partida.getPartida().addJugador(jugador);
-        io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
-                .autoAdd("color", color).build());
+            Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
+            Partida.getPartida().addJugador(jugador);
+            io.printToOutput(
+                    OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color", color).build());
         } catch (ExcepcionGeo | ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -572,20 +568,23 @@ public class Menu {
      */
     private void obtenerFronteras(String codigoPais) {
         try {
-            Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais)).stream() // Creamos
-                                                                                                                          // un
-                                                                                                                          // Stream
-                                                                                                                          // de
-                                                                                                                          // las
-                                                                                                                          // Fronteras
-                                                                                                                          // de
-                                                                                                                          // ese
-                                                                                                                          // país
+            Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais))
+                    .stream() // Creamos
+                              // un
+                              // Stream
+                              // de
+                              // las
+                              // Fronteras
+                              // de
+                              // ese
+                              // país
                     .map((Frontera frontera) -> {
                         return (frontera.getPaises().stream().filter((Pais pais) -> {
                             try {
-                                return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los dos países
-                                                                                           // de esa frontera, el país que no
+                                return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los
+                                                                                           // dos países
+                                                                                           // de esa frontera, el país
+                                                                                           // que no
                                                                                            // sea el de la consulta
                             } catch (RiskException e) {
                                 return false;

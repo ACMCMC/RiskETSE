@@ -11,7 +11,7 @@ public class IOHelperFile implements IOHelper {
 
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
-    
+
     IOHelperFile(String fileNameOutput, String fileNameInput) {
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(new File(fileNameOutput)));
@@ -24,7 +24,7 @@ public class IOHelperFile implements IOHelper {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public String readLine() {
         try {
@@ -35,7 +35,7 @@ public class IOHelperFile implements IOHelper {
             return null;
         }
     }
-    
+
     @Override
     public void printToErrOutput(Throwable th) {
         try {
@@ -44,9 +44,9 @@ public class IOHelperFile implements IOHelper {
             bufferedWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        }  
+        }
     }
-    
+
     @Override
     public void printToOutput(String output) {
         try {
@@ -57,7 +57,7 @@ public class IOHelperFile implements IOHelper {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void escribirFinComandos() {
         try {
@@ -78,5 +78,5 @@ public class IOHelperFile implements IOHelper {
             e.printStackTrace();
         }
     }
-    
+
 }

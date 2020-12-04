@@ -8,25 +8,27 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Clase que representa una frontera entre dos países (A y B). El orden de los países no importa.
+ * Clase que representa una frontera entre dos países (A y B). El orden de los
+ * países no importa.
  */
 public class Frontera {
     private Pais paisA;
     private Pais paisB;
     private boolean esIndirecta;
 
-    Frontera (Pais paisA, Pais paisB) {
+    Frontera(Pais paisA, Pais paisB) {
         this.setPaises(paisA, paisB);
         this.esIndirecta = false;
     }
 
-    Frontera (Pais paisA, Pais paisB, boolean esIndirecta) {
+    Frontera(Pais paisA, Pais paisB, boolean esIndirecta) {
         this.setPaises(paisA, paisB);
         this.esIndirecta = esIndirecta;
     }
 
     /**
      * Dice si esta frontera es indirecta
+     * 
      * @return
      */
     public boolean esIndirecta() {
@@ -35,6 +37,7 @@ public class Frontera {
 
     /**
      * Devuelve el país A
+     * 
      * @return
      */
     public Pais getPaisA() {
@@ -43,6 +46,7 @@ public class Frontera {
 
     /**
      * Devuelve el país B
+     * 
      * @return
      */
     public Pais getPaisB() {
@@ -51,6 +55,7 @@ public class Frontera {
 
     /**
      * Devuelve un Set de los dos países
+     * 
      * @return
      */
     public Set<Pais> getPaises() {
@@ -62,6 +67,7 @@ public class Frontera {
 
     /**
      * Método setter para establecer los países de esta Frontera
+     * 
      * @param paisA
      * @param paisB
      */
@@ -79,9 +85,10 @@ public class Frontera {
         Frontera fronteraIgual = (Frontera) obj;
 
         if (fronteraIgual.getPaises().equals(this.getPaises())) {
-            return true; // Si los elementos de los dos Sets son los mismos, entonces las fronteras son iguales
+            return true; // Si los elementos de los dos Sets son los mismos, entonces las fronteras son
+                         // iguales
         }
-        
+
         return false; // Si no se cumple lo anterior, entonces no es la misma frontera
     }
 

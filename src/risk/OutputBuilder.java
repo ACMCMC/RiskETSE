@@ -121,9 +121,12 @@ public class OutputBuilder {
                     if (Iterable.class.isAssignableFrom(m.getReturnType())) {
                         Object objetoIterable = m.invoke(obj);
                         if (objetoIterable instanceof Iterable<?>) {
-                            // Esta es una comprobación totalmente redundante, solo es para que no sale un warning del compilador, porque no detecta que ya comprobamos que el objeto es iterable más arriba
+                            // Esta es una comprobación totalmente redundante, solo es para que no sale un
+                            // warning del compilador, porque no detecta que ya comprobamos que el objeto es
+                            // iterable más arriba
 
-                            // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una lista
+                            // El tipo de objeto devuelto es iterable, por lo que vamos a tratarlo como una
+                            // lista
                             stringBuilder.append("[ ");
                             int cantidadDeSangradoLocal = stringBuilder.toString()
                                     .split(NEW_LINE)[stringBuilder.toString().split(NEW_LINE).length - 1].length();
@@ -134,10 +137,12 @@ public class OutputBuilder {
                                 stringBuilder.append("\"").append(
                                         OutputBuilder.buildFromObjectGetters(iterator.next(), cantidadDeSangradoLocal))
                                         .append("\"");
-                                if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente línea
+                                if (iterator.hasNext()) { // Si este no es el último elemento, preparamos la siguiente
+                                                          // línea
                                     stringBuilder.append(",").append(NEW_LINE); // Terminamos la
                                                                                 // línea
-                                    stringBuilder.append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' '));
+                                    stringBuilder
+                                            .append(new String(new char[cantidadDeSangradoLocal]).replace('\0', ' '));
                                     // Añadimos una nueva línea toda de espacios
                                 }
                             }
