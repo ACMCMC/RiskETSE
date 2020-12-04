@@ -203,6 +203,7 @@ public class Menu {
                         } else {
                             comandoIncorrecto();
                         }
+                        break;
                     default:
                         comandoIncorrecto();
                 }
