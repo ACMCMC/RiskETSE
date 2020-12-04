@@ -112,7 +112,7 @@ public class Continente {
      * @return
      */
     public Set<Jugador> getJugadores() {
-        return this.getPaises().stream().map(pais -> pais.getJugador()).collect(Collectors.toSet());
+        return this.getPaises().stream().map(pais -> pais.getJugador()).filter(j -> j!=null).collect(Collectors.toSet());
     }
 
     /**
@@ -148,5 +148,10 @@ public class Continente {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return this.getNombreHumano();
     }
 }

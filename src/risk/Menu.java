@@ -170,12 +170,16 @@ public class Menu {
                                         .toString());
                             } else if (partes[1].equals("frontera")) {
                                 obtenerFronteras(partes[2]);
+                            } else {
+                                comandoIncorrecto();
                             }
                         }
                         break;
                     case "atacar":
                         if (partes.length == 3) {
                             atacar(partes[1], partes[2]);
+                        } else {
+                            comandoIncorrecto();
                         }
                         break;
                     case "repartir":
@@ -188,9 +192,23 @@ public class Menu {
                         if (partes.length == 3) {
                             if (partes[1].equals("pais")) {
                                 describirPais(partes[2]);
+                            } else if (partes[1].equals("continente")) {
+                                describirContinente(partes[2]);
+                            } else if (partes[1].equals("jugador")) {
+                                describirJugador(partes[2]);
+                            } else {
+                                comandoIncorrecto();
                             }
+                        } else {
+                            comandoIncorrecto();
                         }
                         break;
+                    case "jugador":
+                        if (partes.length == 1) {
+                            describirJugadorActual();
+                        } else {
+                            comandoIncorrecto();
+                        }
                     default:
                         comandoIncorrecto();
                 }
@@ -243,8 +261,8 @@ public class Menu {
             Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(pais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                    .autoAdd("continente", pais.getContinente().getNombreHumano())
-                    .autoAdd("frontera", fronterasPais).build());
+                    .autoAdd("continente", pais.getContinente().getNombreHumano()).autoAdd("frontera", fronterasPais)
+                    .build());
         } catch (RiskException e) {
             io.printToErrOutput(e);
         }
@@ -360,7 +378,8 @@ public class Menu {
      */
     private void obtenerFronteras(String codigoPais) {
         try {
-            Set<String> nombresPaisesFronteras = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(codigoPais));
+            Set<String> nombresPaisesFronteras = Mapa.getMapa()
+                    .getNombresPaisesFrontera(Mapa.getMapa().getPais(codigoPais));
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
                                                                                                               // sacamos
                                                                                                               // a
@@ -426,6 +445,60 @@ public class Menu {
     }
 
     /**
+     * Muestra las características de un Continente
+     * 
+     * @param abrevContinente
+     */
+    private void describirContinente(String abrevContinente) {
+        try {
+            Continente continente = Mapa.getMapa().getContinente(abrevContinente);
+            Set<String> listaJugs = continente.getJugadores().stream()
+                    .map(j -> "{ " + j.getNombre() + ", " + String.valueOf(j.getTotalEjercitos()) + " }")
+                    .collect(Collectors.toSet());
+            String output = OutputBuilder.beginBuild().autoAdd("nombre", continente.getNombreHumano())
+                    .autoAdd("abreviatura", continente.getCodigo()).disableQuoting().autoAdd("jugadores", listaJugs)
+                    .enableQuoting()
+                    .autoAdd("numeroEjercitos", continente.getPaises().stream().reduce(0,
+                            (total, pais) -> total + pais.getNumEjercitos(), Integer::sum))
+                    .autoAdd("rearme", "RELLENAR").build();
+            io.printToOutput(output);
+        } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Muestra las características de un jugador
+     * 
+     * @param nombre
+     */
+    private void describirJugador(String nombre) {
+        try {
+            Jugador jugador = Partida.getPartida().getJugador(nombre);
+            String output = OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
+                    .autoAdd("color", jugador.getColor().getNombre()).autoAdd("mision", "RELLENAR")
+                    .autoAdd("numeroEjercitos", jugador.getTotalEjercitos())
+                    .autoAdd("paises", jugador.getPaises())
+                    .autoAdd("continentes",
+                            jugador.getPaises().stream().map(p -> p.getContinente()).distinct()
+                                    .collect(Collectors.toSet()))
+                    .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR").build();
+            io.printToOutput(output);
+        } catch (ExcepcionJugador e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Muestra las características del jugador que tiene el turno actual
+     * 
+     * @param nombre
+     */
+    private void describirJugadorActual() {
+        describirJugador(Partida.getPartida().getJugadorActual().getNombre());
+    }
+
+    /**
      * Muestra las caracteristicas de un pais: nombre, abreviatura, continente,
      * fronteras, jugador al que pertenece, numero de ejercitos que lo ocupan y el
      * numero de veces que ha sido conquistado
@@ -439,8 +512,11 @@ public class Menu {
             pais = Mapa.getMapa().getPais(abrevPais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", pais.getNombreHumano())
                     .autoAdd("abreviatura", pais.getCodigo())
-                    .autoAdd("continente", pais.getContinente().getNombreHumano()).autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
-                    .build());
+                    .autoAdd("continente", pais.getContinente().getNombreHumano())
+                    .autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
+                    .autoAdd("jugador", Optional.ofNullable(pais.getJugador()).map(j -> j.getNombre()).orElse(null))
+                    .autoAdd("numeroEjercitos", pais.getNumEjercitos())
+                    .autoAdd("numeroVecesOcupado", pais.getNumVecesConquistado()).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
