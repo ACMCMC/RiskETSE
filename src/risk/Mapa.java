@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import risk.RiskException.ExcepcionGeo;
+import risk.RiskException.RiskException;
 import risk.RiskException.RiskExceptionEnum;
 
 public class Mapa {
@@ -598,6 +599,30 @@ public class Mapa {
                 return false;
             }
         }).collect(Collectors.toSet()));
+    }
+
+    /**
+     * Devuelve un Set de los nombres de los países con los que el país argumento hace frontera
+     */
+    public Set<String> getNombresPaisesFrontera(Pais pais) {
+        return this.getPaisesFrontera(pais).stream().map(paisFrontera -> paisFrontera.getNombreHumano()).collect(Collectors.toSet());
+    }
+    
+    /**
+     * Devuelve un Set de los países con los que el país argumento hace frontera
+     * @param pais
+     * @return
+     */
+    public Set<Pais> getPaisesFrontera(Pais pais) {
+        return this.getFronteras(pais).stream().map((Frontera frontera) -> {
+            return (frontera.getPaises().stream().filter((Pais paisComp) -> {
+                    return (!pais.equals(paisComp)); // Buscamos, dentro de los
+                                                                               // dos países
+                                                                               // de esa frontera, el país
+                                                                               // que no
+                                                                               // sea el de la consulta
+            }).collect(Collectors.toList()).get(0)); // El otro país
+        }).collect(Collectors.toSet());
     }
 
     /**

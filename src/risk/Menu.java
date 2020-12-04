@@ -53,9 +53,9 @@ public class Menu {
         String[] partes;
         try {
             while ((orden = io.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene
-                                                                                               // que ser "crear mapa".
-                                                                                               // Mostramos un error
-                                                                                               // mientras no sea esa.
+                                                                                     // que ser "crear mapa".
+                                                                                     // Mostramos un error
+                                                                                     // mientras no sea esa.
                 io.printToErrOutput(RiskExceptionEnum.MAPA_NO_CREADO.get());
             }
             crearMapa();
@@ -64,8 +64,11 @@ public class Menu {
             imprimirMapa(); // Imprimimos el mapa una vez creado
 
             boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
-            while ((orden = io.readLine()) != null
-                    && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La segunda línea (y posiblemente
+            while ((orden = io.readLine()) != null && (!jugadoresCreados || orden.startsWith("crear jugador"))) { // La
+                                                                                                                  // segunda
+                                                                                                                  // línea
+                                                                                                                  // (y
+                                                                                                                  // posiblemente
                 // las siguientes) tienen que ser
                 // "crear jugador nombre color".
                 // Mostramos un error mientras no sea
@@ -233,25 +236,14 @@ public class Menu {
      * @param nombreJugador
      */
     public void asignarPais(String nombrePais, String nombreJugador) {
+        Pais pais;
         try {
-            Mapa.getMapa().getPais(nombrePais).setJugador(Partida.getPartida().getJugador(nombreJugador));
-            Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, Mapa.getMapa().getPais(nombrePais));
-            Set<String> fronterasPais = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(nombrePais)).stream().map((Frontera frontera) -> {
-                return (frontera.getPaises().stream().filter((Pais pais) -> {
-                    try {
-                        return (!Mapa.getMapa().getPais(nombrePais).equals(pais)); // Buscamos, dentro de los
-                                                                                   // dos países
-                                                                                   // de esa frontera, el país
-                                                                                   // que no
-                                                                                   // sea el de la consulta
-                    } catch (RiskException e) {
-                        return false;
-                    }
-                }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el
-                                                                           // nombre en formato humano
-            }).collect(Collectors.toSet()); // Lo convertimos a un Set
+            pais = Mapa.getMapa().getPais(nombrePais);
+            pais.setJugador(Partida.getPartida().getJugador(nombreJugador));
+            Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
+            Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(pais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano())
+                    .autoAdd("continente", pais.getContinente().getNombreHumano())
                     .autoAdd("frontera", fronterasPais).build());
         } catch (RiskException e) {
             io.printToErrOutput(e);
@@ -349,6 +341,7 @@ public class Menu {
 
     /**
      * Manualmente, se asignan X ejercitos a un país
+     * 
      * @param numero
      * @param nombrePais
      */
@@ -359,7 +352,7 @@ public class Menu {
             io.printToErrOutput(e);
         }
     }
-    
+
     /**
      * Imprime las fronteras de un país
      * 
@@ -367,30 +360,7 @@ public class Menu {
      */
     private void obtenerFronteras(String codigoPais) {
         try {
-            Set<String> nombresPaisesFronteras = Mapa.getMapa().getFronteras(Mapa.getMapa().getPais(codigoPais))
-                    .stream() // Creamos
-                              // un
-                              // Stream
-                              // de
-                              // las
-                              // Fronteras
-                              // de
-                              // ese
-                              // país
-                    .map((Frontera frontera) -> {
-                        return (frontera.getPaises().stream().filter((Pais pais) -> {
-                            try {
-                                return (!Mapa.getMapa().getPais(codigoPais).equals(pais)); // Buscamos, dentro de los
-                                                                                           // dos países
-                                                                                           // de esa frontera, el país
-                                                                                           // que no
-                                                                                           // sea el de la consulta
-                            } catch (RiskException e) {
-                                return false;
-                            }
-                        }).collect(Collectors.toList()).get(0)).getNombreHumano(); // En ese país, nos quedamos con el
-                                                                                   // nombre en formato humano
-                    }).collect(Collectors.toSet()); // Lo convertimos a un Set
+            Set<String> nombresPaisesFronteras = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(codigoPais));
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("frontera", nombresPaisesFronteras).build()); // Lo
                                                                                                               // sacamos
                                                                                                               // a
@@ -463,30 +433,14 @@ public class Menu {
      * @param abrevPais
      */
     private void describirPais(String abrevPais) {
-        String nombreHumano;
-        String abreviatura;
-        // Continente continente;
-        Jugador jugador;
-        Ejercito ejercito;
-        Integer numeroConquistas;
+        Pais pais;
 
         try {
-            nombreHumano = Mapa.getMapa().getPais(abrevPais).getNombreHumano();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Nombre", nombreHumano).build());
-
-            abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Abreviatura", abreviatura).build());
-
-            // continente=Mapa.getContinente(abrevPais);
-            io.printToOutput(OutputBuilder.beginBuild()
-                    .autoAdd("Continente", Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano())
+            pais = Mapa.getMapa().getPais(abrevPais);
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", pais.getNombreHumano())
+                    .autoAdd("abreviatura", pais.getCodigo())
+                    .autoAdd("continente", pais.getContinente().getNombreHumano()).autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
                     .build());
-
-            // io.printToOutput(OutputBuilder.beginBuild().autoAdd("Frontera",
-            // obtenerFronteras()).build());
-
-            abreviatura = Mapa.getMapa().getPais(abrevPais).getCodigo();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Jugador", abreviatura).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
