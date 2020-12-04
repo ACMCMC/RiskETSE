@@ -1,0 +1,623 @@
+$> crear mapa
+┌───────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
+│ [45mAlaska   [0m │ [45mTNoroeste[0m │ [45mGroenlan [0m │[0;31m━━━━━━━━━━━[0m│ [43mIslandia [0m │ [43mEscandina[0m │ [46mSiberia  [0m │ [46mYakustsk [0m │ [46mKamchatka[0m │[0;31m━━━━━━━━━━━[0m│[0;31m━━━━━━━━━━━[0m│
+│           │           │           │           │           │           │           │           │           │           │           │
+├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ [45mAlberta  [0m │ [45mOntario  [0m │ [45mQuebec   [0m │           │           │ [43mGBretaña [0m │ [43mEurNorte [0m │ [43mRusia    [0m │ [46mIrkutsk  [0m │           │           │
+│           │           │           │           │           │           │           │           │           │           │           │
+├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ [45mUSAOeste [0m │ [45mUSAEste  [0m │           │           │           │ [43mEurOcc   [0m │ [43mEurSur   [0m │ [46mUrales   [0m │ [46mMongolia [0m │ [46mJapón    [0m │           │
+│           │           │           │           │           │           │           │           │           │           │           │
+├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│           │ [45mAmeCentra[0m │           │           │           │     [0;31m┃[0m     │     [0;31m┃[0m     │ [46mAfgan    [0m │ [46mChina    [0m │           │           │
+│           │           │           │           │           │     [0;31m┃[0m     │     [0;31m┃[0m     │           │           │           │           │
+├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│           │ [41mVenezuela[0m │           │           [0;31m┏[0m[0;31m━━━━━━━━━━━[0m│ [42mANorte   [0m │ [42mEgipto   [0m │ [46mOMedio   [0m │ [46mIndia    [0m │ [46mSAsiático[0m │           │
+│           │           │           │           [0;31m┃[0m           │           │           │           │           │           │           │
+├───────────┼───────────┼───────────┼───────────[0;31m┃[0m───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│           │ [41mPerú     [0m │ [41mBrasil   [0m │[0;31m━━━━━━━━━━━[0m[0;31m┛[0m           │ [42mCongo    [0m │ [42mAOriental[0m │           │           │     [0;31m┃[0m     │           │
+│           │           │           │           │           │           │           │           │           │     [0;31m┃[0m     │           │
+├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│           │ [41mArgentina[0m │           │           │           │           │ [42mSudáfrica[0m │ [42mMadagasca[0m │           │ [44mIndonesia[0m │ [44mNGuinea  [0m │
+│           │           │           │           │           │           │           │           │           │           │           │
+├───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│           │           │           │           │           │           │           │           │           │ [44mAusOccid [0m │ [44mAusOrient[0m │
+│           │           │           │           │           │           │           │           │           │           │           │
+└───────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘
+
+$> crear mapa
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> crear jugadores jugadores.csv
+{
+    nombre: "Gondorff",
+    color: "VERDE"
+}
+{
+    nombre: "Hooker",
+    color: "AZUL"
+}
+{
+    nombre: "Lonnegan",
+    color: "ROJO"
+}
+$> crear Gondorff AZUL
+{
+    código de error: 114,
+    descripción: "El color ya está asignado"
+}
+$> crear JT VERDE
+{
+    código de error: 114,
+    descripción: "El color ya está asignado"
+}
+$> asignar paises paises.csv
+{
+    nombre: "Gondorff",
+    pais: "Alaska",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Kamchatka", "Territorios del Noroeste" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "TNoroeste",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Alaska", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Groenlan",
+    continente: "América del Norte",
+    frontera: [ "Islandia", "Quebec", "Territorios del Noroeste" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Islandia",
+    continente: "Europa",
+    frontera: [ "Groenlandia", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Escandina",
+    continente: "Europa",
+    frontera: [ "Islandia", "Siberia", "Gran Bretaña" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Siberia",
+    continente: "Asia",
+    frontera: [ "Yakustsk", "Europa del Norte", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Yakustsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Siberia", "Kamchatka" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Kamchatka",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Yakustsk", "Alaska" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Alberta",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Alaska", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Ontario",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Quebec", "Territorios del Noroeste", "Estados Unidos del Este" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Quebec",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "GBretaña",
+    continente: "Europa",
+    frontera: [ "Europa Occidental", "Europa del Norte", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "EurNorte",
+    continente: "Europa",
+    frontera: [ "Rusia", "Europa del Sur", "Siberia", "Gran Bretaña" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Rusia",
+    continente: "Europa",
+    frontera: [ "Irkutsk", "Urales", "Yakustsk", "Europa del Norte" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Irkutsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
+}
+{
+    nombre: "Hooker",
+    pais: "USAOeste",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Estados Unidos del Este" ]
+}
+{
+    nombre: "Hooker",
+    pais: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ]
+}
+{
+    nombre: "Hooker",
+    pais: "EurOcc",
+    continente: "Europa",
+    frontera: [ "Europa del Sur", "África del Norte", "Gran Bretaña" ]
+}
+{
+    nombre: "Hooker",
+    pais: "EurSur",
+    continente: "Europa",
+    frontera: [ "Urales", "Europa Occidental", "Europa del Norte", "Egipto" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Urales",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Mongolia",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Japón",
+    continente: "Asia",
+    frontera: [ "Mongolia" ]
+}
+{
+    código de error: 109,
+    descripción: "El país no existe"
+}
+{
+    nombre: "Hooker",
+    pais: "Afgan",
+    continente: "Asia",
+    frontera: [ "Urales", "China", "Oriente Medio" ]
+}
+{
+    nombre: "Hooker",
+    pais: "China",
+    continente: "Asia",
+    frontera: [ "Mongolia", "Afganistán", "India" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Venezuela",
+    continente: "América del Sur",
+    frontera: [ "Perú", "América Central" ]
+}
+{
+    nombre: "Hooker",
+    pais: "ANorte",
+    continente: "África",
+    frontera: [ "Brasil", "Europa Occidental", "Congo", "Egipto" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Egipto",
+    continente: "África",
+    frontera: [ "África Oriental", "Europa del Sur", "África del Norte", "Oriente Medio" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "OMedio",
+    continente: "Asia",
+    frontera: [ "Afganistán", "India", "Egipto" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "India",
+    continente: "Asia",
+    frontera: [ "Sureste Asiático", "China", "Oriente Medio" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "SAsiático",
+    continente: "Asia",
+    frontera: [ "India", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Perú",
+    continente: "América del Sur",
+    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Brasil",
+    continente: "América del Sur",
+    frontera: [ "Perú", "África del Norte" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Congo",
+    continente: "África",
+    frontera: [ "África Oriental", "África del Norte" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AOriental",
+    continente: "África",
+    frontera: [ "Sudáfrica", "Congo", "Egipto" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Argentina",
+    continente: "América del Sur",
+    frontera: [ "Perú" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Sudáfrica",
+    continente: "África",
+    frontera: [ "África Oriental", "Madagascar" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Madagasca",
+    continente: "África",
+    frontera: [ "Sudáfrica" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Indonesia",
+    continente: "Oceanía",
+    frontera: [ "Sureste Asiático", "Australia Occidental", "Nueva Guinea" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "NGuinea",
+    continente: "Oceanía",
+    frontera: [ "Australia Oriental", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AusOccid",
+    continente: "Oceanía",
+    frontera: [ "Australia Oriental", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AusOrient",
+    continente: "Oceanía",
+    frontera: [ "Australia Occidental", "Nueva Guinea" ]
+}
+$> asignar misiones misiones.csv
+{
+    código de error: 109,
+    descripción: "El país no existe"
+}
+$> crear JT CYAN
+{
+    nombre: "JT",
+    color: "CYAN"
+}
+$> asignar paises paises.csv
+{
+    nombre: "Gondorff",
+    pais: "Alaska",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Kamchatka", "Territorios del Noroeste" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "TNoroeste",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Alaska", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Groenlan",
+    continente: "América del Norte",
+    frontera: [ "Islandia", "Quebec", "Territorios del Noroeste" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Islandia",
+    continente: "Europa",
+    frontera: [ "Groenlandia", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Escandina",
+    continente: "Europa",
+    frontera: [ "Islandia", "Siberia", "Gran Bretaña" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Siberia",
+    continente: "Asia",
+    frontera: [ "Yakustsk", "Europa del Norte", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Yakustsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Siberia", "Kamchatka" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Kamchatka",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Yakustsk", "Alaska" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Alberta",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Alaska", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Ontario",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Quebec", "Territorios del Noroeste", "Estados Unidos del Este" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Quebec",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "GBretaña",
+    continente: "Europa",
+    frontera: [ "Europa Occidental", "Europa del Norte", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "EurNorte",
+    continente: "Europa",
+    frontera: [ "Rusia", "Europa del Sur", "Siberia", "Gran Bretaña" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Rusia",
+    continente: "Europa",
+    frontera: [ "Irkutsk", "Urales", "Yakustsk", "Europa del Norte" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Irkutsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
+}
+{
+    nombre: "Hooker",
+    pais: "USAOeste",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Estados Unidos del Este" ]
+}
+{
+    nombre: "Hooker",
+    pais: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ]
+}
+{
+    nombre: "Hooker",
+    pais: "EurOcc",
+    continente: "Europa",
+    frontera: [ "Europa del Sur", "África del Norte", "Gran Bretaña" ]
+}
+{
+    nombre: "Hooker",
+    pais: "EurSur",
+    continente: "Europa",
+    frontera: [ "Urales", "Europa Occidental", "Europa del Norte", "Egipto" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Urales",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Mongolia",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Japón",
+    continente: "Asia",
+    frontera: [ "Mongolia" ]
+}
+{
+    código de error: 109,
+    descripción: "El país no existe"
+}
+{
+    nombre: "Hooker",
+    pais: "Afgan",
+    continente: "Asia",
+    frontera: [ "Urales", "China", "Oriente Medio" ]
+}
+{
+    nombre: "Hooker",
+    pais: "China",
+    continente: "Asia",
+    frontera: [ "Mongolia", "Afganistán", "India" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Venezuela",
+    continente: "América del Sur",
+    frontera: [ "Perú", "América Central" ]
+}
+{
+    nombre: "Hooker",
+    pais: "ANorte",
+    continente: "África",
+    frontera: [ "Brasil", "Europa Occidental", "Congo", "Egipto" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Egipto",
+    continente: "África",
+    frontera: [ "África Oriental", "Europa del Sur", "África del Norte", "Oriente Medio" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "OMedio",
+    continente: "Asia",
+    frontera: [ "Afganistán", "India", "Egipto" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "India",
+    continente: "Asia",
+    frontera: [ "Sureste Asiático", "China", "Oriente Medio" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "SAsiático",
+    continente: "Asia",
+    frontera: [ "India", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Perú",
+    continente: "América del Sur",
+    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Brasil",
+    continente: "América del Sur",
+    frontera: [ "Perú", "África del Norte" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Congo",
+    continente: "África",
+    frontera: [ "África Oriental", "África del Norte" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AOriental",
+    continente: "África",
+    frontera: [ "Sudáfrica", "Congo", "Egipto" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Argentina",
+    continente: "América del Sur",
+    frontera: [ "Perú" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Sudáfrica",
+    continente: "África",
+    frontera: [ "África Oriental", "Madagascar" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Madagasca",
+    continente: "África",
+    frontera: [ "Sudáfrica" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Indonesia",
+    continente: "Oceanía",
+    frontera: [ "Sureste Asiático", "Australia Occidental", "Nueva Guinea" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "NGuinea",
+    continente: "Oceanía",
+    frontera: [ "Australia Oriental", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AusOccid",
+    continente: "Oceanía",
+    frontera: [ "Australia Oriental", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AusOrient",
+    continente: "Oceanía",
+    frontera: [ "Australia Occidental", "Nueva Guinea" ]
+}
+$> asignar mision Hooker M32
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> asignar paises paises.csv
+{
+    nombre: "Gondorff",
+    pais: "Alaska",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Kamchatka", "Territorios del Noroeste" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "TNoroeste",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Alaska", "Ontario" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Groenlan",
+    continente: "América del Norte",
+    frontera: [ "Islandia", "Quebec", "Territorios del Noroeste" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Islandia",
+    continente: "Europa",
+    frontera: [ "Groenlandia", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Escandina",
+    continente: "Europa",
+    frontera: [ "Islandia", "Siberia", "Gran Bretaña" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Siberia",
+    continente: "Asia",
+    frontera: [ "Yakustsk", "Europa del Norte", "Escandinavia" ]
+}
+{
+    nombre: "Gondorff",
+    pais: "Yakustsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Siberia", "Kamchatka" ]
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
