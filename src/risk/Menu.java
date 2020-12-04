@@ -157,9 +157,7 @@ public class Menu {
                     case "obtener":
                         if (partes.length == 3) {
                             if (partes[1].equals("color")) {
-                                io.printToOutput(new OutputBuilder().manualAddString("color",
-                                        Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
-                                        .toString());
+                                obtenerColor(partes[2]);
                             } else if (partes[1].equals("frontera")) {
                                 obtenerFronteras(partes[2]);
                             } else {
@@ -434,7 +432,7 @@ public class Menu {
         Color color;
         try {
             color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("color", color.getNombre()).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
