@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import risk.Ejercito.Ejercito;
+
 public class Pais {
     private String codigo;
     private String nombreHumano;

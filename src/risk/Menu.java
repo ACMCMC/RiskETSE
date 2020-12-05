@@ -160,6 +160,8 @@ public class Menu {
                                 obtenerColor(partes[2]);
                             } else if (partes[1].equals("frontera")) {
                                 obtenerFronteras(partes[2]);
+                            } else if(partes[1].equals("paises")){
+                                obtenerPaisesContinente(partes[2]);
                             } else {
                                 comandoIncorrecto();
                             }
@@ -201,6 +203,14 @@ public class Menu {
                         if (partes.length == 1) {
                             describirJugadorActual();
                         } else {
+                            comandoIncorrecto();
+                        }
+                        break;
+                    case "acabar":
+                        if(partes.length == 2 && partes[1].equals("turno")){
+                            acabarTurno();
+                        }
+                        else{
                             comandoIncorrecto();
                         }
                         break;
@@ -573,8 +583,36 @@ public class Menu {
         }
     }
 
+    /**
+     * Imprime el mapa
+     */
     private void imprimirMapa() {
         io.printToOutput(Mapa.getMapa().toString());
+    }
+    
+    /**
+     * Imprime los países de un continente
+     */
+    private void obtenerPaisesContinente(String abrevContinente ){
+        try{
+            Set<Pais> paises = Mapa.getMapa().getContinente(abrevContinente).getPaises();
+            Set<String> nombresPaises = new HashSet<String>();
+            for(Pais pais : paises){
+                nombresPaises.add(pais.getNombreHumano());
+            }
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("paises", nombresPaises).build());
+        }
+        catch(RiskException e){
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Acabar el turno del jugador actual
+     */
+    private void acabarTurno(){
+        Partida.getPartida().siguienteTurno();
+        io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre()).autoAdd("numeroEjercitosRearmar", "COMPLETAR").build());
     }
 
 }
