@@ -35,6 +35,7 @@ public class Partida {
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
     private Map<Jugador, CartaMision> misionesJugadores;
+    private int numEjercitosRearmarJugadorActualRestantes;
 
     private Partida() {
         this.jugadores = new HashMap<>();
@@ -218,13 +219,18 @@ public class Partida {
      */
     public void siguienteTurno() {
         this.colaJugadores.add(this.colaJugadores.poll());
+        numEjercitosRearmarJugadorActualRestantes = getJugadorActual().calcularNumEjercitosRearmar();
     }
 
-    public void repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
+    public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
         if (!getJugadorActual().equals(pais.getJugador())) { // Si el país no pertenece al jugador actual
             throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
-        pais.getJugador().asignarEjercitosAPais(numero, pais);
+        return pais.getJugador().asignarEjercitosAPais(numero, pais);
+    }
+
+    public int getNumEjercitosRearmarRestantes() {
+        return numEjercitosRearmarJugadorActualRestantes;
     }
 
     /**

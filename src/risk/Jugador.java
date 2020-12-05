@@ -109,13 +109,27 @@ public class Jugador {
         this.color = color;
     }
 
+    /**
+     * Devuelve un Set de los Continentes en que este Jugador es el único presente
+     * @return
+     */
+    public Set<Continente> getContinentesOcupadosExcusivamentePorJugador() {
+        return this.getPaises().stream().map(p -> p.getContinente()).distinct().filter(c -> c.getPaises().stream().allMatch(p -> p.getJugador().equals(this))).collect(Collectors.toSet());
+    }
+
+    public int calcularNumEjercitosRearmar() {
+        int numEjercitosRearmar = this.getPaises().size()/3; // El jugador recibe el número de ejércitos que es el resultado de dividir el número de países que pertenecen al jugador entre 3
+        numEjercitosRearmar += getContinentesOcupadosExcusivamentePorJugador().stream().mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum(); // Si todos los países de un continente pertenecen a dicho jugador, recibe el número de ejércitos indicados en la Tabla 4
+        return numEjercitosRearmar;
+    }
+
     @Override
     public boolean equals(Object jugador) {
-        if (this == jugador) {
-            return true;
-        }
         if (jugador == null) {
             return false;
+        }
+        if (this == jugador) {
+            return true;
         }
         if (getClass() != jugador.getClass()) {
             return false;
