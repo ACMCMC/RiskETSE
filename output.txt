@@ -242,7 +242,7 @@ $> asignar paises paises.csv
     nombre: "Lonnegan",
     pais: "Perú",
     continente: "América del Sur",
-    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+    frontera: [ "Venezuela", "Brasil", "Argentina" ]
 }
 {
     nombre: "Lonnegan",
@@ -503,7 +503,7 @@ $> asignar paises paises.csv
     nombre: "Lonnegan",
     pais: "Perú",
     continente: "América del Sur",
-    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+    frontera: [ "Venezuela", "Brasil", "Argentina" ]
 }
 {
     nombre: "Lonnegan",
@@ -621,3 +621,363 @@ $> asignar paises paises.csv
     código de error: 119,
     descripción: "Ejércitos no disponibles"
 }
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    nombre: "Hooker",
+    pais: "Irkutsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
+}
+{
+    nombre: "Hooker",
+    pais: "USAOeste",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Estados Unidos del Este" ]
+}
+{
+    nombre: "Hooker",
+    pais: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ]
+}
+{
+    nombre: "Hooker",
+    pais: "EurOcc",
+    continente: "Europa",
+    frontera: [ "Europa del Sur", "África del Norte", "Gran Bretaña" ]
+}
+{
+    nombre: "Hooker",
+    pais: "EurSur",
+    continente: "Europa",
+    frontera: [ "Urales", "Europa Occidental", "Europa del Norte", "Egipto" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Urales",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Mongolia",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
+}
+{
+    nombre: "Hooker",
+    pais: "Japón",
+    continente: "Asia",
+    frontera: [ "Mongolia" ]
+}
+{
+    código de error: 109,
+    descripción: "El país no existe"
+}
+{
+    nombre: "Hooker",
+    pais: "Afgan",
+    continente: "Asia",
+    frontera: [ "Urales", "China", "Oriente Medio" ]
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    nombre: "Lonnegan",
+    pais: "OMedio",
+    continente: "Asia",
+    frontera: [ "Afganistán", "India", "Egipto" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "India",
+    continente: "Asia",
+    frontera: [ "Sureste Asiático", "China", "Oriente Medio" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "SAsiático",
+    continente: "Asia",
+    frontera: [ "India", "Indonesia" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Perú",
+    continente: "América del Sur",
+    frontera: [ "Venezuela", "Brasil", "Argentina" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Brasil",
+    continente: "América del Sur",
+    frontera: [ "Perú", "África del Norte" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "Congo",
+    continente: "África",
+    frontera: [ "África Oriental", "África del Norte" ]
+}
+{
+    nombre: "Lonnegan",
+    pais: "AOriental",
+    continente: "África",
+    frontera: [ "Sudáfrica", "Congo", "Egipto" ]
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+$> asignar pais Gondorff Rusia
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 8 Alaska
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 5 Groenlan
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 5 Urales
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 3 Quebec
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 7 Ontario
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> acabar turno
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 10 Venezuela
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 5 ANorte
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 6 Egipto
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 5 India
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> acabar turno
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 15 Indonesia
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 6 NGuinea
+{
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> acabar turno
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> repartir ejercitos 4 Islandia
+{
+    código de error: 119,
+    descripción: "Ejércitos no disponibles"
+}
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> describir pais USAEste
+{
+    nombre: "Estados Unidos del Este",
+    abreviatura: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
+    jugador: "Hooker",
+    numeroEjercitos: 3,
+    numeroVecesOcupado: 0
+}
+$> atacar Ontario 5x1x1 USAEste 4
+$> describir pais USAEste
+{
+    nombre: "Estados Unidos del Este",
+    abreviatura: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
+    jugador: "Hooker",
+    numeroEjercitos: 3,
+    numeroVecesOcupado: 0
+}
+$> describir pais Ontario
+{
+    nombre: "Ontario",
+    abreviatura: "Ontario",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Quebec", "Territorios del Noroeste", "Estados Unidos del Este" ],
+    jugador: "Gondorff",
+    numeroEjercitos: 2,
+    numeroVecesOcupado: 0
+}
+$> rearmar Alaska 4 Alberta
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> asignar carta Infantería&Alaska
+{
+    código de error: 109,
+    descripción: "El país no existe"
+}
+$> atacar GBretaña 3 EurSur 4
+$> acabar turno
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> describir jugador Gondorff
+{
+    nombre: "Gondorff",
+    color: "VERDE",
+    mision: "RELLENAR",
+    numeroEjercitos: 35,
+    paises: [ "EurNorte", "Yakustsk", "Siberia", "Alaska", "Islandia", "Escandina", "GBretaña", "Kamchatka", "TNoroeste", "Quebec", "Rusia", "Groenlan", "Ontario", "Alberta" ],
+    continentes: [ "Europa", "América del Norte", "Asia" ],
+    cartas: "RELLENAR",
+    numEjercitoRearme: "RELLENAR"
+}
+$> describir continente AméricaNorte
+{
+    nombre: "América del Norte",
+    abreviatura: "AméricaNorte",
+    jugadores: [ { Hooker, 35 }, { Gondorff, 35 } ],
+    numeroEjercitos: 21,
+    rearme: "RELLENAR"
+}
+$> null
+EOF
