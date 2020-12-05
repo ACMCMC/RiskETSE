@@ -193,11 +193,11 @@ public class Menu {
                     case "obtener":
                         if (partes.length == 3) {
                             if (partes[1].equals("color")) {
-                                io.printToOutput(new OutputBuilder().manualAddString("color",
-                                        Mapa.getMapa().getPais(partes[2]).getContinente().getColor().getNombre())
-                                        .toString());
+                                obtenerColor(partes[2]);
                             } else if (partes[1].equals("frontera")) {
                                 obtenerFronteras(partes[2]);
+                            } else if(partes[1].equals("paises")){
+                                obtenerPaisesContinente(partes[2]);
                             } else {
                                 comandoIncorrecto();
                             }
@@ -489,7 +489,7 @@ public class Menu {
         Color color;
         try {
             color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Color", color).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("color", color.getNombre()).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
@@ -636,8 +636,28 @@ public class Menu {
         }
     }
 
+    /**
+     * Imprime el mapa
+     */
     private void imprimirMapa() {
         io.printToOutput(Mapa.getMapa().toString());
+    }
+    
+    /**
+     * Imprime los países de un continente
+     */
+    private void obtenerPaisesContinente(String abrevContinente ){
+        try{
+            Set<Pais> paises = Mapa.getMapa().getContinente(abrevContinente).getPaises();
+            Set<String> nombresPaises = new HashSet<String>();
+            for(Pais pais : paises){
+                nombresPaises.add(pais.getNombreHumano());
+            }
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("paises", nombresPaises).build());
+        }
+        catch(RiskException e){
+            io.printToErrOutput(e);
+        }
     }
 
 }

@@ -1,0 +1,20 @@
+{
+    código de error: "106",
+    descripción: "El mapa no está creado"
+}
+{
+    código de error: "105",
+    descripción: "Los jugadores no están creados"
+}
+{
+    código de error: "105",
+    descripción: "Los jugadores no están creados"
+}
+{
+    código de error: 111,
+    descripción: "El país pertenece al jugador"
+}
+{
+    código de error: 112,
+    descripción: "Los países no son frontera"
+}
