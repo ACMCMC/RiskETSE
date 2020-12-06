@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.CartasMision.ConquistaContinentePublisher;
+import risk.CartasMision.ConquistaPaisPublisher;
 import risk.RiskException.ExcepcionGeo;
 import risk.RiskException.RiskExceptionEnum;
 
@@ -39,6 +41,8 @@ public class Mapa {
     private Map<String, Pais> paises;
     private Map<String, Continente> continentes;
     private Set<Frontera> fronteras;
+    private ConquistaContinentePublisher conquistaContinentePublisher;
+    private ConquistaPaisPublisher conquistaPaisPublisher;
 
     /**
      * Crea un mapa lleno de casillas marítimas
@@ -53,7 +57,16 @@ public class Mapa {
         continentes = new HashMap<String, Continente>();
         fronteras = new HashSet<Frontera>();
 
-        // llenamos el Mapa de casillas, todas marítimas en principio
+        conquistaContinentePublisher = new ConquistaContinentePublisher();
+        conquistaPaisPublisher = new ConquistaPaisPublisher();
+
+        llenarMapaDeCasillasMaritimas();
+    }
+    
+    /**
+     * Al principio, sirve para llenar el mapa de casillas marítimas
+     */
+    private void llenarMapaDeCasillasMaritimas() {
         for (int y = 0; y < getSizeY(); y++) {
             for (int x = 0; x < getSizeX(); x++) {
                 Casilla casillaInsertar = new CasillaMaritima(new Coordenadas(x, y));
@@ -105,6 +118,22 @@ public class Mapa {
      */
     public static Mapa getMapa() {
         return mapaSingleton;
+    }
+
+    /**
+     * Devuelve el ConquistaContinentePublisher asociado a este Mapa
+     * @return
+     */
+    public ConquistaContinentePublisher getConquistaContinentePublisher() {
+        return this.conquistaContinentePublisher;
+    }
+
+    /**
+     * Devuelve el ConquistaPaisPublisher asociado a este Mapa
+     * @return
+     */
+    public ConquistaPaisPublisher getConquistaPaisPublisher() {
+        return this.conquistaPaisPublisher;
     }
 
     private void addContinente(Continente continente) {

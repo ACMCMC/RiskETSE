@@ -191,7 +191,7 @@ public class Partida {
             }
         }
         if (defensor.getNumEjercitos() == 0) {
-            defensor.setJugador(atacante.getJugador());
+            defensor.conquistar(atacante.getJugador());
             while (ejercitosAtacados > 0 && atacante.getNumEjercitos() > 1) { // Trasladamos el número de ejércitos con
                                                                               // los que hemos atacado al defensor
                 Ejercito ejercitoTrasladar = atacante.getEjercitos().iterator().next();

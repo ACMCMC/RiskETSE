@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import risk.CartasMision.ConquistaPaisEvent;
 import risk.Ejercito.Ejercito;
 
 public class Pais {
@@ -83,6 +84,12 @@ public class Pais {
      */
     public Jugador getJugador() {
         return this.jugador;
+    }
+
+    public void conquistar(Jugador conquistador) {
+        ConquistaPaisEvent evento = new ConquistaPaisEvent(this, this.getJugador(), conquistador);
+        this.setJugador(conquistador);
+        Mapa.getMapa().getConquistaPaisPublisher().updateSubscribers(evento);
     }
 
     public void setJugador(Jugador jugador) {
