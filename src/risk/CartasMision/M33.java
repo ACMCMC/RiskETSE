@@ -7,20 +7,18 @@ import risk.Continente;
 import risk.Mapa;
 import risk.RiskException.ExcepcionGeo;
 
-public class M31 extends M3 {
-
+public class M33 extends M3 {
     @Override
     List<Continente> getContinentesAConquistarParaCompletarMision() {
         List<Continente> listaContinentes = new ArrayList<>();
         try {
-            listaContinentes.add(Mapa.getMapa().getContinente("Asia"));
+            listaContinentes.add(Mapa.getMapa().getContinente("AméricaNorte"));
         } catch (ExcepcionGeo e1) {
         }
         try {
-            listaContinentes.add(Mapa.getMapa().getContinente("AméricaSur"));
+            listaContinentes.add(Mapa.getMapa().getContinente("África"));
         } catch (ExcepcionGeo e) {
         }
         return listaContinentes;
     }
-    
 }
