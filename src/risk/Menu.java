@@ -44,12 +44,13 @@ public class Menu {
         String orden = null;
         String[] partes;
         try {
-            while ((orden = io.readLine()) != null && !orden.equals("crear mapa")) { // La primera línea tiene
+            orden = io.readLine();
+            do { // La primera línea tiene
                                                                                      // que ser "crear mapa".
                                                                                      // Mostramos un error
                                                                                      // mientras no sea esa.
                 io.printToErrOutput(RiskExceptionEnum.MAPA_NO_CREADO.get());
-            }
+            } while (!orden.equals("crear mapa") && (orden = io.readLine()) != null);
             crearMapa();
             anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles son
                                          // las fronteras indirectas
@@ -603,7 +604,7 @@ public class Menu {
             ejercitosPaisAtaqueAntes = paisAtacante.getNumEjercitos();
             ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
 
-            Map<Pais, Set<Integer>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, paisDefensor);
+            Map<Pais, Set<Dado>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, paisDefensor);
 
             if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del
                                                                            // país defendido, esto implica que es el
@@ -614,8 +615,8 @@ public class Menu {
                 continenteConquistado = Optional.empty();
             }
 
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante))
-                    .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor))
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                    .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
                         {
                             add(ejercitosPaisAtaqueAntes);

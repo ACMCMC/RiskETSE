@@ -1,11 +1,13 @@
 package risk.Ejercito;
 
-public class EjercitoCyan extends EjercitoCompuesto{
+import risk.Dado;
+
+public class EjercitoCyan extends EjercitoCompuesto {
 
     @Override
-    int ataque() {
+    Dado[] ataque(Dado[] dado) {
         // TODO Auto-generated method stub
-        return 0;
+        return null;
     }
     
 }

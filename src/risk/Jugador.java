@@ -4,9 +4,13 @@
 
 package risk;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.CartasMision.CartaMision;
+import risk.CartasMision.M1;
+import risk.Ejercito.EjercitoFactory;
 import risk.RiskException.ExcepcionJugador;
 import risk.RiskException.RiskExceptionEnum;
 
@@ -15,11 +19,13 @@ public class Jugador {
     private Color color;
     private int ejercitosSinRepartir; // Los ejércitos que tiene el jugador, pero no están repartidos. Los que sí
                                       // están repartidos se almacenan en el país en sí.
+    private Set<CartaMision> setCartasMision;
 
     public Jugador(String nombre, Color color) {
         this.setNombre(nombre);
         this.setColor(color);
         this.setEjercitosSinRepartir(0);
+        this.setCartasMision = new HashSet<>();
     }
 
     /**
@@ -33,7 +39,7 @@ public class Jugador {
         if (this.getEjercitosSinRepartir() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la
                                                               // asignación
             for (int i = 0; i < numEjercitos; i++) {
-                pais.addEjercito(new Ejercito());
+                pais.addEjercito(EjercitoFactory.getEjercito(pais.getJugador().getColor()));
             }
             this.setEjercitosSinRepartir(this.getEjercitosSinRepartir() - numEjercitos);
             return (numEjercitos);
@@ -44,7 +50,7 @@ public class Jugador {
                                                                        // número de ejércitos sin repartir dentro del
                                                                        // for, entonces habría problemas
             for (int i = 0; i < ejercitosSinRepartir; i++) {
-                pais.addEjercito(new Ejercito());
+                pais.addEjercito(EjercitoFactory.getEjercito(pais.getJugador().getColor()));
             }
             this.setEjercitosSinRepartir(0);
             return (ejercitosSinRepartir);

@@ -137,7 +137,7 @@ public class Partida {
         });
     }
 
-    public Map<Pais, Set<Integer>> atacar(Pais atacante, Pais defensor) throws RiskException {
+    public Map<Pais, Set<Dado>> atacar(Pais atacante, Pais defensor) throws RiskException {
 
         if (atacante.getNumEjercitos() <= 1) {
             throw RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES.get();
@@ -152,41 +152,38 @@ public class Partida {
             throw RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
 
-        Set<Integer> valoresDadosAtacante = new HashSet<>();
-        Set<Integer> valoresDadosDefensor = new HashSet<>();
+        Set<Dado> dadosAtacante = new HashSet<>();
+        Set<Dado> dadosDefensor = new HashSet<>();
         int numDadosAtacante;
         int numDadosDefensor;
-        int valorAtacante;
-        int valorDefensor;
+        Dado dadoAtacante;
+        Dado dadoDefensor;
         int ejercitosAtacados = 0; // El número de ejércitos con los que ataca el atacante, para después saber
                                    // cuántos hay que poner en el país defensor si es conquistado
-        Map<Pais, Set<Integer>> mapaValores = new HashMap<>();
-        Random rand = new Random();
+        Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
 
         numDadosAtacante = atacante.getNumEjercitos() > 3 ? 3 : atacante.getNumEjercitos(); // La fórmula del PDF
         numDadosDefensor = defensor.getNumEjercitos() == 1 ? 1 : 2; // La fórmula del PDF
 
-        // Generamos Sets de números que inicialmente están a 0
-        Collections.addAll(valoresDadosAtacante, new Integer[numDadosAtacante]);
-        Collections.addAll(valoresDadosDefensor, new Integer[numDadosDefensor]);
+        // Generamos Sets de dados
+        for (int i = 0; i < numDadosAtacante; i++) {
+            dadosAtacante.add(new Dado());
+        }
+        for (int i = 0; i < numDadosDefensor; i++) {
+            dadosDefensor.add(new Dado());
+        }
 
-        // Asignamos valores a los números de los Sets
-        valoresDadosAtacante = valoresDadosAtacante.stream().map(num -> rand.nextInt(6) + 1)
-                .collect(Collectors.toSet());
-        valoresDadosDefensor = valoresDadosDefensor.stream().map(num -> rand.nextInt(6) + 1)
-                .collect(Collectors.toSet());
-
-        mapaValores.put(atacante, new HashSet<Integer>(valoresDadosAtacante)); // Copiamos los valores de los Sets para
+        mapaValores.put(atacante, new HashSet<Dado>(dadosAtacante)); // Copiamos los valores de los Sets para
                                                                                // devolverlos después
-        mapaValores.put(defensor, new HashSet<Integer>(valoresDadosDefensor));
+        mapaValores.put(defensor, new HashSet<Dado>(dadosDefensor));
 
-        while (!valoresDadosAtacante.isEmpty() && !valoresDadosDefensor.isEmpty()
+        while (!dadosAtacante.isEmpty() && !dadosDefensor.isEmpty()
                 && !(defensor.getNumEjercitos() == 0)) {
-            valorAtacante = Collections.max(valoresDadosAtacante);
-            valorDefensor = Collections.max(valoresDadosDefensor);
-            valoresDadosAtacante.remove(valorAtacante);
-            valoresDadosDefensor.remove(valorDefensor);
-            if (valorAtacante > valorDefensor) {
+            dadoAtacante = dadosAtacante.stream().max(Comparator.comparingInt(Dado::getValor)).get();
+            dadoDefensor = dadosDefensor.stream().max(Comparator.comparingInt(Dado::getValor)).get();
+            dadosAtacante.remove(dadoAtacante);
+            dadosDefensor.remove(dadoDefensor);
+            if (dadoAtacante.getValor() > dadoDefensor.getValor()) {
                 defensor.removeEjercito();
                 ejercitosAtacados++;
             } else {
@@ -194,7 +191,7 @@ public class Partida {
             }
         }
         if (defensor.getNumEjercitos() == 0) {
-            defensor.setJugador(atacante.getJugador());
+            defensor.conquistar(atacante.getJugador());
             while (ejercitosAtacados > 0 && atacante.getNumEjercitos() > 1) { // Trasladamos el número de ejércitos con
                                                                               // los que hemos atacado al defensor
                 Ejercito ejercitoTrasladar = atacante.getEjercitos().iterator().next();
