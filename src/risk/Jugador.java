@@ -26,6 +26,7 @@ public class Jugador {
         this.setColor(color);
         this.setEjercitosSinRepartir(0);
         this.setCartasMision = new HashSet<>();
+        this.setCartasMision.add(new M1());
     }
 
     /**
