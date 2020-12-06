@@ -34,4 +34,21 @@ public class ClaseMetodoMenuHugo {
         //al acabar el turno, si se ha conquistado algun pais, el jugador recibe una carta de quipamiento vinculada a un pais. Estas cartas se generan automatica y aleatoriamente al acabar el turno
         //ademas, el jugador puede pasar tantos ejercitos como pueda de un pais a otro que le pertenezca, siempre que quede en el pais de origen minimo 1 ejercito. Esto se puede hacer una vez por turno
     }
+
+    /*public boolean comprobarSiComandoEsSintacticamenteCorrecto(String comando) {
+        String partesComando[] = comando.split(" ");
+        if (partesComando.length > 1) {
+            switch (partesComando[0]){
+            case "crear":
+            return true;
+            case "cambiar":
+                if (partesComando.length==2 && partesComando[1].equals("cartas"))
+                return true;
+                else
+                return false;
+            default:
+            return false;
+            }
+        }
+    }*/
 }
