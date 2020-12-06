@@ -47,25 +47,7 @@ public class ClaseMetodoMenuHugo {
                     return true;
                 }
                 else if(partesComando.length==3){
-                    if(partesComando[1].equals("nombrejugador")){
-                        if(partesComando[2].equals("color")){
-                            return true;
-                        }
-                        else{
-                            return false;
-                        }
-                    }
-                    else if(partesComando[1].equals("jugadores")){
-                        if(partesComando[2].equals("nombrearchivo")){
-                            return true;
-                        } 
-                        else{
-                            return false;
-                        }
-                    }
-                    else{
-                        return false;
-                    }
+                    return true;
                 }
                 else{
                     return false;
@@ -73,16 +55,16 @@ public class ClaseMetodoMenuHugo {
 
             case "obtener":
                 if(partesComando.length==3){
-                    if(partesComando[1].equals("frontera") && partesComando[2].equals("abrevPais")){
+                    if(partesComando[1].equals("frontera")){
                         return true;
                     }
-                    else if(partesComando[1].equals("continente") && partesComando[2].equals("abrevPais")){
+                    else if(partesComando[1].equals("continente")){
                         return true;
                     }
-                    else if(partesComando[1].equals("color") && partesComando[2].equals("abrevPais")){
+                    else if(partesComando[1].equals("color")){
                         return true;
                     }
-                    else if(partesComando[1].equals("paises") && partesComando[2].equals("abrevCont")){
+                    else if(partesComando[1].equals("paises")){
                         return true;
                     }
                     else{
@@ -97,7 +79,7 @@ public class ClaseMetodoMenuHugo {
                 if(partesComando.length==2 && partesComando[1].equals("ejercitos")){
                     return true;
                 }
-                else if(partesComando.length==4 && partesComando[1].equals("ejercitos") && partesComando[2].equals("numero") && partesComando[3].equals("nombrePais")){
+                else if(partesComando.length==4 && partesComando[1].equals("ejercitos")){
                     return true;
                 }
                 else{
@@ -108,7 +90,7 @@ public class ClaseMetodoMenuHugo {
                 if (partesComando.length==3 && partesComando[1].equals("cartas") && partesComando[2].equals("todas")){
                     return true;
                 }
-                else if(partesComando.length==5 && partesComando[1].equals("cartas") && partesComando[2].equals("id1") && partesComando[3].equals("id2") && partesComando[4].equals("id3")){
+                else if(partesComando.length==5 && partesComando[1].equals("cartas")){
                     return true;
                 }
                 else{
@@ -117,20 +99,14 @@ public class ClaseMetodoMenuHugo {
 
             case "asignar":
                 if(partesComando.length==3){
-                    if(partesComando[1].equals("misiones") && partesComando[2].equals("nombrefichero")){
+                    if(partesComando[1].equals("misiones")){
                         return true;
                     }
-                    else if(partesComando[1].equals("paises") && partesComando[2].equals("nombrefichero")){
+                    else if(partesComando[1].equals("paises")){
                         return true;
                     }
-                    else if(partesComando[1].equals("cartas") && partesComando[2].equals("idcarta")){
+                    else if(partesComando[1].equals("cartas")){
                         return true;
-                    }
-                    else if(partesComando[1].equals("nombrejugador") && partesComando[2].equals("idmision")){
-                        return true;
-                    }
-                    else if(partesComando[1].equals("nombrejugador") && partesComando[2].equals("nombrepais")){
-                        return false;
                     }
                     else{
                         return false;
@@ -142,13 +118,13 @@ public class ClaseMetodoMenuHugo {
 
             case "describir":
                 if(partesComando.length==3){
-                    if(partesComando[1].equals("jugador") && partesComando[2].equals("nombrejugador")){
+                    if(partesComando[1].equals("jugador")){
                         return true;
                     }
-                    else if(partesComando[1].equals("pais") && partesComando[2].equals("nombrepais")){
+                    else if(partesComando[1].equals("pais")){
                         return true;
                     }
-                    else if(partesComando[1].equals("continente") && partesComando[2].equals("nombrecontinente")){
+                    else if(partesComando[1].equals("continente")){
                         return true;
                     }
                     else{
@@ -161,27 +137,17 @@ public class ClaseMetodoMenuHugo {
 
             case "atacar":
                 if(partesComando.length==3){
-                    if(partesComando[1].equals("abrevPais1") && partesComando[2].equals("abrevPais2")){
-                        return true;
-                    }
-                    else{
-                        return false;
-                    }
+                    return true;
                 }
                 else if(partesComando.length==5){
-                    if(partesComando[1].equals("abrevPais1") && partesComando[2].equals("dadosAtaque") && partesComando[3].equals("abrevPais2") && partesComando[4].equals("dadosDefensa")){
-                        return true;
-                    }
-                    else{
-                        return false;
-                    }
+                    return true;
                 }
                 else{
                     return false;
                 }
 
             case "rearmar":
-                if(partesComando.length==4 && partesComando[1].equals("abrevPais1") && partesComando[2].equals("numEjercitos") && partesComando[3].equals("abrevPais2")){
+                if(partesComando.length==4){
                     return true;
                 }
                 else{
