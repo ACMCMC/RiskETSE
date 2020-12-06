@@ -1,6 +1,14 @@
 package risk.CartasMision;
 
-public class M2 implements CartaMision {
+import risk.Jugador;
+import risk.Mapa;
+
+public class M2 extends CartaMision implements PaisEventSubscriber {
+
+    public M2() {
+        super();
+        Mapa.getMapa().getPaisEventPublisher().subscribe(this);
+    }
 
     @Override
     public String getDescripcion() {
@@ -8,9 +16,17 @@ public class M2 implements CartaMision {
     }
 
     @Override
-    public MisionListener getListener() {
-        // TODO Auto-generated method stub
-        return null;
+    public void update(PaisEvent evento) {
+        Jugador jugadorPais = evento.getPais().getJugador();
+        if (calcularNumeroPaisesJugadorConMinimo2Ejercitos(jugadorPais) >= 18) {
+            completada = true;
+        } else {
+            completada = false;
+        }
+    }
+
+    private int calcularNumeroPaisesJugadorConMinimo2Ejercitos(Jugador jugador) {
+        return ((int) jugador.getPaises().stream().filter(p -> p.getNumEjercitos()>=2).count());
     }
     
 }

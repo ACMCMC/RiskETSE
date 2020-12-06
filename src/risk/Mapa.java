@@ -20,8 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import risk.CartasMision.ConquistaContinentePublisher;
-import risk.CartasMision.ConquistaPaisPublisher;
+import risk.CartasMision.PaisEventPublisher;
 import risk.RiskException.ExcepcionGeo;
 import risk.RiskException.RiskExceptionEnum;
 
@@ -41,8 +40,7 @@ public class Mapa {
     private Map<String, Pais> paises;
     private Map<String, Continente> continentes;
     private Set<Frontera> fronteras;
-    private ConquistaContinentePublisher conquistaContinentePublisher;
-    private ConquistaPaisPublisher conquistaPaisPublisher;
+    private PaisEventPublisher paisEventPublisher;
 
     /**
      * Crea un mapa lleno de casillas marítimas
@@ -57,8 +55,7 @@ public class Mapa {
         continentes = new HashMap<String, Continente>();
         fronteras = new HashSet<Frontera>();
 
-        conquistaContinentePublisher = new ConquistaContinentePublisher();
-        conquistaPaisPublisher = new ConquistaPaisPublisher();
+        paisEventPublisher = new PaisEventPublisher();
 
         llenarMapaDeCasillasMaritimas();
     }
@@ -121,19 +118,11 @@ public class Mapa {
     }
 
     /**
-     * Devuelve el ConquistaContinentePublisher asociado a este Mapa
-     * @return
-     */
-    public ConquistaContinentePublisher getConquistaContinentePublisher() {
-        return this.conquistaContinentePublisher;
-    }
-
-    /**
      * Devuelve el ConquistaPaisPublisher asociado a este Mapa
      * @return
      */
-    public ConquistaPaisPublisher getConquistaPaisPublisher() {
-        return this.conquistaPaisPublisher;
+    public PaisEventPublisher getPaisEventPublisher() {
+        return this.paisEventPublisher;
     }
 
     private void addContinente(Continente continente) {

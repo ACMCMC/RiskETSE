@@ -1,12 +1,20 @@
 package risk.CartasMision;
 
-public interface CartaMision {
+public abstract class CartaMision {
 
-    public String getDescripcion();
+    boolean completada;
 
-    public MisionListener getListener();
+    CartaMision() {
+        completada = false;
+    }
 
-    public default String getID() {
+    public abstract String getDescripcion();
+
+    public String getID() {
         return this.getClass().getSimpleName();
+    }
+
+    public boolean isCompletada() {
+        return completada;
     }
 }

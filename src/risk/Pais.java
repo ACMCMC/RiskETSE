@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import risk.CartasMision.ConquistaPaisEvent;
+import risk.CartasMision.PaisEvent;
 import risk.Ejercito.Ejercito;
 
 public class Pais {
@@ -61,6 +61,7 @@ public class Pais {
      */
     public void addEjercito(Ejercito ejercito) {
         this.ejercitos.add(ejercito);
+        notificarCambioPais();
     }
 
     /**
@@ -68,6 +69,7 @@ public class Pais {
      */
     public void removeEjercito() {
         this.ejercitos.remove(this.ejercitos.stream().findFirst().orElse(null));
+        notificarCambioPais();
     }
 
     /**
@@ -75,6 +77,7 @@ public class Pais {
      */
     public void removeEjercito(Ejercito ejercito) {
         this.ejercitos.remove(ejercito);
+        notificarCambioPais();
     }
 
     /**
@@ -87,9 +90,8 @@ public class Pais {
     }
 
     public void conquistar(Jugador conquistador) {
-        ConquistaPaisEvent evento = new ConquistaPaisEvent(this, this.getJugador(), conquistador);
         this.setJugador(conquistador);
-        Mapa.getMapa().getConquistaPaisPublisher().updateSubscribers(evento);
+        notificarCambioPais();
     }
 
     public void setJugador(Jugador jugador) {
@@ -142,6 +144,11 @@ public class Pais {
      */
     public int getNumVecesConquistado() {
         return this.vecesConquistado;
+    }
+
+    public void notificarCambioPais() {
+        PaisEvent evento = new PaisEvent(this);
+        Mapa.getMapa().getPaisEventPublisher().updateSubscribers(evento);
     }
 
     @Override
