@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import risk.CartasMision.PaisEvent;
 import risk.Ejercito.Ejercito;
+import risk.cartasmision.PaisEvent;
 
 public class Pais {
     private String codigo;
@@ -20,6 +20,9 @@ public class Pais {
                                      // país.
     private int vecesConquistado;
 
+    /**
+     * Crea un nuevo Pais
+     */
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.setCodigo(nombre);
         this.setNombreHumano(nombreHumano);
