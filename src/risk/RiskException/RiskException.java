@@ -9,7 +9,7 @@ public abstract class RiskException extends Exception {
     final int codigo;
     final String codigoTexto;
 
-    RiskException(int codigo, String codigoTexto) {
+    public RiskException(int codigo, String codigoTexto) {
         this.codigo = codigo;
         this.codigoTexto = codigoTexto;
     }

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionJugador;
@@ -134,19 +135,36 @@ public class Jugador {
      * @return
      */
     public boolean jugadorHaCompletadoMision() {
-        return this.setCartasMision.stream().anyMatch(m -> m.isCompletada());
+        return this.setCartasMision.stream().allMatch(m -> m.isCompletada());
     }
 
     /**
-     * Añade una CartaMision a este Jugador
+     * Añade una CartaMision a este Jugador. Solo se permite añadir una misión.
      * @param cartaMision
      */
     public void addCartaMision(CartaMision cartaMision) throws ExcepcionMision {
-        if (this.setCartasMision.contains(cartaMision)) {
-            throw (ExcepcionMision) RiskExceptionEnum.MISION_YA_ASIGNADA.get();
+        if (!this.setCartasMision.isEmpty()) {
+            throw (ExcepcionMision) RiskExceptionEnum.JUGADOR_YA_TIENE_MISION.get();
         }
         this.setCartasMision.add(cartaMision);
         Mapa.getMapa().getPaisEventPublisher().subscribe(cartaMision);
+    }
+
+    /**
+     * Devuelve el Set de CartaMision del Jugador
+     * @return
+     */
+    public Set<CartaMision> getCartasMision() {
+        return this.setCartasMision;
+    }
+
+    /**
+     * Devuelve {@code true} si el jugador tiene la CartaMision
+     * @param cartaMision
+     * @return
+     */
+    public boolean hasMision(CartaMision cartaMision) {
+        return this.setCartasMision.contains(cartaMision);
     }
 
     @Override
