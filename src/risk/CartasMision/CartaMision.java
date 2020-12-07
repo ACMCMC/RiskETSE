@@ -8,8 +8,12 @@ public abstract class CartaMision {
     Jugador jugador;
 
     CartaMision(Jugador jugador) {
-        completada = false;
+        this();
         this.jugador = jugador;
+    }
+    
+    CartaMision() {
+        completada = false;
     }
 
     Jugador getJugador() {

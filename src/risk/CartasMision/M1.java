@@ -12,7 +12,6 @@ public class M1 extends CartaMision implements PaisEventSubscriber {
 
     public M1(Jugador jugador) {
         super(jugador);
-        Mapa.getMapa().getPaisEventPublisher().subscribe(this);
     }
 
     @Override

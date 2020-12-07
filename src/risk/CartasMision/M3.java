@@ -12,7 +12,6 @@ public abstract class M3 extends CartaMision implements PaisEventSubscriber {
 
     public M3(Jugador jugador) {
         super(jugador);
-        Mapa.getMapa().getPaisEventPublisher().subscribe(this);
     }
 
     @Override
