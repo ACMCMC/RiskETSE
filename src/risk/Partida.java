@@ -21,13 +21,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import risk.CartasMision.CartaMision;
-import risk.Ejercito.Ejercito;
-import risk.RiskException.ExcepcionGeo;
-import risk.RiskException.ExcepcionJugador;
-import risk.RiskException.RiskException;
-import risk.RiskException.RiskExceptionEnum;
-import risk.RiskException.RiskExceptionFactory;
+import risk.cartasmision.CartaMision;
+import risk.ejercito.Ejercito;
+import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.ExcepcionMision;
+import risk.riskexception.RiskException;
+import risk.riskexception.RiskExceptionEnum;
+import risk.riskexception.RiskExceptionFactory;
 
 public class Partida {
     private static final Partida partidaSingleton = new Partida();
@@ -219,11 +220,31 @@ public class Partida {
         numEjercitosRearmarJugadorActualRestantes = getJugadorActual().calcularNumEjercitosRearmar();
     }
 
+    /**
+     * Asigna una CartaMision a un Jugador
+     */
+    public void asignarMisionAJugador(CartaMision cartaMision, Jugador jugador) throws RiskException {
+        if (!areJugadoresCreados()) {
+            throw RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
+        }
+        if (this.getJugadores().stream().anyMatch(j -> j.hasMision(cartaMision))) {
+            throw RiskExceptionEnum.MISION_YA_ASIGNADA.get();
+        }
+        jugador.addCartaMision(cartaMision);
+    }
+
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
         if (!getJugadorActual().equals(pais.getJugador())) { // Si el país no pertenece al jugador actual
             throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
         return pais.getJugador().asignarEjercitosAPais(numero, pais);
+    }
+
+    /**
+     * Indica si los jugadores han sido creados o no
+     */
+    public boolean areJugadoresCreados() {
+        return (this.jugadores.size() >= 3);
     }
 
     public int getNumEjercitosRearmarRestantes() {

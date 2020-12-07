@@ -4,8 +4,8 @@
 
 package risk;
 
-import risk.RiskException.ExcepcionGeo;
-import risk.RiskException.RiskExceptionEnum;
+import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.RiskExceptionEnum;
 
 public enum Color {
     // El primer parámetro es el nombre del color, el segundo la secuencia para

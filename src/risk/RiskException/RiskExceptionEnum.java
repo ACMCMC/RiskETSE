@@ -1,4 +1,4 @@
-package risk.RiskException;
+package risk.riskexception;
 
 public enum RiskExceptionEnum {
     COMANDO_NO_PERMITIDO(99, "Comando no permitido en este momento"), COLOR_NO_PERMITIDO(100, "Color no permitido"),

@@ -1,24 +1,21 @@
-package risk.CartasMision;
+package risk.cartasmision;
 
 import risk.Jugador;
-import risk.Mapa;
 
-public class M1 extends CartaMision implements PaisEventSubscriber {
+public class M1 extends CartaMision {
 
     @Override
     public String getDescripcion() {
         return "Conquistar 24 países de la preferencia del jugador";
     }
 
-    public M1() {
-        super();
-        Mapa.getMapa().getPaisEventPublisher().subscribe(this);
+    public M1(Jugador jugador) {
+        super(jugador);
     }
 
     @Override
     public void update(PaisEvent evento) {
-        Jugador jugadorPais = evento.getPais().getJugador();
-        if (jugadorPais.getPaises().size() >= 24) {
+        if (getJugador().getPaises().size() >= 24) {
             completada = true;
         } else {
             completada = false;

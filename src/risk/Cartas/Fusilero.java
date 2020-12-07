@@ -1,4 +1,4 @@
-package risk.Cartas;
+package risk.cartas;
 
 public class Fusilero extends Infanteria {
 

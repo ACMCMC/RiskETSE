@@ -8,9 +8,8 @@ import risk.Jugador;
 import risk.Mapa;
 import risk.riskexception.ExcepcionGeo;
 
-public class M31 extends M3 {
-
-    public M31(Jugador jugador) {
+public class M32 extends M3 {
+    public M32(Jugador jugador) {
         super(jugador);
     }
 
@@ -22,10 +21,9 @@ public class M31 extends M3 {
         } catch (ExcepcionGeo e1) {
         }
         try {
-            listaContinentes.add(Mapa.getMapa().getContinente("AméricaSur"));
+            listaContinentes.add(Mapa.getMapa().getContinente("África"));
         } catch (ExcepcionGeo e) {
         }
         return listaContinentes;
     }
-    
 }

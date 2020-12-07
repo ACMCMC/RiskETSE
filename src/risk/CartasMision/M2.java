@@ -1,13 +1,11 @@
-package risk.CartasMision;
+package risk.cartasmision;
 
 import risk.Jugador;
-import risk.Mapa;
 
-public class M2 extends CartaMision implements PaisEventSubscriber {
+public class M2 extends CartaMision {
 
-    public M2() {
-        super();
-        Mapa.getMapa().getPaisEventPublisher().subscribe(this);
+    public M2(Jugador jugador) {
+        super(jugador);
     }
 
     @Override
@@ -17,8 +15,7 @@ public class M2 extends CartaMision implements PaisEventSubscriber {
 
     @Override
     public void update(PaisEvent evento) {
-        Jugador jugadorPais = evento.getPais().getJugador();
-        if (calcularNumeroPaisesJugadorConMinimo2Ejercitos(jugadorPais) >= 18) {
+        if (calcularNumeroPaisesJugadorConMinimo2Ejercitos(getJugador()) >= 18) {
             completada = true;
         } else {
             completada = false;
