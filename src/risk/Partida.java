@@ -21,13 +21,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import risk.RiskException.ExcepcionGeo;
-import risk.RiskException.ExcepcionJugador;
-import risk.RiskException.RiskException;
-import risk.RiskException.RiskExceptionEnum;
-import risk.RiskException.RiskExceptionFactory;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
+import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.RiskException;
+import risk.riskexception.RiskExceptionEnum;
+import risk.riskexception.RiskExceptionFactory;
 
 public class Partida {
     private static final Partida partidaSingleton = new Partida();

@@ -6,7 +6,7 @@ import java.util.List;
 import risk.Continente;
 import risk.Jugador;
 import risk.Mapa;
-import risk.RiskException.ExcepcionGeo;
+import risk.riskexception.ExcepcionGeo;
 
 public class M34 extends M3 {
     public M34(Jugador jugador) {

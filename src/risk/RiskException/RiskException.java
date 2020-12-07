@@ -2,7 +2,7 @@
  * @author Aldán Creo Mariño, Hugo Gómez Sabucedo
  */
 
-package risk.RiskException;
+package risk.riskexception;
 
 public abstract class RiskException extends Exception {
 

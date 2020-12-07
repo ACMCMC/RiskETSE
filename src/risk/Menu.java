@@ -17,10 +17,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import risk.RiskException.ExcepcionGeo;
-import risk.RiskException.ExcepcionJugador;
-import risk.RiskException.RiskException;
-import risk.RiskException.RiskExceptionEnum;
+import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.RiskException;
+import risk.riskexception.RiskExceptionEnum;
 
 /**
  *

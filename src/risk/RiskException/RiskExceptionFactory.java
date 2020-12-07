@@ -1,4 +1,4 @@
-package risk.RiskException;
+package risk.riskexception;
 
 public class RiskExceptionFactory {
 

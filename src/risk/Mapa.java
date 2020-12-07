@@ -20,9 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import risk.RiskException.ExcepcionGeo;
-import risk.RiskException.RiskExceptionEnum;
 import risk.cartasmision.PaisEventPublisher;
+import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.RiskExceptionEnum;
 
 public class Mapa {
 
