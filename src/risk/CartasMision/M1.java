@@ -1,7 +1,6 @@
 package risk.cartasmision;
 
 import risk.Jugador;
-import risk.Mapa;
 
 public class M1 extends CartaMision implements PaisEventSubscriber {
 

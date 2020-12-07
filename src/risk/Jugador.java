@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import risk.cartasmision.CartaMision;
-import risk.cartasmision.M1;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.RiskExceptionEnum;

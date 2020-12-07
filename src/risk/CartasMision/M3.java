@@ -1,11 +1,8 @@
 package risk.cartasmision;
 
 import java.util.List;
-import java.util.Set;
-
 import risk.Continente;
 import risk.Jugador;
-import risk.Mapa;
 
 public abstract class M3 extends CartaMision implements PaisEventSubscriber {
     abstract List<Continente> getContinentesAConquistarParaCompletarMision();

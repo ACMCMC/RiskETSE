@@ -1,8 +1,6 @@
 package risk.cartasmision;
 
 import risk.Color;
-import risk.Jugador;
-import risk.Mapa;
 import risk.Partida;
 import risk.riskexception.ExcepcionGeo;
 
