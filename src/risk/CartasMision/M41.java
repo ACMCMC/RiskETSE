@@ -1,8 +1,8 @@
 package risk.cartasmision;
 
 import risk.Jugador;
-import risk.Ejercito.Ejercito;
-import risk.Ejercito.EjercitoAmarillo;
+import risk.ejercito.Ejercito;
+import risk.ejercito.EjercitoAmarillo;
 
 public class M41 extends M4 {
 
