@@ -1,4 +1,4 @@
-package risk.CartasMision;
+package risk.cartasmision;
 
 import risk.Pais;
 

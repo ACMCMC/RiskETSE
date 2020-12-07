@@ -17,10 +17,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import risk.RiskException.ExcepcionGeo;
-import risk.RiskException.ExcepcionJugador;
-import risk.RiskException.RiskException;
-import risk.RiskException.RiskExceptionEnum;
+import risk.cartasmision.CartaMision;
+import risk.cartasmision.CartaMisionFactory;
+import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.RiskException;
+import risk.riskexception.RiskExceptionEnum;
 
 /**
  *
@@ -492,6 +494,38 @@ public class Menu {
             color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("color", color.getNombre()).build());
         } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Lee el fichero del nombreFichero especificado, y asigna las CartasMision que allí se especifican a los Jugadores de esta Partida
+     */
+    private void asignarMisiones(String nombreFichero) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(nombreFichero)));
+            String linea;
+            while((linea=bufferedReader.readLine())!=null) {
+                String partesLinea[] = linea.split(";");
+                asignarMisionJugador(partesLinea[0], partesLinea[1]);
+            }
+        } catch (IOException e) {
+            io.printToErrOutput(new RiskException(0, "Error de lectura del archivo") {});
+        } catch (ArrayIndexOutOfBoundsException e) {
+            io.printToErrOutput(new RiskException(0, "El archivo de lectura de misiones tiene un formato erróneo") {});
+        }
+    }
+
+    /**
+     * Asigna la CartaMision del ID especificado al Jugador
+     */
+    private void asignarMisionJugador(String nombreJugador, String idMision) {
+        try {
+            Jugador jugadorActual = Partida.getPartida().getJugador(nombreJugador);
+            CartaMision mision = CartaMisionFactory.build(idMision, jugadorActual);
+            Partida.getPartida().asignarCartaMisionJugador(mision, jugadorActual);
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("mision", mision.getDescripcion()).build());
+        } catch (RiskException e) {
             io.printToErrOutput(e);
         }
     }

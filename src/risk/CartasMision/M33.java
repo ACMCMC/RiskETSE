@@ -1,13 +1,18 @@
-package risk.CartasMision;
+package risk.cartasmision;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import risk.Continente;
+import risk.Jugador;
 import risk.Mapa;
-import risk.RiskException.ExcepcionGeo;
+import risk.riskexception.ExcepcionGeo;
 
 public class M33 extends M3 {
+    public M33(Jugador jugador) {
+        super(jugador);
+    }
+
     @Override
     List<Continente> getContinentesAConquistarParaCompletarMision() {
         List<Continente> listaContinentes = new ArrayList<>();

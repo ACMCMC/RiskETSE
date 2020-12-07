@@ -8,11 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import risk.CartasMision.CartaMision;
-import risk.CartasMision.M1;
-import risk.Ejercito.EjercitoFactory;
-import risk.RiskException.ExcepcionJugador;
-import risk.RiskException.RiskExceptionEnum;
+import risk.cartas.Carta;
+import risk.cartasmision.CartaMision;
+import risk.ejercito.EjercitoFactory;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.ExcepcionMision;
+import risk.riskexception.RiskExceptionEnum;
 
 public class Jugador {
     private String nombre;
@@ -128,6 +129,43 @@ public class Jugador {
         int numEjercitosRearmar = this.getPaises().size()/3; // El jugador recibe el número de ejércitos que es el resultado de dividir el número de países que pertenecen al jugador entre 3
         numEjercitosRearmar += getContinentesOcupadosExcusivamentePorJugador().stream().mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum(); // Si todos los países de un continente pertenecen a dicho jugador, recibe el número de ejércitos indicados en la Tabla 4
         return numEjercitosRearmar;
+    }
+
+    /**
+     * Devuelve TRUE si el Jugador ha completado alguna de sus misiones
+     * @return
+     */
+    public boolean jugadorHaCompletadoMision() {
+        return this.setCartasMision.stream().allMatch(m -> m.isCompletada());
+    }
+
+    /**
+     * Añade una CartaMision a este Jugador. Solo se permite añadir una misión.
+     * @param cartaMision
+     */
+    public void addCartaMision(CartaMision cartaMision) throws ExcepcionMision {
+        if (!this.setCartasMision.isEmpty()) {
+            throw (ExcepcionMision) RiskExceptionEnum.JUGADOR_YA_TIENE_MISION.get();
+        }
+        this.setCartasMision.add(cartaMision);
+        Mapa.getMapa().getPaisEventPublisher().subscribe(cartaMision);
+    }
+
+    /**
+     * Devuelve el Set de CartaMision del Jugador
+     * @return
+     */
+    public Set<CartaMision> getCartasMision() {
+        return this.setCartasMision;
+    }
+
+    /**
+     * Devuelve {@code true} si el jugador tiene la CartaMision
+     * @param cartaMision
+     * @return
+     */
+    public boolean hasMision(CartaMision cartaMision) {
+        return this.setCartasMision.contains(cartaMision);
     }
 
     @Override

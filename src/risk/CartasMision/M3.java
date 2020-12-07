@@ -1,17 +1,14 @@
-package risk.CartasMision;
+package risk.cartasmision;
 
 import java.util.List;
-import java.util.Set;
-
 import risk.Continente;
 import risk.Jugador;
-import risk.Mapa;
 
-public abstract class M3 extends CartaMision implements PaisEventSubscriber {
+public abstract class M3 extends CartaMision {
     abstract List<Continente> getContinentesAConquistarParaCompletarMision();
 
-    public M3() {
-        Mapa.getMapa().getPaisEventPublisher().subscribe(this);
+    public M3(Jugador jugador) {
+        super(jugador);
     }
 
     @Override
@@ -21,8 +18,7 @@ public abstract class M3 extends CartaMision implements PaisEventSubscriber {
 
     @Override
     public void update(PaisEvent evento) {
-        Jugador jugadorPais = evento.getPais().getJugador();
-        if (hasJugadorConquistadoContinentes(jugadorPais, getContinentesAConquistarParaCompletarMision())) {
+        if (hasJugadorConquistadoContinentes(getJugador(), getContinentesAConquistarParaCompletarMision())) {
             completada = true;
         } else {
             completada = false;

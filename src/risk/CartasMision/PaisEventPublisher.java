@@ -1,14 +1,14 @@
-package risk.CartasMision;
+package risk.cartasmision;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaisEventPublisher {
     
-    private Set<PaisEventSubscriber> setSubscribers;
+    private List<PaisEventSubscriber> ListSubscribers; // Una lista, y no un conjunto, porque puede haber varios suscriptores iguales
 
     public PaisEventPublisher() {
-        this.setSubscribers = new HashSet<>();
+        this.ListSubscribers = new ArrayList<>();
     }
 
     /**
@@ -16,7 +16,7 @@ public class PaisEventPublisher {
      * @param subscriber
      */
     public void subscribe(PaisEventSubscriber subscriber) {
-        this.setSubscribers.add(subscriber);
+        this.ListSubscribers.add(subscriber);
     }
 
     /**
@@ -24,14 +24,14 @@ public class PaisEventPublisher {
      * @param subscriber
      */
     public void unsubscribe(PaisEventSubscriber subscriber) {
-        this.setSubscribers.remove(subscriber);
+        this.ListSubscribers.remove(subscriber);
     }
 
     /**
      * Informa a los suscriptores de que ha ocurrido una conquista
      */
     public void updateSubscribers(PaisEvent evento) {
-        for (PaisEventSubscriber sub : setSubscribers) {
+        for (PaisEventSubscriber sub : ListSubscribers) {
             sub.update(evento);
         }
     }
