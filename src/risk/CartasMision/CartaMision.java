@@ -2,7 +2,7 @@ package risk.cartasmision;
 
 import risk.Jugador;
 
-public abstract class CartaMision {
+public abstract class CartaMision implements PaisEventSubscriber {
 
     boolean completada;
     Jugador jugador;

@@ -1,12 +1,12 @@
 package risk.cartasmision;
 
-import risk.ejercito.EjercitoAmarillo;
+import risk.Color;
 
 public class M41 extends M4 {
-
-    @Override
-    Class<?> getClaseEjercito() {
-        return EjercitoAmarillo.class;
-    }
     
+    @Override
+    Color getColor() {
+        return Color.AMARILLO;
+    }
+
 }

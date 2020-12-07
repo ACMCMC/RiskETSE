@@ -2,27 +2,19 @@ package risk.cartasmision;
 
 import risk.Color;
 import risk.Partida;
-import risk.riskexception.ExcepcionGeo;
 
-public abstract class M4 extends CartaMision implements PaisEventSubscriber {
-
+public abstract class M4 extends CartaMision {
     
     M4() {
         super();
-        Color colorEjercito;
-        try {
-            colorEjercito = Color.getColorByString(getClaseEjercito().getSimpleName());
-        } catch (ExcepcionGeo e) {
-            colorEjercito = null;
-        }
-        jugador = Partida.getPartida().getJugador(colorEjercito);
+        jugador = Partida.getPartida().getJugador(getColor());
     }
 
-    abstract Class<?> getClaseEjercito();
+    abstract Color getColor();
 
     @Override
     public String getDescripcion() {
-        return "Destruir el ejército " + getClaseEjercito().getSimpleName().toUpperCase();
+        return "Destruir el ejército " + getColor().getNombre().toUpperCase();
     }
 
     @Override

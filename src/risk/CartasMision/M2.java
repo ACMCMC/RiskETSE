@@ -2,7 +2,7 @@ package risk.cartasmision;
 
 import risk.Jugador;
 
-public class M2 extends CartaMision implements PaisEventSubscriber {
+public class M2 extends CartaMision {
 
     public M2(Jugador jugador) {
         super(jugador);

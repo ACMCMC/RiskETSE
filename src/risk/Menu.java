@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartasmision.CartaMision;
+import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.RiskException;
@@ -492,6 +494,17 @@ public class Menu {
             color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("color", color.getNombre()).build());
         } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    private void asignarMisionJugador(String nombreJugador, String idMision) {
+        try {
+            Jugador jugadorActual = Partida.getPartida().getJugadorActual();
+            CartaMision mision = CartaMisionFactory.build(idMision, jugadorActual);
+            jugadorActual.addCartaMision(mision);
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("mision", mision.getDescripcion()).build());
+        } catch (RiskException e) {
             io.printToErrOutput(e);
         }
     }

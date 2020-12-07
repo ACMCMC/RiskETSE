@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.ExcepcionMision;
 import risk.riskexception.RiskExceptionEnum;
 
 public class Jugador {
@@ -126,6 +127,26 @@ public class Jugador {
         int numEjercitosRearmar = this.getPaises().size()/3; // El jugador recibe el número de ejércitos que es el resultado de dividir el número de países que pertenecen al jugador entre 3
         numEjercitosRearmar += getContinentesOcupadosExcusivamentePorJugador().stream().mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum(); // Si todos los países de un continente pertenecen a dicho jugador, recibe el número de ejércitos indicados en la Tabla 4
         return numEjercitosRearmar;
+    }
+
+    /**
+     * Devuelve TRUE si el Jugador ha completado alguna de sus misiones
+     * @return
+     */
+    public boolean jugadorHaCompletadoMision() {
+        return this.setCartasMision.stream().anyMatch(m -> m.isCompletada());
+    }
+
+    /**
+     * Añade una CartaMision a este Jugador
+     * @param cartaMision
+     */
+    public void addCartaMision(CartaMision cartaMision) throws ExcepcionMision {
+        if (this.setCartasMision.contains(cartaMision)) {
+            throw (ExcepcionMision) RiskExceptionEnum.MISION_YA_ASIGNADA.get();
+        }
+        this.setCartasMision.add(cartaMision);
+        Mapa.getMapa().getPaisEventPublisher().subscribe(cartaMision);
     }
 
     @Override

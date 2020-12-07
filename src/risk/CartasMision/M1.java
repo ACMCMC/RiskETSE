@@ -2,7 +2,7 @@ package risk.cartasmision;
 
 import risk.Jugador;
 
-public class M1 extends CartaMision implements PaisEventSubscriber {
+public class M1 extends CartaMision {
 
     @Override
     public String getDescripcion() {

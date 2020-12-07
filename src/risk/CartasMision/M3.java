@@ -4,7 +4,7 @@ import java.util.List;
 import risk.Continente;
 import risk.Jugador;
 
-public abstract class M3 extends CartaMision implements PaisEventSubscriber {
+public abstract class M3 extends CartaMision {
     abstract List<Continente> getContinentesAConquistarParaCompletarMision();
 
     public M3(Jugador jugador) {

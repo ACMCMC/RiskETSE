@@ -591,7 +591,7 @@ $> asignar pais Gondorff Rusia
 $> repartir ejercitos 8 Alaska
 {
     pais: "Alaska",
-    jugador: risk.Jugador@76fb509a,
+    jugador: risk.Jugador@2e817b38,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Ontario", 2 }, { "Groenlandia", 2 }, { "Quebec", 2 }, { "Territorios del Noroeste", 2 }, { "Alaska", 9 }, { "Alberta", 2 } ]
@@ -624,7 +624,7 @@ $> acabar turno
 $> repartir ejercitos 10 Venezuela
 {
     pais: "Venezuela",
-    jugador: risk.Jugador@7eda2dbb,
+    jugador: risk.Jugador@4d405ef7,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Venezuela", 9 } ]
@@ -668,7 +668,7 @@ $> acabar turno
 $> repartir ejercitos 15 Indonesia
 {
     pais: "Indonesia",
-    jugador: risk.Jugador@6576fe71,
+    jugador: risk.Jugador@6193b845,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Nueva Guinea", 2 }, { "Australia Occidental", 2 }, { "Indonesia", 9 }, { "Australia Oriental", 2 } ]
