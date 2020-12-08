@@ -5,11 +5,11 @@ import java.util.Random;
 public class Dado {
     private int valor;
 
-    Dado() {
+    public Dado() {
         this.valor = new Random().nextInt(6)+1;
     }
 
-    Dado(int valor) {
+    public Dado(int valor) {
         this.valor = valor;
     }
 
