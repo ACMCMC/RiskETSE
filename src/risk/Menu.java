@@ -374,7 +374,7 @@ public class Menu {
     }
 
     /**
-     *
+     * Crea un jugador a partir de un nombre y un color
      * @param file
      */
     private void crearJugador(String nombre, String color) {
