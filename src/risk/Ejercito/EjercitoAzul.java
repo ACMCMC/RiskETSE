@@ -5,7 +5,7 @@ import risk.Dado;
 public class EjercitoAzul extends EjercitoBase {
 
     @Override
-    Dado[] ataque(Dado[] dado) {
+    Dado[] ataque(Dado[] dados) {
         // TODO Auto-generated method stub
         return null;
     }
