@@ -4,12 +4,12 @@
 
 package risk.riskexception;
 
-public abstract class RiskException extends Exception {
+public abstract class ExcepcionRISK extends Exception {
 
     final int codigo;
     final String codigoTexto;
 
-    public RiskException(int codigo, String codigoTexto) {
+    public ExcepcionRISK(int codigo, String codigoTexto) {
         this.codigo = codigo;
         this.codigoTexto = codigoTexto;
     }
@@ -34,10 +34,10 @@ public abstract class RiskException extends Exception {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof RiskException)) {
+        if (!(o instanceof ExcepcionRISK)) {
             return false;
         }
-        if (((RiskException) o).getCodigo() != this.getCodigo()) {
+        if (((ExcepcionRISK) o).getCodigo() != this.getCodigo()) {
             return false;
         }
         return true;

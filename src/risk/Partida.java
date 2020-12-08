@@ -23,10 +23,11 @@ import java.util.stream.Stream;
 
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
+import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionMision;
-import risk.riskexception.RiskException;
+import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 import risk.riskexception.RiskExceptionFactory;
 
@@ -133,13 +134,21 @@ public class Partida {
     public void asignarEjercitosSinRepartir() {
         this.getJugadores().forEach(entry -> {
             entry.setEjercitosSinRepartir(50 - (5 * this.jugadores.size())); // 50 - (5 * numJugadores) es una fórmula
-                                                                             // que hace que para 3 jugadores, tengamos
-                                                                             // 35 ejércitos, y lo del pdf en general
+            // que hace que para 3 jugadores, tengamos
+            // 35 ejércitos, y lo del pdf en general
         });
     }
 
-    public Map<Pais, Set<Dado>> atacar(Pais atacante, Pais defensor) throws RiskException {
-
+    /**
+     * Realiza un ataque entre dos países con los conjuntos de dados especificados
+     * 
+     * @param atacante
+     * @param defensor
+     * @return
+     * @throws ExcepcionRISK
+     */
+    public Map<Pais, Set<Dado>> atacar(Pais atacante, Set<Dado> dadosAtacante, Pais defensor, Set<Dado> dadosDefensor)
+            throws ExcepcionRISK {
         if (atacante.getNumEjercitos() <= 1) {
             throw RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES.get();
         }
@@ -153,33 +162,19 @@ public class Partida {
             throw RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
 
-        Set<Dado> dadosAtacante = new HashSet<>();
-        Set<Dado> dadosDefensor = new HashSet<>();
-        int numDadosAtacante;
-        int numDadosDefensor;
+        Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
         Dado dadoAtacante;
         Dado dadoDefensor;
         int ejercitosAtacados = 0; // El número de ejércitos con los que ataca el atacante, para después saber
                                    // cuántos hay que poner en el país defensor si es conquistado
-        Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
 
-        numDadosAtacante = atacante.getNumEjercitos() > 3 ? 3 : atacante.getNumEjercitos(); // La fórmula del PDF
-        numDadosDefensor = defensor.getNumEjercitos() == 1 ? 1 : 2; // La fórmula del PDF
-
-        // Generamos Sets de dados
-        for (int i = 0; i < numDadosAtacante; i++) {
-            dadosAtacante.add(new Dado());
-        }
-        for (int i = 0; i < numDadosDefensor; i++) {
-            dadosDefensor.add(new Dado());
-        }
+        procesarDados(atacante, dadosAtacante, defensor, dadosDefensor);
 
         mapaValores.put(atacante, new HashSet<Dado>(dadosAtacante)); // Copiamos los valores de los Sets para
-                                                                               // devolverlos después
+                                                                     // devolverlos después
         mapaValores.put(defensor, new HashSet<Dado>(dadosDefensor));
 
-        while (!dadosAtacante.isEmpty() && !dadosDefensor.isEmpty()
-                && !(defensor.getNumEjercitos() == 0)) {
+        while (!dadosAtacante.isEmpty() && !dadosDefensor.isEmpty() && !(defensor.getNumEjercitos() == 0)) {
             dadoAtacante = dadosAtacante.stream().max(Comparator.comparingInt(Dado::getValor)).get();
             dadoDefensor = dadosDefensor.stream().max(Comparator.comparingInt(Dado::getValor)).get();
             dadosAtacante.remove(dadoAtacante);
@@ -204,6 +199,45 @@ public class Partida {
     }
 
     /**
+     * Aplica el método atacar() de las clases de Ejercito en los dados
+     * @param dadosAtacante
+     * @param dadosDefensor
+     */
+    private void procesarDados(Pais atacante, Set<Dado> dadosAtacante, Pais defensor, Set<Dado> dadosDefensor) {
+        Ejercito ejercitoAtacante = EjercitoFactory.getEjercito(atacante.getJugador().getColor());
+        Ejercito ejercitoDefensor = EjercitoFactory.getEjercito(defensor.getJugador().getColor());
+
+        Dado arrayDadosAtacanteProcesado[] = ejercitoAtacante.ataque((Dado[]) dadosAtacante.toArray(new Dado[0]));
+        Dado arrayDadosDefensorProcesado[] = ejercitoDefensor.ataque((Dado[]) dadosDefensor.toArray(new Dado[0]));
+
+        dadosAtacante.clear();
+        Collections.addAll(dadosAtacante, arrayDadosAtacanteProcesado);
+        dadosDefensor.clear();
+        Collections.addAll(dadosDefensor, arrayDadosDefensorProcesado);
+    }
+
+    public Map<Pais, Set<Dado>> atacar(Pais atacante, Pais defensor) throws ExcepcionRISK {
+
+        Set<Dado> dadosAtacante = new HashSet<>();
+        Set<Dado> dadosDefensor = new HashSet<>();
+        int numDadosAtacante;
+        int numDadosDefensor;
+
+        numDadosAtacante = atacante.getNumEjercitos() > 3 ? 3 : atacante.getNumEjercitos(); // La fórmula del PDF
+        numDadosDefensor = defensor.getNumEjercitos() == 1 ? 1 : 2; // La fórmula del PDF
+
+        // Generamos Sets de dados
+        for (int i = 0; i < numDadosAtacante; i++) {
+            dadosAtacante.add(new Dado());
+        }
+        for (int i = 0; i < numDadosDefensor; i++) {
+            dadosDefensor.add(new Dado());
+        }
+
+        return atacar(atacante, dadosAtacante, defensor, dadosDefensor);
+    }
+
+    /**
      * Devuelve el Jugador cuyo turno es ahora
      * 
      * @return
@@ -223,7 +257,7 @@ public class Partida {
     /**
      * Asigna una CartaMision a un Jugador
      */
-    public void asignarMisionAJugador(CartaMision cartaMision, Jugador jugador) throws RiskException {
+    public void asignarMisionAJugador(CartaMision cartaMision, Jugador jugador) throws ExcepcionRISK {
         if (!areJugadoresCreados()) {
             throw RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
         }
