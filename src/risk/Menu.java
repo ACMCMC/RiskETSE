@@ -300,7 +300,7 @@ public class Menu {
         Pais pais;
         try {
             pais = Mapa.getMapa().getPais(nombrePais);
-            pais.setJugador(Partida.getPartida().getJugador(nombreJugador));
+            pais.conquistar(Partida.getPartida().getJugador(nombreJugador));
             Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(pais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)

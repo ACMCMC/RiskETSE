@@ -27,7 +27,7 @@ public class Pais {
         this.setCodigo(nombre);
         this.setNombreHumano(nombreHumano);
         this.setContinente(continente);
-        this.setJugador(null);
+        this.jugador = null;
         this.ejercitos = new HashSet<>();
         addToContinente();
     }
@@ -84,7 +84,7 @@ public class Pais {
     }
 
     /**
-     * Devuelve el jugador de este Pais, o null
+     * Devuelve el jugador de este Pais, o null si no hay jugador
      * 
      * @return
      */
@@ -92,12 +92,17 @@ public class Pais {
         return this.jugador;
     }
 
+    /**
+     * Hace que el jugador especificado conquiste este país. Los ejércitos que hay en el país continúan intactos (Si se ejecuta esta función directamente, sería como si los ejércitos se transfiriesen de un jugador a otro)
+     * @param conquistador
+     */
     public void conquistar(Jugador conquistador) {
         this.setJugador(conquistador);
+        this.vecesConquistado++;
         notificarCambioPais();
     }
 
-    public void setJugador(Jugador jugador) {
+    private void setJugador(Jugador jugador) {
         this.jugador = jugador;
     }
 
