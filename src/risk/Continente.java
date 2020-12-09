@@ -70,7 +70,6 @@ public class Continente {
     
     /**
      * Devuelve el número de ejércitos emperejado a este continente, que se le dará a un jugador cuando ocupe de forma exclusiva este continente
-     * @param numEjercitosRepartirCuandoOcupadoExcusivamentePorJugador
      */
     public int getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador() {
         // TODO: Esto se podría implementar con un archivo aparte
