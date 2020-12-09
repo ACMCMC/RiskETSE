@@ -591,7 +591,7 @@ $> asignar pais Gondorff Rusia
 $> repartir ejercitos 8 Alaska
 {
     pais: "Alaska",
-    jugador: risk.Jugador@2e817b38,
+    jugador: risk.Jugador@6e2c634b,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Ontario", 2 }, { "Groenlandia", 2 }, { "Quebec", 2 }, { "Territorios del Noroeste", 2 }, { "Alaska", 9 }, { "Alberta", 2 } ]
@@ -624,7 +624,7 @@ $> acabar turno
 $> repartir ejercitos 10 Venezuela
 {
     pais: "Venezuela",
-    jugador: risk.Jugador@4d405ef7,
+    jugador: risk.Jugador@378fd1ac,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Venezuela", 9 } ]
@@ -668,7 +668,7 @@ $> acabar turno
 $> repartir ejercitos 15 Indonesia
 {
     pais: "Indonesia",
-    jugador: risk.Jugador@6193b845,
+    jugador: risk.Jugador@49097b5d,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Nueva Guinea", 2 }, { "Australia Occidental", 2 }, { "Indonesia", 9 }, { "Australia Oriental", 2 } ]
@@ -711,60 +711,4 @@ $> describir pais USAEste
     numeroVecesOcupado: 0
 }
 $> atacar Ontario 5x1x1 USAEste 4
-$> describir pais USAEste
-{
-    nombre: "Estados Unidos del Este",
-    abreviatura: "USAEste",
-    continente: "América del Norte",
-    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
-    jugador: "Hooker",
-    numeroEjercitos: 2,
-    numeroVecesOcupado: 0
-}
-$> describir pais Ontario
-{
-    nombre: "Ontario",
-    abreviatura: "Ontario",
-    continente: "América del Norte",
-    frontera: [ "Alberta", "Quebec", "Territorios del Noroeste", "Estados Unidos del Este" ],
-    jugador: "Gondorff",
-    numeroEjercitos: 2,
-    numeroVecesOcupado: 0
-}
-$> rearmar Alaska 4 Alberta
-{
-    código de error: 101,
-    descripción: "Comando incorrecto"
-}
-$> asignar carta Infantería&Alaska
-{
-    código de error: 101,
-    descripción: "Comando incorrecto"
-}
-$> atacar GBretaña 3 EurSur 4
-$> acabar turno
-{
-    nombre: "Hooker",
-    numeroEjercitosRearmar: 4
-}
-$> describir jugador Gondorff
-{
-    nombre: "Gondorff",
-    color: "VERDE",
-    mision: "RELLENAR",
-    numeroEjercitos: 35,
-    paises: [ "Groenlan", "Islandia", "Yakustsk", "Alaska", "GBretaña", "Quebec", "Kamchatka", "Ontario", "Siberia", "Rusia", "EurNorte", "TNoroeste", "Alberta", "Escandina" ],
-    continentes: [ "Europa", "América del Norte", "Asia" ],
-    cartas: "RELLENAR",
-    numEjercitoRearme: "RELLENAR"
-}
-$> describir continente AméricaNorte
-{
-    nombre: "América del Norte",
-    abreviatura: "AméricaNorte",
-    jugadores: [ { Hooker, 35 }, { Gondorff, 35 } ],
-    numeroEjercitos: 25,
-    rearme: "RELLENAR"
-}
-$> null
 EOF

@@ -7,8 +7,6 @@ package risk;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionJugador;
@@ -27,7 +25,6 @@ public class Jugador {
         this.setColor(color);
         this.setEjercitosSinRepartir(0);
         this.setCartasMision = new HashSet<>();
-        this.setCartasMision.add(new M1());
     }
 
     /**
@@ -119,20 +116,39 @@ public class Jugador {
 
     /**
      * Devuelve un Set de los Continentes en que este Jugador es el único presente
+     * 
      * @return
      */
     public Set<Continente> getContinentesOcupadosExcusivamentePorJugador() {
-        return this.getPaises().stream().map(p -> p.getContinente()).distinct().filter(c -> c.getPaises().stream().allMatch(p -> p.getJugador().equals(this))).collect(Collectors.toSet());
+        return this.getPaises().stream().map(p -> p.getContinente()).distinct()
+                .filter(c -> c.getPaises().stream().allMatch(p -> p.getJugador().equals(this)))
+                .collect(Collectors.toSet());
     }
 
     public int calcularNumEjercitosRearmar() {
-        int numEjercitosRearmar = this.getPaises().size()/3; // El jugador recibe el número de ejércitos que es el resultado de dividir el número de países que pertenecen al jugador entre 3
-        numEjercitosRearmar += getContinentesOcupadosExcusivamentePorJugador().stream().mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum(); // Si todos los países de un continente pertenecen a dicho jugador, recibe el número de ejércitos indicados en la Tabla 4
+        int numEjercitosRearmar = this.getPaises().size() / 3; // El jugador recibe el número de ejércitos que es el
+                                                               // resultado de dividir el número de países que
+                                                               // pertenecen al jugador entre 3
+        numEjercitosRearmar += getContinentesOcupadosExcusivamentePorJugador().stream()
+                .mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum(); // Si todos
+                                                                                                          // los países
+                                                                                                          // de un
+                                                                                                          // continente
+                                                                                                          // pertenecen
+                                                                                                          // a dicho
+                                                                                                          // jugador,
+                                                                                                          // recibe el
+                                                                                                          // número de
+                                                                                                          // ejércitos
+                                                                                                          // indicados
+                                                                                                          // en la Tabla
+                                                                                                          // 4
         return numEjercitosRearmar;
     }
 
     /**
      * Devuelve TRUE si el Jugador ha completado alguna de sus misiones
+     * 
      * @return
      */
     public boolean jugadorHaCompletadoMision() {
@@ -141,6 +157,7 @@ public class Jugador {
 
     /**
      * Añade una CartaMision a este Jugador. Solo se permite añadir una misión.
+     * 
      * @param cartaMision
      */
     public void addCartaMision(CartaMision cartaMision) throws ExcepcionMision {
@@ -153,6 +170,7 @@ public class Jugador {
 
     /**
      * Devuelve el Set de CartaMision del Jugador
+     * 
      * @return
      */
     public Set<CartaMision> getCartasMision() {
@@ -161,6 +179,7 @@ public class Jugador {
 
     /**
      * Devuelve {@code true} si el jugador tiene la CartaMision
+     * 
      * @param cartaMision
      * @return
      */

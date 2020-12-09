@@ -2,7 +2,7 @@ package risk.riskexception;
 
 public class RiskExceptionFactory {
 
-    public static RiskException fromCode(int code) {
+    public static ExcepcionRISK fromCode(int code) {
         switch (code) {
             case (99):
                 return (new ExcepcionComando(code, "Comando no permitido en este momento"));

@@ -38,7 +38,7 @@ public enum RiskExceptionEnum {
         return this.codigoTexto;
     }
 
-    public RiskException get() {
+    public ExcepcionRISK get() {
         return RiskExceptionFactory.fromCode(getCodigo());
     }
 }

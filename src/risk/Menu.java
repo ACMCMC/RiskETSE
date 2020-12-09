@@ -21,7 +21,7 @@ import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionJugador;
-import risk.riskexception.RiskException;
+import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
@@ -300,13 +300,13 @@ public class Menu {
         Pais pais;
         try {
             pais = Mapa.getMapa().getPais(nombrePais);
-            pais.setJugador(Partida.getPartida().getJugador(nombreJugador));
+            pais.conquistar(Partida.getPartida().getJugador(nombreJugador));
             Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(pais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
                     .autoAdd("continente", pais.getContinente().getNombreHumano()).autoAdd("frontera", fronterasPais)
                     .build());
-        } catch (RiskException e) {
+        } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
@@ -358,7 +358,7 @@ public class Menu {
                     Partida.getPartida().addJugador(new Jugador(partesLinea[0], color));
                     io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", partesLinea[0])
                             .autoAdd("color", color.getNombre()).build());
-                } catch (RiskException e) {
+                } catch (ExcepcionRISK e) {
                     io.printToErrOutput(e);
                 }
             }
@@ -374,7 +374,7 @@ public class Menu {
     }
 
     /**
-     *
+     * Crea un jugador a partir de un nombre y un color
      * @param file
      */
     private void crearJugador(String nombre, String color) {
@@ -420,7 +420,7 @@ public class Menu {
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()
                     .autoAdd("paisesOcupadosCont", setPaisesOcupadosContinente).build();
             io.printToOutput(output);
-        } catch (RiskException e) {
+        } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
@@ -510,9 +510,9 @@ public class Menu {
                 asignarMisionJugador(partesLinea[0], partesLinea[1]);
             }
         } catch (IOException e) {
-            io.printToErrOutput(new RiskException(0, "Error de lectura del archivo") {});
+            io.printToErrOutput(new ExcepcionRISK(0, "Error de lectura del archivo") {});
         } catch (ArrayIndexOutOfBoundsException e) {
-            io.printToErrOutput(new RiskException(0, "El archivo de lectura de misiones tiene un formato erróneo") {});
+            io.printToErrOutput(new ExcepcionRISK(0, "El archivo de lectura de misiones tiene un formato erróneo") {});
         }
     }
 
@@ -525,7 +525,7 @@ public class Menu {
             CartaMision mision = CartaMisionFactory.build(idMision, jugadorActual);
             Partida.getPartida().asignarCartaMisionJugador(mision, jugadorActual);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("mision", mision.getDescripcion()).build());
-        } catch (RiskException e) {
+        } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
@@ -599,22 +599,22 @@ public class Menu {
      */
     private void describirPais(String abrevPais) {
         Pais pais;
-
+        
         try {
             pais = Mapa.getMapa().getPais(abrevPais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", pais.getNombreHumano())
-                    .autoAdd("abreviatura", pais.getCodigo())
-                    .autoAdd("continente", pais.getContinente().getNombreHumano())
-                    .autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
-                    .autoAdd("jugador", Optional.ofNullable(pais.getJugador()).map(j -> j.getNombre()).orElse(null))
-                    .autoAdd("numeroEjercitos", pais.getNumEjercitos())
-                    .autoAdd("numeroVecesOcupado", pais.getNumVecesConquistado()).build());
+            .autoAdd("abreviatura", pais.getCodigo())
+            .autoAdd("continente", pais.getContinente().getNombreHumano())
+            .autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
+            .autoAdd("jugador", Optional.ofNullable(pais.getJugador()).map(j -> j.getNombre()).orElse(null))
+            .autoAdd("numeroEjercitos", pais.getNumEjercitos())
+            .autoAdd("numeroVecesOcupado", pais.getNumVecesConquistado()).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
-
+        
     }
-
+    
     /**
      * Comando manual para realizar un ataque.
      * 
@@ -624,7 +624,59 @@ public class Menu {
      * @param dadosDefensa
      */
     private void atacar(String nombrePais1, String dadosAtaque, String nombrePais2, String dadosDefensa) {
+        try {
+            Pais paisAtacante = Mapa.getMapa().getPais(nombrePais1);
+            Pais paisDefensor = Mapa.getMapa().getPais(nombrePais2);
+            int ejercitosPaisAtaqueAntes;
+            int ejercitosPaisDefensaAntes;
+            Optional<Continente> continenteConquistado;
+        
+            ejercitosPaisAtaqueAntes = paisAtacante.getNumEjercitos();
+            ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
+            
+            Map<Pais, Set<Dado>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, parsearStringDados(dadosAtaque), paisDefensor, parsearStringDados(dadosDefensa));
+        
+            if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del
+                                                                           // país defendido, esto implica que es el
+                                                                           // jugador
+                                                                           // que ataca
+                continenteConquistado = Optional.of(paisDefensor.getContinente());
+            } else {
+                continenteConquistado = Optional.empty();
+            }
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                    .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                    .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
+                        {
+                            add(ejercitosPaisAtaqueAntes);
+                            add(paisAtacante.getNumEjercitos());
+                        }
+                    }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
+                        {
+                            add(ejercitosPaisDefensaAntes);
+                            add(paisDefensor.getNumEjercitos());
+                        }
+                    }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
+                    .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
+                    .autoAdd("continenteConquistado",
+                            continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
+                    .build());
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
+    }
 
+    private Set<Dado> parsearStringDados(String stringDados) {
+        Set<Dado> setRetorno = new HashSet<>();
+        String dados[] = stringDados.split("x");
+        for (int i = 0; i < dados.length; i++) {
+            int numeroDado;
+            Dado dadoActual;
+            numeroDado = Integer.parseInt(dados[i]);
+            dadoActual = new Dado(numeroDado);
+            setRetorno.add(dadoActual);
+        }
+        return setRetorno;
     }
 
     private void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
@@ -666,7 +718,7 @@ public class Menu {
                     .autoAdd("continenteConquistado",
                             continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
                     .build());
-        } catch (RiskException e) {
+        } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
@@ -690,7 +742,7 @@ public class Menu {
             }
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("paises", nombresPaises).build());
         }
-        catch(RiskException e){
+        catch(ExcepcionRISK e){
             io.printToErrOutput(e);
         }
     }
