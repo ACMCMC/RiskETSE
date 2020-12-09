@@ -2,10 +2,10 @@ package risk.ejercito;
 
 import risk.Dado;
 
-public class EjercitoAzul extends EjercitoBase {
+public class EjercitoRojo extends EjercitoBase {
 
     @Override
-    Dado[] ataque(Dado[] dados) {
+    public Dado[] ataque(Dado[] dados) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -5,7 +5,7 @@ import risk.Dado;
 public class EjercitoAmarillo extends EjercitoBase {
 
     @Override
-    Dado[] ataque(Dado[] dados) {
+    public Dado[] ataque(Dado[] dados) {
         Dado dadoMayor = dados[0];
 
         for (Dado dado : dados) {
