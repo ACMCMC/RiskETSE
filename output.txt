@@ -591,7 +591,7 @@ $> asignar pais Gondorff Rusia
 $> repartir ejercitos 8 Alaska
 {
     pais: "Alaska",
-    jugador: risk.Jugador@6e2c634b,
+    jugador: risk.Jugador@15d16d44,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Ontario", 2 }, { "Groenlandia", 2 }, { "Quebec", 2 }, { "Territorios del Noroeste", 2 }, { "Alaska", 9 }, { "Alberta", 2 } ]
@@ -624,7 +624,7 @@ $> acabar turno
 $> repartir ejercitos 10 Venezuela
 {
     pais: "Venezuela",
-    jugador: risk.Jugador@378fd1ac,
+    jugador: risk.Jugador@1f17ae12,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Venezuela", 9 } ]
@@ -668,7 +668,7 @@ $> acabar turno
 $> repartir ejercitos 15 Indonesia
 {
     pais: "Indonesia",
-    jugador: risk.Jugador@49097b5d,
+    jugador: risk.Jugador@4d405ef7,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Nueva Guinea", 2 }, { "Australia Occidental", 2 }, { "Indonesia", 9 }, { "Australia Oriental", 2 } ]
@@ -708,7 +708,7 @@ $> describir pais USAEste
     frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
     jugador: "Hooker",
     numeroEjercitos: 2,
-    numeroVecesOcupado: 0
+    numeroVecesOcupado: 2
 }
 $> atacar Ontario 5x1x1 USAEste 4
 EOF

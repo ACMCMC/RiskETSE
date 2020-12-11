@@ -33,7 +33,7 @@ public class Menu {
     // necesario acceder durante la ejecución del programa como, por ejemplo,
     // el mapa o los jugadores
 
-    private IOHelper io;
+    private Consola io;
     {
         // Inicialización de io; podemos hacerla antes del constructor
         io = IOHelperFactory.getInstance();
