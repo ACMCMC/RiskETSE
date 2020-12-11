@@ -1,19 +1,19 @@
 package risk;
 
 public abstract class IOHelperFactory {
-    private static IOHelper iOHelperInstance;
+    private static Consola iOHelperInstance;
 
     public static void setType(Class<?> clase) {
-        if (clase == IOHelperConsole.class) {
-            iOHelperInstance = new IOHelperConsole();
-        } else if (clase == IOHelperFile.class) {
-            iOHelperInstance = new IOHelperFile("output.txt", "comandos.txt");
+        if (clase == ConsolaConsola.class) {
+            iOHelperInstance = new ConsolaConsola();
+        } else if (clase == ConsolaArchivo.class) {
+            iOHelperInstance = new ConsolaArchivo("output.txt", "comandos.txt");
         } else {
             throw new IllegalArgumentException("No se reconoce esa clase");
         }
     }
 
-    public static IOHelper getInstance() {
+    public static Consola getInstance() {
         return iOHelperInstance;
     }
 }

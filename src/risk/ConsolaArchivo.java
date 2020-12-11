@@ -7,12 +7,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class IOHelperFile implements IOHelper {
+public class ConsolaArchivo implements Consola {
 
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
 
-    IOHelperFile(String fileNameOutput, String fileNameInput) {
+    ConsolaArchivo(String fileNameOutput, String fileNameInput) {
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(new File(fileNameOutput)));
         } catch (IOException e) {
@@ -30,7 +30,7 @@ public class IOHelperFile implements IOHelper {
         String linea;
         try {
             linea = bufferedReader.readLine();
-            printToOutput(IOHelper.PROMPT + linea);
+            printToOutput(Consola.PROMPT + linea);
             return linea;
         } catch (IOException e) {
             // TODO Auto-generated catch block
