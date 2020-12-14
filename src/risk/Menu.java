@@ -39,226 +39,19 @@ public class Menu {
         io = IOHelperFactory.getInstance();
     }
 
+    private ComandoProcessor comandoProcessor;
+
+    private void bucleProcesarComandos() {
+        String orden;
+        while ((orden = io.readLine()) != null) {
+            comandoProcessor.procesarComando(orden);
+        }
+    }
+
     public Menu() {
         // Inicialización de algunos atributos
-
-        // Iniciar juego
-        String orden = null;
-        String[] partes;
-        try {
-            orden = io.readLine();
-            do { // La primera línea tiene
-                                                                                     // que ser "crear mapa".
-                                                                                     // Mostramos un error
-                                                                                     // mientras no sea esa.
-                io.printToErrOutput(RiskExceptionEnum.MAPA_NO_CREADO.get());
-            } while (!orden.equals("crear mapa") && (orden = io.readLine()) != null);
-            crearMapa();
-            anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles son
-                                         // las fronteras indirectas
-            imprimirMapa(); // Imprimimos el mapa una vez creado
-
-            boolean jugadoresCreados = false; // Lo usaremos como flag para saber cuándo salir del while
-            do { // La
-                // segunda
-                // línea
-                // (y
-                // posiblemente
-                // las siguientes) tienen que ser
-                // "crear nombre color".
-                // Mostramos un error mientras no sea
-                // esa. Tiene que haber al menos 3
-                // jugadores.
-                if (orden.startsWith("crear")) { // Entramos por aquí si es crear jugador o crear jugadores
-                    partes = orden.split(" ");
-                    if (partes.length == 3 && partes[1].equals("jugadores")) {
-                        crearJugadores(new File(partes[2]));
-                    } else if (partes.length == 3) {
-                        crearJugador(partes[1], partes[2]);
-                    } else {
-                        io.printToErrOutput(RiskExceptionEnum.JUGADORES_NO_CREADOS.get());
-                    }
-                    if (Partida.getPartida().getJugadores().size() >= 3) { // Comprobamos si ya hay 3 jugadores creados
-                        jugadoresCreados = true;
-                    }
-                } else { // Si el comando no es crear jugador
-                    io.printToErrOutput(RiskExceptionEnum.JUGADORES_NO_CREADOS.get());
-                }
-            } while ((orden = io.readLine()) != null && (!jugadoresCreados || orden.startsWith("crear")));
-            
-            Partida.getPartida().asignarEjercitosSinRepartir();
-            
-            boolean misionesAsignadas = false;
-            do {
-                //rellenar
-                partes = orden.split(" ");
-                if (partes.length==3 && partes[1].equals("misiones")) {
-
-                    misionesAsignadas = true;
-                } else if (partes.length==4 && partes[1].equals("mision")) {
-                    try {
-                        Partida.getPartida().getJugador(partes[2]);
-                        misionesAsignadas = true;
-                    } catch (ExcepcionJugador e ) {
-                        io.printToErrOutput(e);
-                    }
-                } else {
-                    io.printToErrOutput(RiskExceptionEnum.MISIONES_NO_ASIGNADAS.get());
-                }
-            } while ((orden = io.readLine()) != null && (!misionesAsignadas || orden.startsWith("asignar")));
-
-
-            boolean paisesAsignados = false;
-            do {
-                partes = orden.split(" ");
-                
-                if (partes.length==3 && partes[1].equals("paises")) {
-                    asignarPaises(new File(partes[2]));
-                    paisesAsignados = true;
-                } else if (partes.length==4 && partes[1].equals("pais")) {
-                    asignarPais(partes[2], partes[3]);
-                    paisesAsignados = true;
-                } else {
-                    comandoIncorrecto();
-                }
-            } while ((orden = io.readLine()) != null && (!paisesAsignados || orden.startsWith("asignar")));
-
-            boolean ejercitosRepartidos = false;
-            do {
-                partes = orden.split(" ");
-                
-                if (partes.length == 2 && partes[1].equals("ejercitos")) {
-                    repartirEjercitos();
-                    ejercitosRepartidos = true;
-                } else if (partes.length==4 && partes[1].equals("ejercitos")) {
-                    repartirEjercitos(partes[2], partes[3]);
-                    ejercitosRepartidos = true;
-                } else {
-                    comandoIncorrecto();
-                }
-            } while ((orden = io.readLine()) != null && (!ejercitosRepartidos || orden.startsWith("repartir")));
-
-            // TODO: Esto se puede borrar
-            System.out.println(Mapa.getMapa().toString());
-
-            do {
-                partes = orden.split(" ");
-                String comando = partes[0];
-                // COMANDOS INICIALES PARA EMPEZAR A JUGAR
-                // crear mapa
-                // crear jugadores <nombre_fichero>
-                // crear <nombre_jugador> <nombre_color>
-                // asignar misiones
-                // asignar paises <nombre_fichero>
-                // asignar <nombre_pais> <nombre_jugador>
-
-                // COMANDOS DISPONIBLES DURANTE EL JUEGO
-                // acabar
-                // atacar <nombre_pais> <nombre_pais>
-                // describir continente <nombre_continente>
-                // describir frontera <nombre_pais>
-                // describir frontera <nombre_continente>
-                // describir jugador <nombre_jugador>
-                // describir pais <nombre_pais>
-                // jugador
-                // repartir ejercitos
-                // ver mapa
-                // ver pais <nombre_pais>
-                switch (comando) {
-                    case "crear":
-                        if (partes.length == 2) {
-                            if (partes[1].equals("mapa")) {
-                                comandoNoPermitido();
-                            } else {
-                                comandoIncorrecto();
-                            }
-                        } else if (partes.length == 3) {
-                            if (partes[1].equals("jugadores")) {
-                                try {
-                                    crearJugadores(new File(partes[2]));
-                                } catch (FileNotFoundException ex) {
-                                    System.out.println("No existe el archivo especificado.");
-                                }
-                            } else {
-                                crearJugador(partes[1], partes[2]);
-                            }
-                        } else {
-                            comandoIncorrecto();
-                        }
-                        break;
-                    case "ver":
-                        if (partes.length == 2) {
-                            if (partes[1].equals("mapa")) {
-                                imprimirMapa();
-                            }
-                        }
-                        break;
-                    case "obtener":
-                        if (partes.length == 3) {
-                            if (partes[1].equals("color")) {
-                                obtenerColor(partes[2]);
-                            } else if (partes[1].equals("frontera")) {
-                                obtenerFronteras(partes[2]);
-                            } else if(partes[1].equals("paises")){
-                                obtenerPaisesContinente(partes[2]);
-                            } else {
-                                comandoIncorrecto();
-                            }
-                        }
-                        break;
-                    case "atacar":
-                        if (partes.length == 3) {
-                            atacar(partes[1], partes[2]);
-                        } else if (partes.length == 5) {
-                            atacar(partes[1], partes[2], partes[3], partes[4]);
-                        } else {
-                            comandoIncorrecto();
-                        }
-                        break;
-                    case "repartir":
-                        if (partes.length == 2 && partes[1].equals("ejercitos")) {
-                            repartirEjercitos();
-                        } else if (partes.length == 4 && partes[1].equals("ejercitos")) {
-                            repartirEjercitos(partes[2], partes[3]);
-                        } else {
-                            comandoIncorrecto();
-                        }
-                    case "describir":
-                        if (partes.length == 3) {
-                            if (partes[1].equals("pais")) {
-                                describirPais(partes[2]);
-                            } else if (partes[1].equals("continente")) {
-                                describirContinente(partes[2]);
-                            } else if (partes[1].equals("jugador")) {
-                                describirJugador(partes[2]);
-                            } else {
-                                comandoIncorrecto();
-                            }
-                        } else {
-                            comandoIncorrecto();
-                        }
-                        break;
-                    case "jugador":
-                        if (partes.length == 1) {
-                            describirJugadorActual();
-                        } else {
-                            comandoIncorrecto();
-                        }
-                        break;
-                    case "acabar":
-                        if (partes.length == 2 && partes[1].equals("turno")) {
-                            acabarTurno();
-                        } else {
-                            comandoIncorrecto();
-                        }
-                        break;
-                    default:
-                        comandoIncorrecto();
-                }
-            } while ((orden = io.readLine()) != null);
-        } catch (Exception excepcion) {
-            excepcion.printStackTrace();
-        }
+        comandoProcessor = new ComandoProcessor(this);
+        bucleProcesarComandos();
 
         io.escribirFinComandos();
     }
@@ -269,9 +62,9 @@ public class Menu {
      * 
      * @param archivoAsignaciones
      */
-    public void asignarPaises(File archivoAsignaciones) {
+    public void asignarPaises(String archivoAsignaciones) {
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(archivoAsignaciones));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(archivoAsignaciones)));
             String linea;
             while ((linea = bufferedReader.readLine()) != null) {
                 String partes[] = linea.split(";");
@@ -297,14 +90,11 @@ public class Menu {
      * @param nombreJugador
      */
     public void asignarPais(String nombrePais, String nombreJugador) {
-        Pais pais;
         try {
-            pais = Mapa.getMapa().getPais(nombrePais);
-            pais.conquistar(Partida.getPartida().getJugador(nombreJugador));
-            Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
-            Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(pais);
+            Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
+            Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(nombrePais));
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                    .autoAdd("continente", pais.getContinente().getNombreHumano()).autoAdd("frontera", fronterasPais)
+                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano()).autoAdd("frontera", fronterasPais)
                     .build());
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
@@ -314,7 +104,7 @@ public class Menu {
     /**
      *
      */
-    private void crearMapa() {
+    public void crearMapa() {
         File filePaisesCoordenadas = new File("paisesCoordenadas.csv");
         try {
             Mapa.crearMapa(filePaisesCoordenadas);
@@ -327,14 +117,14 @@ public class Menu {
     /**
      * Imprime el error 99 (Comando no permitido en este momento)
      */
-    private void comandoNoPermitido() {
+    public void comandoNoPermitido() {
         io.printToErrOutput(RiskExceptionEnum.COMANDO_NO_PERMITIDO.get());
     }
 
     /**
      * Imprime el error 101 (Comando incorrecto)
      */
-    private void comandoIncorrecto() {
+    public void comandoIncorrecto() {
         io.printToErrOutput(RiskExceptionEnum.COMANDO_INCORRECTO.get());
     }
 
@@ -342,10 +132,10 @@ public class Menu {
      *
      * @param file
      */
-    private void crearJugadores(File file) throws FileNotFoundException {
+    public void crearJugadores(String file) {
         // Código necesario para crear a los jugadores del RISK
         try {
-            FileReader lector = new FileReader(file);
+            FileReader lector = new FileReader(new File(file));
             BufferedReader bufferLector = new BufferedReader(lector);
 
             String linea;
@@ -366,7 +156,7 @@ public class Menu {
             bufferLector.close();
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
-            throw fileNotFoundException;
+            fileNotFoundException.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -375,9 +165,10 @@ public class Menu {
 
     /**
      * Crea un jugador a partir de un nombre y un color
+     * 
      * @param file
      */
-    private void crearJugador(String nombre, String color) {
+    public void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
         try {
             Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
@@ -392,7 +183,7 @@ public class Menu {
     /**
      * Se encarga automáticamente de realizar el reparto de los ejércitos.
      */
-    private void repartirEjercitos() {
+    public void repartirEjercitos() {
         try {
             Partida.getPartida().repartirEjercitos();
         } catch (ExcepcionGeo e) {
@@ -406,7 +197,7 @@ public class Menu {
      * @param numero
      * @param nombrePais
      */
-    private void repartirEjercitos(String numero, String nombrePais) {
+    public void repartirEjercitos(String numero, String nombrePais) {
         try {
             Pais pais = Mapa.getMapa().getPais(nombrePais);
             int numeroEjercitosAsignados = Partida.getPartida().repartirEjercitos(Integer.parseInt(numero),
@@ -430,7 +221,7 @@ public class Menu {
      * 
      * @param codigoPais
      */
-    private void obtenerFronteras(String codigoPais) {
+    public void obtenerFronteras(String codigoPais) {
         try {
             Set<String> nombresPaisesFronteras = Mapa.getMapa()
                     .getNombresPaisesFrontera(Mapa.getMapa().getPais(codigoPais));
@@ -449,7 +240,7 @@ public class Menu {
      * 
      * @param abrevPais
      */
-    private void obtenerContinente(String abrevPais) {
+    public void obtenerContinente(String abrevPais) {
         String Continente;
         try {
             Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
@@ -462,7 +253,7 @@ public class Menu {
     /**
      * Añade manualmente las fronteras indirectas
      */
-    private void anadirFronterasIndirectas() {
+    public void anadirFronterasIndirectas() {
         Set<String[]> fronterasPaises = new HashSet<>();
 
         fronterasPaises.add(new String[] { "Brasil", "ANorte" });
@@ -488,7 +279,7 @@ public class Menu {
      * 
      * @param abrevPais
      */
-    private void obtenerColor(String abrevPais) {
+    public void obtenerColor(String abrevPais) {
         Color color;
         try {
             color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
@@ -499,32 +290,36 @@ public class Menu {
     }
 
     /**
-     * Lee el fichero del nombreFichero especificado, y asigna las CartasMision que allí se especifican a los Jugadores de esta Partida
+     * Lee el fichero del nombreFichero especificado, y asigna las CartasMision que
+     * allí se especifican a los Jugadores de esta Partida
      */
-    private void asignarMisiones(String nombreFichero) {
+    public void asignarMisiones(String nombreFichero) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(nombreFichero)));
             String linea;
-            while((linea=bufferedReader.readLine())!=null) {
+            while ((linea = bufferedReader.readLine()) != null) {
                 String partesLinea[] = linea.split(";");
                 asignarMisionJugador(partesLinea[0], partesLinea[1]);
             }
         } catch (IOException e) {
-            io.printToErrOutput(new ExcepcionRISK(0, "Error de lectura del archivo") {});
+            io.printToErrOutput(new ExcepcionRISK(0, "Error de lectura del archivo") {
+            });
         } catch (ArrayIndexOutOfBoundsException e) {
-            io.printToErrOutput(new ExcepcionRISK(0, "El archivo de lectura de misiones tiene un formato erróneo") {});
+            io.printToErrOutput(new ExcepcionRISK(0, "El archivo de lectura de misiones tiene un formato erróneo") {
+            });
         }
     }
 
     /**
      * Asigna la CartaMision del ID especificado al Jugador
      */
-    private void asignarMisionJugador(String nombreJugador, String idMision) {
+    public void asignarMisionJugador(String nombreJugador, String idMision) {
         try {
             Jugador jugadorActual = Partida.getPartida().getJugador(nombreJugador);
             CartaMision mision = CartaMisionFactory.build(idMision, jugadorActual);
             Partida.getPartida().asignarCartaMisionJugador(mision, jugadorActual);
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("mision", mision.getDescripcion()).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
+                    .autoAdd("mision", mision.getDescripcion()).build());
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
@@ -535,7 +330,7 @@ public class Menu {
      * 
      * @param abrevContinente
      */
-    private void describirContinente(String abrevContinente) {
+    public void describirContinente(String abrevContinente) {
         try {
             Continente continente = Mapa.getMapa().getContinente(abrevContinente);
             Set<String> listaJugs = continente.getJugadores().stream()
@@ -558,7 +353,7 @@ public class Menu {
      * 
      * @param nombre
      */
-    private void describirJugador(String nombre) {
+    public void describirJugador(String nombre) {
         try {
             Jugador jugador = Partida.getPartida().getJugador(nombre);
             String output = OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
@@ -579,11 +374,11 @@ public class Menu {
      * 
      * @param nombre
      */
-    private void describirJugadorActual() {
+    public void describirJugadorActual() {
         describirJugador(Partida.getPartida().getJugadorActual().getNombre());
     }
 
-    private void acabarTurno() {
+    public void acabarTurno() {
         Partida.getPartida().siguienteTurno();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
@@ -597,24 +392,24 @@ public class Menu {
      * 
      * @param abrevPais
      */
-    private void describirPais(String abrevPais) {
+    public void describirPais(String abrevPais) {
         Pais pais;
-        
+
         try {
             pais = Mapa.getMapa().getPais(abrevPais);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", pais.getNombreHumano())
-            .autoAdd("abreviatura", pais.getCodigo())
-            .autoAdd("continente", pais.getContinente().getNombreHumano())
-            .autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
-            .autoAdd("jugador", Optional.ofNullable(pais.getJugador()).map(j -> j.getNombre()).orElse(null))
-            .autoAdd("numeroEjercitos", pais.getNumEjercitos())
-            .autoAdd("numeroVecesOcupado", pais.getNumVecesConquistado()).build());
+                    .autoAdd("abreviatura", pais.getCodigo())
+                    .autoAdd("continente", pais.getContinente().getNombreHumano())
+                    .autoAdd("frontera", Mapa.getMapa().getNombresPaisesFrontera(pais))
+                    .autoAdd("jugador", Optional.ofNullable(pais.getJugador()).map(j -> j.getNombre()).orElse(null))
+                    .autoAdd("numeroEjercitos", pais.getNumEjercitos())
+                    .autoAdd("numeroVecesOcupado", pais.getNumVecesConquistado()).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
-        
+
     }
-    
+
     /**
      * Comando manual para realizar un ataque.
      * 
@@ -623,19 +418,20 @@ public class Menu {
      * @param nombrePais2
      * @param dadosDefensa
      */
-    private void atacar(String nombrePais1, String dadosAtaque, String nombrePais2, String dadosDefensa) {
+    public void atacar(String nombrePais1, String dadosAtaque, String nombrePais2, String dadosDefensa) {
         try {
             Pais paisAtacante = Mapa.getMapa().getPais(nombrePais1);
             Pais paisDefensor = Mapa.getMapa().getPais(nombrePais2);
             int ejercitosPaisAtaqueAntes;
             int ejercitosPaisDefensaAntes;
             Optional<Continente> continenteConquistado;
-        
+
             ejercitosPaisAtaqueAntes = paisAtacante.getNumEjercitos();
             ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
-            
-            Map<Pais, Set<Dado>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante, parsearStringDados(dadosAtaque), paisDefensor, parsearStringDados(dadosDefensa));
-        
+
+            Map<Pais, Set<Dado>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante,
+                    parsearStringDados(dadosAtaque), paisDefensor, parsearStringDados(dadosDefensa));
+
             if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del
                                                                            // país defendido, esto implica que es el
                                                                            // jugador
@@ -644,8 +440,11 @@ public class Menu {
             } else {
                 continenteConquistado = Optional.empty();
             }
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
-                    .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
+            io.printToOutput(OutputBuilder.beginBuild()
+                    .autoAdd("dadosAtaque",
+                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                    .autoAdd("dadosDefensa",
+                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
                         {
                             add(ejercitosPaisAtaqueAntes);
@@ -666,7 +465,7 @@ public class Menu {
         }
     }
 
-    private Set<Dado> parsearStringDados(String stringDados) {
+    public Set<Dado> parsearStringDados(String stringDados) {
         Set<Dado> setRetorno = new HashSet<>();
         String dados[] = stringDados.split("x");
         for (int i = 0; i < dados.length; i++) {
@@ -679,7 +478,7 @@ public class Menu {
         return setRetorno;
     }
 
-    private void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
+    public void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
         try {
             Pais paisAtacante = Mapa.getMapa().getPais(nombrePaisAtacante);
             Pais paisDefensor = Mapa.getMapa().getPais(nombrePaisDefensor);
@@ -701,8 +500,11 @@ public class Menu {
                 continenteConquistado = Optional.empty();
             }
 
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("dadosAtaque", resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
-                    .autoAdd("dadosDefensa", resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
+            io.printToOutput(OutputBuilder.beginBuild()
+                    .autoAdd("dadosAtaque",
+                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                    .autoAdd("dadosDefensa",
+                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
                         {
                             add(ejercitosPaisAtaqueAntes);
@@ -726,23 +528,22 @@ public class Menu {
     /**
      * Imprime el mapa
      */
-    private void imprimirMapa() {
+    public void imprimirMapa() {
         io.printToOutput(Mapa.getMapa().toString());
     }
-    
+
     /**
      * Imprime los países de un continente
      */
-    private void obtenerPaisesContinente(String abrevContinente ){
-        try{
+    public void obtenerPaisesContinente(String abrevContinente) {
+        try {
             Set<Pais> paises = Mapa.getMapa().getContinente(abrevContinente).getPaises();
             Set<String> nombresPaises = new HashSet<String>();
-            for(Pais pais : paises){
+            for (Pais pais : paises) {
                 nombresPaises.add(pais.getNombreHumano());
             }
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("paises", nombresPaises).build());
-        }
-        catch(ExcepcionRISK e){
+        } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
