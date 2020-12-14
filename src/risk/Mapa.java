@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import risk.cartasmision.PaisEventPublisher;
 import risk.riskexception.ExcepcionGeo;
+import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 public class Mapa {
@@ -106,6 +107,10 @@ public class Mapa {
         mapaSingleton.asignarColoresContinentes(FILE_COLORES_CONTINENTES);
 
         isMapaCreado = true;
+    }
+
+    public static boolean isMapaCreado() {
+        return isMapaCreado;
     }
 
     /**
@@ -685,6 +690,27 @@ public class Mapa {
         } else {
             throw (ExcepcionGeo) RiskExceptionEnum.PAIS_NO_EXISTE.get();
         }
+    }
+
+    /**
+     * Indica si todos los Paises del Mapa tienen asignado un Jugador
+     * @return
+     */
+    public boolean arePaisesAsignados() {
+        return this.getPaises().stream().allMatch(p -> p.getJugador()!=null);
+    }
+
+    public void asignarPaisAJugadorInicialmente(String nombrePais, String nombreJugador) throws ExcepcionRISK {
+        if (!Partida.getPartida().areMisionesAsignadas()) {
+            throw RiskExceptionEnum.MISIONES_NO_ASIGNADAS.get();
+        }
+
+        Pais pais = Mapa.getMapa().getPais(nombrePais);
+        if (pais.getJugador()!=null) {
+            throw RiskExceptionEnum.PAIS_YA_ASIGNADO.get();
+        }
+        pais.conquistar(Partida.getPartida().getJugador(nombreJugador));
+        Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
     }
 
     /**

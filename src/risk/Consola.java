@@ -1,6 +1,6 @@
 package risk;
 
-public interface IOHelper {
+public interface Consola {
 
     public static final String PROMPT = "$> ";
 

@@ -60,7 +60,10 @@ public class Partida {
         }).collect(Collectors.toSet());
     }
 
-    public void addJugador(Jugador jugador) throws ExcepcionJugador {
+    public void addJugador(Jugador jugador) throws ExcepcionJugador, ExcepcionGeo {
+        if (!Mapa.getMapa().isMapaCreado()) {
+            throw (ExcepcionGeo) RiskExceptionEnum.MAPA_NO_CREADO.get();
+        }
         if (this.jugadores.entrySet().stream().anyMatch(jug -> jug.getValue().getColor().equals(jugador.getColor()))) { // Si
                                                                                                                         // existe
                                                                                                                         // un
@@ -89,6 +92,9 @@ public class Partida {
      * @return
      */
     public Jugador getJugador(String nombre) throws ExcepcionJugador {
+        if (!this.areJugadoresCreados()) {
+            throw (ExcepcionJugador) RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
+        }
         if (this.jugadores.containsKey(nombre)) {
             return this.jugadores.get(nombre);
         } else {
@@ -102,9 +108,10 @@ public class Partida {
      * @param cartaMision
      * @param jugador
      */
-    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) {
+    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) throws ExcepcionMision {
         if (jugadores.containsValue(jugador)) { // Podría darse el caso de que el Jugador no esté en la Partida
             this.misionesJugadores.put(jugador, cartaMision);
+            jugador.addCartaMision(cartaMision);
         }
     }
 
@@ -281,6 +288,23 @@ public class Partida {
         return (this.jugadores.size() >= 3);
     }
 
+    /**
+     * Indica si las misiones han sido asignadas o no (todos los jugadores tienen una misión)
+     */
+    public boolean areMisionesAsignadas() {
+        return (this.getJugadores().stream().allMatch(j -> !j.getCartasMision().isEmpty()));
+    }
+
+    /**
+     * Indica si todos los jugadores han repartido sus ejércitos o no
+     */
+    public boolean areEjercitosRepartidos() {
+        return (this.getJugadores().stream().allMatch(j -> j.getEjercitosSinRepartir()==0));
+    }
+
+    /**
+     * Devuelve los ejércitos de rearme restantes para el jugador del turno actual
+     */
     public int getNumEjercitosRearmarRestantes() {
         return numEjercitosRearmarJugadorActualRestantes;
     }
