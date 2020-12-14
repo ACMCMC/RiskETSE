@@ -225,7 +225,7 @@ $> asignar paises paises.csv
 $> asignar misiones misiones.csv
 {
     nombre: "Gondorff",
-    mision: "Conquistar 24 países de la preferencia del jugador"
+    mision: "Conquistar 24 países de la preferencia del jugador"
 }
 {
     código de error: 116,
@@ -298,16 +298,10 @@ $> asignar paises paises.csv
     descripción: "Las misiones no están asignadas"
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
-}
-{
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
-}
-{
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Irkutsk",
+    continente: "Asia",
+    frontera: [ "Mongolia", "Rusia", "Kamchatka" ]
 }
 {
     código de error: 118,
@@ -503,7 +497,7 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Irkutsk",
     continente: "Asia",
-    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
+    frontera: [ "Mongolia", "Rusia", "Kamchatka" ]
 }
 {
     nombre: "Hooker",
@@ -533,13 +527,13 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Urales",
     continente: "Asia",
-    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
+    frontera: [ "Mongolia", "Rusia", "Europa del Sur", "Afganistán" ]
 }
 {
     nombre: "Hooker",
     pais: "Mongolia",
     continente: "Asia",
-    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
+    frontera: [ "Irkutsk", "Japón", "China", "Urales" ]
 }
 {
     nombre: "Hooker",
@@ -557,7 +551,7 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Afgan",
     continente: "Asia",
-    frontera: [ "Urales", "China", "Oriente Medio" ]
+    frontera: [ "China", "Urales", "Oriente Medio" ]
 }
 {
     nombre: "Hooker",
@@ -605,7 +599,7 @@ $> asignar paises paises.csv
     nombre: "Lonnegan",
     pais: "Perú",
     continente: "América del Sur",
-    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+    frontera: [ "Venezuela", "Brasil", "Argentina" ]
 }
 {
     nombre: "Lonnegan",
@@ -672,14 +666,6 @@ $> asignar pais Gondorff Rusia
     código de error: 113,
     descripción: "El país ya está asignado"
 }
-$> repartir ejercitos 8 Alaska
-{
-    pais: "Alaska",
-    jugador: risk.Jugador@6dd2a02f,
-    numeroEjercitosAsignados: 8,
-    numeroEjercitosTotales: 9,
-    paisesOcupadosCont: [ { "Groenlandia", 1 }, { "Quebec", 1 }, { "Territorios del Noroeste", 1 }, { "Ontario", 1 }, { "Alaska", 9 }, { "Alberta", 1 } ]
-}
 $> repartir ejercitos 5 Groenlan
 {
     pais: "Groenlan",
@@ -714,14 +700,6 @@ $> acabar turno
     nombre: "Hooker",
     numeroEjercitosRearmar: 21
 }
-$> repartir ejercitos 10 Venezuela
-{
-    pais: "Venezuela",
-    jugador: risk.Jugador@7106e68e,
-    numeroEjercitosAsignados: 10,
-    numeroEjercitosTotales: 11,
-    paisesOcupadosCont: [ { "Venezuela", 11 } ]
-}
 $> repartir ejercitos 5 ANorte
 {
     pais: "ANorte",
@@ -748,40 +726,3 @@ $> acabar turno
     nombre: "Lonnegan",
     numeroEjercitosRearmar: 21
 }
-$> repartir ejercitos 15 Indonesia
-{
-    pais: "Indonesia",
-    jugador: risk.Jugador@7eda2dbb,
-    numeroEjercitosAsignados: 15,
-    numeroEjercitosTotales: 16,
-    paisesOcupadosCont: [ { "Nueva Guinea", 1 }, { "Australia Occidental", 1 }, { "Australia Oriental", 1 }, { "Indonesia", 16 } ]
-}
-$> repartir ejercitos 6 NGuinea
-{
-    pais: "NGuinea",
-    jugador: risk.Jugador@7eda2dbb,
-    numeroEjercitosAsignados: 6,
-    numeroEjercitosTotales: 7,
-    paisesOcupadosCont: [ { "Australia Occidental", 1 }, { "Australia Oriental", 1 }, { "Nueva Guinea", 7 }, { "Indonesia", 16 } ]
-}
-$> acabar turno
-{
-    nombre: "Gondorff",
-    numeroEjercitosRearmar: 4
-}
-$> repartir ejercitos 4 Islandia
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> describir pais USAEste
-{
-    nombre: "Estados Unidos del Este",
-    abreviatura: "USAEste",
-    continente: "América del Norte",
-    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
-    jugador: "Hooker",
-    numeroEjercitos: 1,
-    numeroVecesOcupado: 1
-}
-$> atacar Ontario 5x1x1 USAEste 4

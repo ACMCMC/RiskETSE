@@ -4,10 +4,22 @@ import risk.Dado;
 
 public class EjercitoCyan extends EjercitoCompuesto {
 
+    //Se suman dos unidades si se tira un único dado
+
     @Override
     public Dado[] ataque(Dado[] dados) {
-        // TODO Auto-generated method stub
-        return null;
+        Dado dado1 = dados[0];
+        int Valor=dado1.getValor();
+
+        if(dados.length==1){
+            Valor=Valor+2;
+        }
+
+        Dado dadoNuevo=new Dado(Valor);
+        dados[0]=dadoNuevo;
+
+
+        return dados;
     }
     
 }
