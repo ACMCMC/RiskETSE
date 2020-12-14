@@ -2,17 +2,17 @@ package risk;
 
 import java.util.Scanner;
 
-public class IOHelperConsole implements IOHelper {
+public class ConsolaConsola implements Consola {
 
     private Scanner scanner;
 
-    IOHelperConsole() {
+    ConsolaConsola() {
         scanner = new Scanner(System.in);
     }
     
     @Override
     public String readLine() {
-        System.out.print(IOHelper.PROMPT);
+        System.out.print(Consola.PROMPT);
         return scanner.nextLine();
     }
 
