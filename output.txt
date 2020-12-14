@@ -161,7 +161,7 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Irkutsk",
     continente: "Asia",
-    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
+    frontera: [ "Mongolia", "Rusia", "Kamchatka" ]
 }
 {
     nombre: "Hooker",
@@ -191,13 +191,13 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Urales",
     continente: "Asia",
-    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
+    frontera: [ "Mongolia", "Rusia", "Europa del Sur", "Afganistán" ]
 }
 {
     nombre: "Hooker",
     pais: "Mongolia",
     continente: "Asia",
-    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
+    frontera: [ "Irkutsk", "Japón", "China", "Urales" ]
 }
 {
     nombre: "Hooker",
@@ -215,7 +215,7 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Afgan",
     continente: "Asia",
-    frontera: [ "Urales", "China", "Oriente Medio" ]
+    frontera: [ "China", "Urales", "Oriente Medio" ]
 }
 {
     nombre: "Hooker",
@@ -263,7 +263,7 @@ $> asignar paises paises.csv
     nombre: "Lonnegan",
     pais: "Perú",
     continente: "América del Sur",
-    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+    frontera: [ "Venezuela", "Brasil", "Argentina" ]
 }
 {
     nombre: "Lonnegan",
@@ -419,7 +419,7 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Irkutsk",
     continente: "Asia",
-    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
+    frontera: [ "Mongolia", "Rusia", "Kamchatka" ]
 }
 {
     nombre: "Hooker",
@@ -449,13 +449,13 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Urales",
     continente: "Asia",
-    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
+    frontera: [ "Mongolia", "Rusia", "Europa del Sur", "Afganistán" ]
 }
 {
     nombre: "Hooker",
     pais: "Mongolia",
     continente: "Asia",
-    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
+    frontera: [ "Irkutsk", "Japón", "China", "Urales" ]
 }
 {
     nombre: "Hooker",
@@ -473,7 +473,7 @@ $> asignar paises paises.csv
     nombre: "Hooker",
     pais: "Afgan",
     continente: "Asia",
-    frontera: [ "Urales", "China", "Oriente Medio" ]
+    frontera: [ "China", "Urales", "Oriente Medio" ]
 }
 {
     nombre: "Hooker",
@@ -521,7 +521,7 @@ $> asignar paises paises.csv
     nombre: "Lonnegan",
     pais: "Perú",
     continente: "América del Sur",
-    frontera: [ "Brasil", "Venezuela", "Argentina" ]
+    frontera: [ "Venezuela", "Brasil", "Argentina" ]
 }
 {
     nombre: "Lonnegan",
@@ -591,10 +591,10 @@ $> asignar pais Gondorff Rusia
 $> repartir ejercitos 8 Alaska
 {
     pais: "Alaska",
-    jugador: risk.Jugador@6e2c634b,
+    jugador: risk.Jugador@58651fd0,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
-    paisesOcupadosCont: [ { "Ontario", 2 }, { "Groenlandia", 2 }, { "Quebec", 2 }, { "Territorios del Noroeste", 2 }, { "Alaska", 9 }, { "Alberta", 2 } ]
+    paisesOcupadosCont: [ { "Ontario", 2 }, { "Quebec", 2 }, { "Groenlandia", 2 }, { "Territorios del Noroeste", 2 }, { "Alaska", 9 }, { "Alberta", 2 } ]
 }
 $> repartir ejercitos 5 Groenlan
 {
@@ -624,7 +624,7 @@ $> acabar turno
 $> repartir ejercitos 10 Venezuela
 {
     pais: "Venezuela",
-    jugador: risk.Jugador@378fd1ac,
+    jugador: risk.Jugador@62ee68d8,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Venezuela", 9 } ]
@@ -668,7 +668,7 @@ $> acabar turno
 $> repartir ejercitos 15 Indonesia
 {
     pais: "Indonesia",
-    jugador: risk.Jugador@49097b5d,
+    jugador: risk.Jugador@735b5592,
     numeroEjercitosAsignados: 7,
     numeroEjercitosTotales: 9,
     paisesOcupadosCont: [ { "Nueva Guinea", 2 }, { "Australia Occidental", 2 }, { "Indonesia", 9 }, { "Australia Oriental", 2 } ]
@@ -708,7 +708,76 @@ $> describir pais USAEste
     frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
     jugador: "Hooker",
     numeroEjercitos: 2,
-    numeroVecesOcupado: 0
+    numeroVecesOcupado: 2
 }
 $> atacar Ontario 5x1x1 USAEste 4
+{
+    dadosAtaque: [ "1", "6" ],
+    dadosDefensa: [ "4" ],
+    ejercitosPaisAtaque: [ "2", "2" ],
+    ejercitosPaisDefensa: [ "2", "1" ],
+    paisAtaquePerteneceA: "Gondorff",
+    paisDefensaPerteneceA: "Hooker",
+    continenteConquistado: "null"
+}
+$> describir pais USAEste
+{
+    nombre: "Estados Unidos del Este",
+    abreviatura: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
+    jugador: "Hooker",
+    numeroEjercitos: 1,
+    numeroVecesOcupado: 2
+}
+$> describir pais Ontario
+{
+    nombre: "Ontario",
+    abreviatura: "Ontario",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Quebec", "Territorios del Noroeste", "Estados Unidos del Este" ],
+    jugador: "Gondorff",
+    numeroEjercitos: 2,
+    numeroVecesOcupado: 2
+}
+$> rearmar Alaska 4 Alberta
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> asignar carta Infantería&Alaska
+{
+    código de error: 101,
+    descripción: "Comando incorrecto"
+}
+$> atacar GBretaña 3 EurSur 4
+{
+    código de error: 112,
+    descripción: "Los países no son frontera"
+}
+$> acabar turno
+{
+    nombre: "Hooker",
+    numeroEjercitosRearmar: 4
+}
+$> describir jugador Gondorff
+{
+    nombre: "Gondorff",
+    color: "VERDE",
+    mision: "RELLENAR",
+    numeroEjercitos: 35,
+    paises: [ "Yakustsk", "Islandia", "Siberia", "TNoroeste", "Groenlan", "GBretaña", "Quebec", "Ontario", "Alberta", "Kamchatka", "Rusia", "Alaska", "EurNorte", "Escandina" ],
+    continentes: [ "Europa", "América del Norte", "Asia" ],
+    cartas: "RELLENAR",
+    numEjercitoRearme: "RELLENAR"
+}
+$> describir continente AméricaNorte
+{
+    nombre: "América del Norte",
+    abreviatura: "AméricaNorte",
+    jugadores: [ { Hooker, 34 }, { Gondorff, 35 } ],
+    numeroEjercitos: 24,
+    rearme: "RELLENAR"
+}
+$> null
 EOF

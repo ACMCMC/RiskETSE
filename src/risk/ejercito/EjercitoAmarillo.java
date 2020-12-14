@@ -4,24 +4,20 @@ import risk.Dado;
 
 public class EjercitoAmarillo extends EjercitoBase {
 
+    //Se suman dos unidades si se tira un único dado
+
     @Override
     public Dado[] ataque(Dado[] dados) {
-        Dado dadoMayor = dados[0];
+        Dado dado1 = dados[0];
+        int Valor=dado1.getValor();
 
-        for (Dado dado : dados) {
-            if (dado.getValor() > dadoMayor.getValor()) {
-                dadoMayor = dado;
-            }
+        if(dados.length==1){
+            Valor=Valor+2;
         }
 
-        int nuevoValor = dadoMayor.getValor() + 2;
-        Dado dadoNuevo = new Dado(nuevoValor);
+        Dado dadoNuevo=new Dado(Valor);
+        dados[0]=dadoNuevo;
 
-        for (int i = 0; i < dados.length; i++) {
-            if (dados[i].equals(dadoMayor)) {
-                dados[i] = dadoNuevo;
-            }
-        }
 
         return dados;
     }
