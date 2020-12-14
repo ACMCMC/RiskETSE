@@ -48,10 +48,10 @@ public class ComandoProcessor {
         } else if (comando.startsWith("crear ")) { // Si el comando es "crear jugador" o "crear jugadores", lo
                                                    // ejecutamos, aunque ya sepamos de antemano que va a fallar
             String partes[] = comando.split(" ");
-            if (partes.length == 4 && partes[1].equals("jugador")) {
-                menu.crearJugador(partes[2], partes[3]);
-            } else if (partes.length == 3 && partes[1].equals("jugadores")) {
+            if (partes.length == 3 && partes[1].equals("jugadores")) {
                 menu.crearJugadores(partes[2]);
+            } else if (partes.length == 3) {
+                menu.crearJugador(partes[1], partes[2]);
             } else {
                 imprimirComandoNoPermitidoOIncorrecto(comando);
             }
@@ -62,11 +62,11 @@ public class ComandoProcessor {
 
     private void procesarComandoCreandoJugadores(String comando) {
         String partes[] = comando.split(" ");
-        if (partes.length == 4 && partes[0].equals("crear") && partes[1].equals("jugador")) {
-            menu.crearJugador(partes[2], partes[3]);
-        } else if (partes.length == 3 && partes[0].equals("crear") && partes[1].equals("jugadores")) {
+        if (partes.length == 3 && partes[0].equals("crear") && partes[1].equals("jugadores")) {
             menu.crearJugadores(partes[2]);
-        } else if (Partida.getPartida().areJugadoresCreados()) {
+        } else if (partes.length == 3 && partes[0].equals("crear")) {
+            menu.crearJugador(partes[1], partes[2]);
+        } else if (Partida.getPartida().areJugadoresCreados() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.ASIGNANDO_MISIONES;
             this.procesarComando(comando);
         } else if (partes.length == 4 && partes[0].equals("asignar") && partes[1].equals("mision")) {
@@ -84,7 +84,7 @@ public class ComandoProcessor {
             menu.asignarMisionJugador(partes[2], partes[3]);
         } else if (partes.length == 3 && partes[0].equals("asignar") && partes[1].equals("misiones")) {
             menu.asignarMisiones(partes[2]);
-        } else if (Partida.getPartida().areMisionesAsignadas()) {
+        } else if (Partida.getPartida().areMisionesAsignadas() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.ASIGNANDO_PAISES;
             Partida.getPartida().asignarEjercitosSinRepartir();
             this.procesarComando(comando);
@@ -103,9 +103,8 @@ public class ComandoProcessor {
             menu.asignarPais(partes[2], partes[3]);
         } else if (partes.length == 3 && partes[0].equals("asignar") && partes[1].equals("paises")) {
             menu.asignarPaises(partes[2]);
-        } else if (Mapa.getMapa().arePaisesAsignados()) {
+        } else if (Mapa.getMapa().arePaisesAsignados() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.REPARTIENDO_EJERCITOS;
-            Partida.getPartida().asignarEjercitosSinRepartir();
             this.procesarComando(comando);
         } else {
             imprimirComandoNoPermitidoOIncorrecto(comando);
@@ -118,7 +117,10 @@ public class ComandoProcessor {
             menu.repartirEjercitos(partes[2], partes[3]);
         } else if (partes.length == 2 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
             menu.repartirEjercitos();
-        } else if (Partida.getPartida().areEjercitosRepartidos()) {
+            this.status = ComandoProcessorStatus.JUGANDO; // Ya no vamos a permitir ejecutar manualmente el reparto de ejércitos
+        } else if (!Partida.getPartida().areEjercitosRepartidos() && partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) {
+            menu.acabarTurnoReparto();
+        } else if (Partida.getPartida().areEjercitosRepartidos() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.JUGANDO;
             this.procesarComando(comando);
         } else {

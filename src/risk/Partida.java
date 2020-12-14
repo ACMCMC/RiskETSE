@@ -92,7 +92,7 @@ public class Partida {
      * @return
      */
     public Jugador getJugador(String nombre) throws ExcepcionJugador {
-        if (this.areJugadoresCreados()) {
+        if (!this.areJugadoresCreados()) {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
         }
         if (this.jugadores.containsKey(nombre)) {
@@ -108,9 +108,10 @@ public class Partida {
      * @param cartaMision
      * @param jugador
      */
-    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) {
+    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) throws ExcepcionMision {
         if (jugadores.containsValue(jugador)) { // Podría darse el caso de que el Jugador no esté en la Partida
             this.misionesJugadores.put(jugador, cartaMision);
+            jugador.addCartaMision(cartaMision);
         }
     }
 

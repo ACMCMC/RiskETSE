@@ -20,7 +20,6 @@ public class M1 extends CartaMision {
         } else {
             completada = false;
         }
-        System.out.println(completada?"Completada":"No completada");
     }
 
 }

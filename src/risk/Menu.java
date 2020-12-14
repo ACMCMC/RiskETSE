@@ -71,7 +71,7 @@ public class Menu {
                 String nombrePais = partes[1];
                 String nombreJugador = partes[0];
 
-                asignarPais(nombrePais, nombreJugador);
+                asignarPais(nombreJugador, nombrePais);
             }
             bufferedReader.close();
         } catch (FileNotFoundException e) {
@@ -89,7 +89,7 @@ public class Menu {
      * @param nombrePais
      * @param nombreJugador
      */
-    public void asignarPais(String nombrePais, String nombreJugador) {
+    public void asignarPais(String nombreJugador, String nombrePais) {
         try {
             Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(nombrePais));
@@ -174,7 +174,7 @@ public class Menu {
             Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
             Partida.getPartida().addJugador(jugador);
             io.printToOutput(
-                    OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color", color).build());
+                    OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color", Color.getColorByString(color).getNombre()).build());
         } catch (ExcepcionGeo | ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -383,6 +383,13 @@ public class Menu {
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
                 .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getNumEjercitosRearmarRestantes()).build());
+    }
+
+    public void acabarTurnoReparto() {
+        Partida.getPartida().siguienteTurno();
+        io.printToOutput(OutputBuilder.beginBuild()
+                .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build());
     }
 
     /**

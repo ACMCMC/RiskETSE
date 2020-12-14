@@ -706,6 +706,9 @@ public class Mapa {
         }
 
         Pais pais = Mapa.getMapa().getPais(nombrePais);
+        if (pais.getJugador()!=null) {
+            throw RiskExceptionEnum.PAIS_YA_ASIGNADO.get();
+        }
         pais.conquistar(Partida.getPartida().getJugador(nombreJugador));
         Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
     }

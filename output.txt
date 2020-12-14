@@ -45,13 +45,13 @@ $> crear jugadores jugadores.csv
 }
 $> crear Gondorff AZUL
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    código de error: 114,
+    descripción: "El color ya está asignado"
 }
 $> crear JT VERDE
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    código de error: 114,
+    descripción: "El color ya está asignado"
 }
 $> asignar paises paises.csv
 {
@@ -224,16 +224,16 @@ $> asignar paises paises.csv
 }
 $> asignar misiones misiones.csv
 {
-    código de error: 105,
-    descripción: "Los jugadores no están creados"
+    nombre: "Gondorff",
+    mision: "Conquistar 24 países de la preferencia del jugador"
 }
 {
-    código de error: 105,
-    descripción: "Los jugadores no están creados"
+    código de error: 116,
+    descripción: "La misión no existe"
 }
 {
-    código de error: 105,
-    descripción: "Los jugadores no están creados"
+    nombre: "Lonnegan",
+    mision: "Destruir el ejército AZUL"
 }
 $> crear JT CYAN
 {
@@ -411,252 +411,363 @@ $> asignar paises paises.csv
 }
 $> asignar mision Hooker M32
 {
-    código de error: 105,
-    descripción: "Los jugadores no están creados"
+    nombre: "Hooker",
+    mision: "Conquistar Asia y África"
 }
 $> asignar paises paises.csv
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Alaska",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Kamchatka", "Territorios del Noroeste" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "TNoroeste",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Alaska", "Ontario" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Groenlan",
+    continente: "América del Norte",
+    frontera: [ "Islandia", "Quebec", "Territorios del Noroeste" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Islandia",
+    continente: "Europa",
+    frontera: [ "Groenlandia", "Escandinavia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Escandina",
+    continente: "Europa",
+    frontera: [ "Islandia", "Siberia", "Gran Bretaña" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Siberia",
+    continente: "Asia",
+    frontera: [ "Yakustsk", "Europa del Norte", "Escandinavia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Yakustsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Siberia", "Kamchatka" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Kamchatka",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Yakustsk", "Alaska" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Alberta",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Alaska", "Ontario" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Ontario",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Quebec", "Territorios del Noroeste", "Estados Unidos del Este" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Quebec",
+    continente: "América del Norte",
+    frontera: [ "Groenlandia", "Ontario" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "GBretaña",
+    continente: "Europa",
+    frontera: [ "Europa Occidental", "Europa del Norte", "Escandinavia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "EurNorte",
+    continente: "Europa",
+    frontera: [ "Rusia", "Europa del Sur", "Siberia", "Gran Bretaña" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Gondorff",
+    pais: "Rusia",
+    continente: "Europa",
+    frontera: [ "Irkutsk", "Urales", "Yakustsk", "Europa del Norte" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Irkutsk",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Kamchatka" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "USAOeste",
+    continente: "América del Norte",
+    frontera: [ "Alberta", "Estados Unidos del Este" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "EurOcc",
+    continente: "Europa",
+    frontera: [ "Europa del Sur", "África del Norte", "Gran Bretaña" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "EurSur",
+    continente: "Europa",
+    frontera: [ "Urales", "Europa Occidental", "Europa del Norte", "Egipto" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Urales",
+    continente: "Asia",
+    frontera: [ "Rusia", "Mongolia", "Europa del Sur", "Afganistán" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Mongolia",
+    continente: "Asia",
+    frontera: [ "Irkutsk", "Japón", "Urales", "China" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Japón",
+    continente: "Asia",
+    frontera: [ "Mongolia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "AmeCentra",
+    continente: "América del Norte",
+    frontera: [ "Venezuela", "Estados Unidos del Este" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Afgan",
+    continente: "Asia",
+    frontera: [ "Urales", "China", "Oriente Medio" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "China",
+    continente: "Asia",
+    frontera: [ "Mongolia", "Afganistán", "India" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Venezuela",
+    continente: "América del Sur",
+    frontera: [ "Perú", "América Central" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "ANorte",
+    continente: "África",
+    frontera: [ "Brasil", "Europa Occidental", "Congo", "Egipto" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Hooker",
+    pais: "Egipto",
+    continente: "África",
+    frontera: [ "África Oriental", "Europa del Sur", "África del Norte", "Oriente Medio" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "OMedio",
+    continente: "Asia",
+    frontera: [ "Afganistán", "India", "Egipto" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "India",
+    continente: "Asia",
+    frontera: [ "Sureste Asiático", "China", "Oriente Medio" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "SAsiático",
+    continente: "Asia",
+    frontera: [ "India", "Indonesia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Perú",
+    continente: "América del Sur",
+    frontera: [ "Brasil", "Venezuela", "Argentina" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Brasil",
+    continente: "América del Sur",
+    frontera: [ "Perú", "África del Norte" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Congo",
+    continente: "África",
+    frontera: [ "África Oriental", "África del Norte" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "AOriental",
+    continente: "África",
+    frontera: [ "Sudáfrica", "Congo", "Egipto" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Argentina",
+    continente: "América del Sur",
+    frontera: [ "Perú" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Sudáfrica",
+    continente: "África",
+    frontera: [ "África Oriental", "Madagascar" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Madagasca",
+    continente: "África",
+    frontera: [ "Sudáfrica" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "Indonesia",
+    continente: "Oceanía",
+    frontera: [ "Sureste Asiático", "Australia Occidental", "Nueva Guinea" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "NGuinea",
+    continente: "Oceanía",
+    frontera: [ "Australia Oriental", "Indonesia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "AusOccid",
+    continente: "Oceanía",
+    frontera: [ "Australia Oriental", "Indonesia" ]
 }
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    nombre: "Lonnegan",
+    pais: "AusOrient",
+    continente: "Oceanía",
+    frontera: [ "Australia Occidental", "Nueva Guinea" ]
 }
 $> asignar pais Gondorff Rusia
 {
-    código de error: 118,
-    descripción: "Las misiones no están asignadas"
+    código de error: 113,
+    descripción: "El país ya está asignado"
 }
 $> repartir ejercitos 8 Alaska
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Alaska",
+    jugador: risk.Jugador@6dd2a02f,
+    numeroEjercitosAsignados: 8,
+    numeroEjercitosTotales: 9,
+    paisesOcupadosCont: [ { "Groenlandia", 1 }, { "Quebec", 1 }, { "Territorios del Noroeste", 1 }, { "Ontario", 1 }, { "Alaska", 9 }, { "Alberta", 1 } ]
 }
 $> repartir ejercitos 5 Groenlan
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Groenlan",
+    jugador: risk.Jugador@6dd2a02f,
+    numeroEjercitosAsignados: 5,
+    numeroEjercitosTotales: 6,
+    paisesOcupadosCont: [ { "Quebec", 1 }, { "Territorios del Noroeste", 1 }, { "Groenlandia", 6 }, { "Ontario", 1 }, { "Alaska", 9 }, { "Alberta", 1 } ]
 }
 $> repartir ejercitos 5 Urales
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
 }
 $> repartir ejercitos 3 Quebec
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Quebec",
+    jugador: risk.Jugador@6dd2a02f,
+    numeroEjercitosAsignados: 3,
+    numeroEjercitosTotales: 4,
+    paisesOcupadosCont: [ { "Quebec", 4 }, { "Territorios del Noroeste", 1 }, { "Groenlandia", 6 }, { "Ontario", 1 }, { "Alaska", 9 }, { "Alberta", 1 } ]
 }
 $> repartir ejercitos 7 Ontario
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Ontario",
+    jugador: risk.Jugador@6dd2a02f,
+    numeroEjercitosAsignados: 5,
+    numeroEjercitosTotales: 6,
+    paisesOcupadosCont: [ { "Quebec", 4 }, { "Ontario", 6 }, { "Territorios del Noroeste", 1 }, { "Groenlandia", 6 }, { "Alaska", 9 }, { "Alberta", 1 } ]
 }
 $> acabar turno
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    nombre: "Hooker",
+    numeroEjercitosRearmar: 21
 }
 $> repartir ejercitos 10 Venezuela
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Venezuela",
+    jugador: risk.Jugador@7106e68e,
+    numeroEjercitosAsignados: 10,
+    numeroEjercitosTotales: 11,
+    paisesOcupadosCont: [ { "Venezuela", 11 } ]
 }
 $> repartir ejercitos 5 ANorte
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "ANorte",
+    jugador: risk.Jugador@7106e68e,
+    numeroEjercitosAsignados: 5,
+    numeroEjercitosTotales: 6,
+    paisesOcupadosCont: [ { "Egipto", 1 }, { "África del Norte", 6 } ]
 }
 $> repartir ejercitos 6 Egipto
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Egipto",
+    jugador: risk.Jugador@7106e68e,
+    numeroEjercitosAsignados: 6,
+    numeroEjercitosTotales: 7,
+    paisesOcupadosCont: [ { "Egipto", 7 }, { "África del Norte", 6 } ]
 }
 $> repartir ejercitos 5 India
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    código de error: 110,
+    descripción: "El país no pertenece al jugador"
 }
 $> acabar turno
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    nombre: "Lonnegan",
+    numeroEjercitosRearmar: 21
 }
 $> repartir ejercitos 15 Indonesia
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "Indonesia",
+    jugador: risk.Jugador@7eda2dbb,
+    numeroEjercitosAsignados: 15,
+    numeroEjercitosTotales: 16,
+    paisesOcupadosCont: [ { "Nueva Guinea", 1 }, { "Australia Occidental", 1 }, { "Australia Oriental", 1 }, { "Indonesia", 16 } ]
 }
 $> repartir ejercitos 6 NGuinea
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    pais: "NGuinea",
+    jugador: risk.Jugador@7eda2dbb,
+    numeroEjercitosAsignados: 6,
+    numeroEjercitosTotales: 7,
+    paisesOcupadosCont: [ { "Australia Occidental", 1 }, { "Australia Oriental", 1 }, { "Nueva Guinea", 7 }, { "Indonesia", 16 } ]
 }
 $> acabar turno
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    nombre: "Gondorff",
+    numeroEjercitosRearmar: 4
 }
 $> repartir ejercitos 4 Islandia
 {
@@ -665,53 +776,12 @@ $> repartir ejercitos 4 Islandia
 }
 $> describir pais USAEste
 {
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
+    nombre: "Estados Unidos del Este",
+    abreviatura: "USAEste",
+    continente: "América del Norte",
+    frontera: [ "Estados Unidos del Oeste", "Ontario", "América Central" ],
+    jugador: "Hooker",
+    numeroEjercitos: 1,
+    numeroVecesOcupado: 1
 }
 $> atacar Ontario 5x1x1 USAEste 4
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> describir pais USAEste
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> describir pais Ontario
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> rearmar Alaska 4 Alberta
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> asignar carta Infantería&Alaska
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> atacar GBretaña 3 EurSur 4
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> acabar turno
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> describir jugador Gondorff
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> describir continente AméricaNorte
-{
-    código de error: 99,
-    descripción: "Comando no permitido en este momento"
-}
-$> null
-EOF
