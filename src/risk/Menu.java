@@ -206,7 +206,7 @@ public class Menu {
                     .filter(p -> p.getJugador().equals(pais.getJugador()))
                     .map(p -> "{ \"" + p.getNombreHumano() + "\", " + Integer.toString(p.getNumEjercitos()) + " }")
                     .collect(Collectors.toSet());
-            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais).autoAdd("jugador", pais.getJugador())
+            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais).autoAdd("jugador", pais.getJugador().getNombre())
                     .autoAdd("numeroEjercitosAsignados", numeroEjercitosAsignados)
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()
                     .autoAdd("paisesOcupadosCont", setPaisesOcupadosContinente).build();
@@ -360,8 +360,7 @@ public class Menu {
                     .autoAdd("color", jugador.getColor().getNombre()).autoAdd("mision", "RELLENAR")
                     .autoAdd("numeroEjercitos", jugador.getTotalEjercitos()).autoAdd("paises", jugador.getPaises())
                     .autoAdd("continentes",
-                            jugador.getPaises().stream().map(p -> p.getContinente()).distinct()
-                                    .collect(Collectors.toSet()))
+                            jugador.getContinentesOcupadosExcusivamentePorJugador())
                     .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR").build();
             io.printToOutput(output);
         } catch (ExcepcionJugador e) {
@@ -389,7 +388,7 @@ public class Menu {
         Partida.getPartida().siguienteTurno();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build()); // TODO: no sería numeroEjercitosRepartir?
     }
 
     /**
@@ -447,11 +446,11 @@ public class Menu {
             } else {
                 continenteConquistado = Optional.empty();
             }
-            io.printToOutput(OutputBuilder.beginBuild()
+            io.printToOutput(OutputBuilder.beginBuild().disableQuoting()
                     .autoAdd("dadosAtaque",
-                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("dadosDefensa",
-                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
                         {
                             add(ejercitosPaisAtaqueAntes);
@@ -462,7 +461,7 @@ public class Menu {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());
                         }
-                    }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
+                    }).enableQuoting().autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
                     .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
                     .autoAdd("continenteConquistado",
                             continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))

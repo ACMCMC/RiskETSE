@@ -15,9 +15,7 @@ public class EjercitoAmarillo extends EjercitoBase {
             Valor=Valor+2;
         }
 
-        Dado dadoNuevo=new Dado(Valor);
-        dados[0]=dadoNuevo;
-
+        dados[0].setValor(Valor);
 
         return dados;
     }
