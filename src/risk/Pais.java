@@ -29,6 +29,7 @@ public class Pais {
         this.setContinente(continente);
         this.jugador = null;
         this.ejercitos = new HashSet<>();
+        this.vecesConquistado = -1;
         addToContinente();
     }
 
