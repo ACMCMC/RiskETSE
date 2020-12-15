@@ -22,13 +22,7 @@ public class EjercitoVerde extends EjercitoCompuesto {
             nuevoValor = nuevoValor + 1;
         }
 
-        Dado dadoNuevo = new Dado(nuevoValor);
-
-        for (int i = 0; i < dados.length; i++) {
-            if (dados[i].equals(dadoMayor)) {
-                dados[i] = dadoNuevo;
-            }
-        }
+        dadoMayor.setValor(nuevoValor);
 
         return dados;
     }

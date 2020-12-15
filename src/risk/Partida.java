@@ -172,14 +172,14 @@ public class Partida {
         Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
         Dado dadoAtacante;
         Dado dadoDefensor;
-        int ejercitosAtacados = 0; // El número de ejércitos con los que ataca el atacante, para después saber
+        int ejercitosAtacados = dadosAtacante.size(); // El número de ejércitos con los que ataca el atacante, para después saber
                                    // cuántos hay que poner en el país defensor si es conquistado
 
-        procesarDados(atacante, dadosAtacante, defensor, dadosDefensor);
+        mapaValores.put(atacante, dadosAtacante.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
+                                                                                                // devolverlos después
+        mapaValores.put(defensor, dadosDefensor.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet()));
 
-        mapaValores.put(atacante, new HashSet<Dado>(dadosAtacante)); // Copiamos los valores de los Sets para
-                                                                     // devolverlos después
-        mapaValores.put(defensor, new HashSet<Dado>(dadosDefensor));
+        procesarDadosAtacante(atacante, dadosAtacante);
 
         while (!dadosAtacante.isEmpty() && !dadosDefensor.isEmpty() && !(defensor.getNumEjercitos() == 0)) {
             dadoAtacante = dadosAtacante.stream().max(Comparator.comparingInt(Dado::getValor)).get();
@@ -188,7 +188,6 @@ public class Partida {
             dadosDefensor.remove(dadoDefensor);
             if (dadoAtacante.getValor() > dadoDefensor.getValor()) {
                 defensor.removeEjercito();
-                ejercitosAtacados++;
             } else {
                 atacante.removeEjercito();
             }
@@ -200,6 +199,7 @@ public class Partida {
                 Ejercito ejercitoTrasladar = atacante.getEjercitos().iterator().next();
                 defensor.addEjercito(ejercitoTrasladar);
                 atacante.removeEjercito(ejercitoTrasladar);
+                ejercitosAtacados--;
             }
         }
         return mapaValores;
@@ -210,17 +210,13 @@ public class Partida {
      * @param dadosAtacante
      * @param dadosDefensor
      */
-    private void procesarDados(Pais atacante, Set<Dado> dadosAtacante, Pais defensor, Set<Dado> dadosDefensor) {
+    private void procesarDadosAtacante(Pais atacante, Set<Dado> dadosAtacante) {
         Ejercito ejercitoAtacante = EjercitoFactory.getEjercito(atacante.getJugador().getColor());
-        Ejercito ejercitoDefensor = EjercitoFactory.getEjercito(defensor.getJugador().getColor());
 
         Dado arrayDadosAtacanteProcesado[] = ejercitoAtacante.ataque((Dado[]) dadosAtacante.toArray(new Dado[0]));
-        Dado arrayDadosDefensorProcesado[] = ejercitoDefensor.ataque((Dado[]) dadosDefensor.toArray(new Dado[0]));
 
         dadosAtacante.clear();
         Collections.addAll(dadosAtacante, arrayDadosAtacanteProcesado);
-        dadosDefensor.clear();
-        Collections.addAll(dadosDefensor, arrayDadosDefensorProcesado);
     }
 
     public Map<Pais, Set<Dado>> atacar(Pais atacante, Pais defensor) throws ExcepcionRISK {

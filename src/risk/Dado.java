@@ -16,4 +16,13 @@ public class Dado {
     public int getValor() {
         return this.valor;
     }
+
+    public void setValor(int newValor) {
+        this.valor = newValor;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(valor);
+    }
 }
