@@ -50,6 +50,13 @@ public class Pais {
     }
 
     /**
+     * Indica si hay algun Ejercito en este Pais
+     */
+    public boolean hasEjercitos() {
+        return !this.ejercitos.isEmpty();
+    }
+
+    /**
      * Devuelve un Set de los Ejercitos de este Pais
      * 
      * @return un HashSet con los Ejercitos del Pais, pero no el HashSet original
@@ -64,6 +71,9 @@ public class Pais {
      * @param ejercito
      */
     public void addEjercito(Ejercito ejercito) {
+        if (this.ejercitos.stream().anyMatch(e -> !e.getClass().equals(ejercito.getClass()))) { // Si el tipo ejército que añadimos no coincide con el de alguno de los que ya hay, lanzamos una excepción (Por ejemplo, si intento añadir un EjercitoVerde a un Pais que tenga ya un EjercitoRojo)
+            throw new IllegalArgumentException("Se ha intentado añadir un ejército del tipo incorrecto al país");
+        }
         this.ejercitos.add(ejercito);
         notificarCambioPais();
     }
@@ -98,6 +108,9 @@ public class Pais {
      * @param conquistador
      */
     public void conquistar(Jugador conquistador) {
+        if (!this.getEjercitos().isEmpty()) {
+            throw new IllegalStateException("El país que se intenta conquistar aún tiene ejércitos");
+        }
         this.setJugador(conquistador);
         this.vecesConquistado++;
         notificarCambioPais();
