@@ -37,7 +37,6 @@ public class Partida {
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
     private Map<Jugador, CartaMision> misionesJugadores;
-    private int numEjercitosRearmarJugadorActualRestantes;
 
     private Partida() {
         this.jugadores = new HashMap<>();
@@ -140,7 +139,7 @@ public class Partida {
      */
     public void asignarEjercitosSinRepartir() {
         this.getJugadores().forEach(entry -> {
-            entry.setEjercitosSinRepartir(50 - (5 * this.jugadores.size())); // 50 - (5 * numJugadores) es una fórmula
+            entry.setEjercitosRearme(50 - (5 * this.jugadores.size())); // 50 - (5 * numJugadores) es una fórmula
             // que hace que para 3 jugadores, tengamos
             // 35 ejércitos, y lo del pdf en general
         });
@@ -254,7 +253,14 @@ public class Partida {
      */
     public void siguienteTurno() {
         this.colaJugadores.add(this.colaJugadores.poll());
-        numEjercitosRearmarJugadorActualRestantes = getJugadorActual().calcularNumEjercitosRearmar();
+        getJugadorActual().setEjercitosRearme(getJugadorActual().calcularNumEjercitosRearmar());
+    }
+
+    /**
+     * Avanza el turno de reparto (no recalcula el número de ejércitos que le tocan al jugador)
+     */
+    public void siguienteTurnoDeReparto() {
+        this.colaJugadores.add(this.colaJugadores.poll());
     }
 
     /**
@@ -271,6 +277,13 @@ public class Partida {
     }
 
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
+        if (!getJugadorActual().equals(pais.getJugador())) { // Si el país no pertenece al jugador actual
+            throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
+        }
+        return pais.getJugador().asignarEjercitosAPais(numero, pais);
+    }
+
+    public int rearmarEjercitos(int numero, Pais pais) throws ExcepcionJugador {
         if (!getJugadorActual().equals(pais.getJugador())) { // Si el país no pertenece al jugador actual
             throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
@@ -295,14 +308,7 @@ public class Partida {
      * Indica si todos los jugadores han repartido sus ejércitos o no
      */
     public boolean areEjercitosRepartidos() {
-        return (this.getJugadores().stream().allMatch(j -> j.getEjercitosSinRepartir()==0));
-    }
-
-    /**
-     * Devuelve los ejércitos de rearme restantes para el jugador del turno actual
-     */
-    public int getNumEjercitosRearmarRestantes() {
-        return numEjercitosRearmarJugadorActualRestantes;
+        return (this.getJugadores().stream().allMatch(j -> !j.hasEjercitosSinRepartir()));
     }
 
     /**
@@ -437,7 +443,7 @@ public class Partida {
         }
 
         tuplasFiltradas.forEach(tupla -> {
-            int numEjercitos = (int) Math.round(((float) tupla.getJugador().getEjercitosSinRepartir())
+            int numEjercitos = (int) Math.round(((float) tupla.getJugador().getNumEjercitosRearme())
                     / (factorDivision.apply(tupla) * (float) tupla.getNumPaises())); // Calculo el número de ejércitos
                                                                                      // que hay que asignar a cada uno
                                                                                      // de los países
@@ -486,7 +492,7 @@ public class Partida {
             // fronteras.
 
             tuplasFiltradas.forEach(tupla -> {
-                int numEjercitos = (int) Math.round(((float) tupla.getJugador().getEjercitosSinRepartir())
+                int numEjercitos = (int) Math.round(((float) tupla.getJugador().getNumEjercitosRearme())
                         / (factorDivision.apply(tupla) * (float) tupla.getNumPaises())); // Calculo el número de
                                                                                          // ejércitos que hay que
                                                                                          // asignar a cada uno de los
