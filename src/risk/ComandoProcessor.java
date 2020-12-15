@@ -2,7 +2,7 @@ package risk;
 
 public class ComandoProcessor {
     private enum ComandoProcessorStatus {
-        CREANDO_MAPA, CREANDO_JUGADORES, ASIGNANDO_MISIONES, ASIGNANDO_PAISES, REPARTIENDO_EJERCITOS, JUGANDO;
+        CREANDO_MAPA, CREANDO_JUGADORES, ASIGNANDO_MISIONES, ASIGNANDO_PAISES, REPARTIENDO_EJERCITOS, JUGANDO_CAMBIANDO_CARTAS, JUGANDO_REPARTIENDO_EJERCITOS, JUGANDO, JUGANDO_REARMANDO;
     }
 
     private ComandoProcessorStatus status;
@@ -24,6 +24,10 @@ public class ComandoProcessor {
             procesarComandoAsignandoPaises(comando);
         } else if (status.equals(ComandoProcessorStatus.REPARTIENDO_EJERCITOS)) {
             procesarComandoRepartiendoEjercitos(comando);
+        } else if (status.equals(ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS)) {
+            procesarComandoJugandoCambiandoCartas(comando);
+        } else if (status.equals(ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS)) {
+            procesarComandoJugandoRepartiendoEjercitos(comando);
         } else if (status.equals(ComandoProcessorStatus.JUGANDO)) {
             procesarComandoJugando(comando);
         }
@@ -110,16 +114,43 @@ public class ComandoProcessor {
             imprimirComandoNoPermitidoOIncorrecto(comando);
         }
     }
-
+    
     private void procesarComandoRepartiendoEjercitos(String comando) {
         String partes[] = comando.split(" ");
         if (partes.length == 4 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
             menu.repartirEjercitos(partes[2], partes[3]);
         } else if (partes.length == 2 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
             menu.repartirEjercitos();
-            this.status = ComandoProcessorStatus.JUGANDO; // Ya no vamos a permitir ejecutar manualmente el reparto de ejércitos
+            this.status = ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS; // Ya no vamos a permitir ejecutar manualmente el reparto de ejércitos
         } else if (!Partida.getPartida().areEjercitosRepartidos() && partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) {
             menu.acabarTurnoReparto();
+        } else if (Partida.getPartida().areEjercitosRepartidos() && partes.length == 2 && partes[0].equals("acabar") && partes[1].equals("turno")) {
+            this.status = ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS;
+            menu.acabarTurno();
+        } else {
+            imprimirComandoNoPermitidoOIncorrecto(comando);
+        }
+    }
+    
+    private void procesarComandoJugandoCambiandoCartas(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 5 && partes[0].equals("cambiar") && partes[1].equals("cartas")) {
+            menu.cambiarCartas(partes[2], partes[3], partes[4]);
+        } else if (partes.length == 3 && partes[0].equals("cambiar") && partes[1].equals("cartas") && partes[2].equals("todas")) {
+            this.status = ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS;
+            menu.cambiarCartasTodas();
+        } else if (comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
+            this.status = ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS;
+            this.procesarComando(comando);
+        } else {
+            imprimirComandoNoPermitidoOIncorrecto(comando);
+        }
+    }
+    
+    private void procesarComandoJugandoRepartiendoEjercitos(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 4 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
+            menu.repartirEjercitos(partes[2], partes[3]);
         } else if (Partida.getPartida().areEjercitosRepartidos() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.JUGANDO;
             this.procesarComando(comando);
@@ -127,20 +158,20 @@ public class ComandoProcessor {
             imprimirComandoNoPermitidoOIncorrecto(comando);
         }
     }
-
+    
     private void procesarComandoJugando(String comandoCompleto) {
         String partes[] = comandoCompleto.split(" ");
         String comando = partes[0];
         switch (comando) {
             case "ver":
-                if (partes.length == 2) {
-                    if (partes[1].equals("mapa")) {
-                        menu.imprimirMapa();
-                    }
+            if (partes.length == 2) {
+                if (partes[1].equals("mapa")) {
+                    menu.imprimirMapa();
                 }
-                break;
+            }
+            break;
             case "obtener":
-                if (partes.length == 3) {
+            if (partes.length == 3) {
                     if (partes[1].equals("color")) {
                         menu.obtenerColor(partes[2]);
                     } else if (partes[1].equals("frontera")) {
@@ -185,6 +216,7 @@ public class ComandoProcessor {
                 break;
             case "acabar":
                 if (partes.length == 2 && partes[1].equals("turno")) {
+                    status=ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS;
                     menu.acabarTurno();
                 } else {
                     menu.comandoIncorrecto();

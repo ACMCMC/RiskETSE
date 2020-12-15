@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import risk.cartasmision.CartaMision;
+import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionMision;
@@ -16,15 +17,15 @@ import risk.riskexception.RiskExceptionEnum;
 public class Jugador {
     private String nombre;
     private Color color;
-    private int ejercitosSinRepartir; // Los ejércitos que tiene el jugador, pero no están repartidos. Los que sí
-                                      // están repartidos se almacenan en el país en sí.
     private Set<CartaMision> setCartasMision;
+    private Set<Ejercito> ejercitosRearme;
 
     public Jugador(String nombre, Color color) {
+        this.setCartasMision = new HashSet<>();
+        this.ejercitosRearme = new HashSet<>();
         this.setNombre(nombre);
         this.setColor(color);
-        this.setEjercitosSinRepartir(0);
-        this.setCartasMision = new HashSet<>();
+        this.setEjercitosRearme(0);
     }
 
     /**
@@ -35,23 +36,23 @@ public class Jugador {
      * @return el número de ejércitos que se han asignado
      */
     public int asignarEjercitosAPais(int numEjercitos, Pais pais) throws ExcepcionJugador {
-        if (this.getEjercitosSinRepartir() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la
+        if (this.getNumEjercitosRearme() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la
                                                               // asignación
             for (int i = 0; i < numEjercitos; i++) {
                 pais.addEjercito(EjercitoFactory.getEjercito(pais.getJugador().getColor()));
             }
-            this.setEjercitosSinRepartir(this.getEjercitosSinRepartir() - numEjercitos);
+            this.setEjercitosRearme(this.getNumEjercitosRearme() - numEjercitos);
             return (numEjercitos);
-        } else if (this.getEjercitosSinRepartir() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí
+        } else if (this.getNumEjercitosRearme() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí
                                                          // podemos asignar todos los que quedan
-            int ejercitosSinRepartir = this.getEjercitosSinRepartir(); // No es realmente necesario, pero me parece
+            int ejercitosSinRepartir = this.getNumEjercitosRearme(); // No es realmente necesario, pero me parece
                                                                        // buena práctica porque si modificásemos el
                                                                        // número de ejércitos sin repartir dentro del
                                                                        // for, entonces habría problemas
             for (int i = 0; i < ejercitosSinRepartir; i++) {
                 pais.addEjercito(EjercitoFactory.getEjercito(pais.getJugador().getColor()));
             }
-            this.setEjercitosSinRepartir(0);
+            this.setEjercitosRearme(0);
             return (ejercitosSinRepartir);
         } else { // No hay ejércitos disponibles
             throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();
@@ -59,21 +60,21 @@ public class Jugador {
     }
 
     /**
-     * Establece el número de ejércitos sin repartir de un jugador
-     * 
-     * @param ejercitosSinRepartir
+     * Devuelve el número de ejércitos de rearme que corresponden a este Jugador
      */
-    public void setEjercitosSinRepartir(int ejercitosSinRepartir) {
-        this.ejercitosSinRepartir = ejercitosSinRepartir;
+    public int getNumEjercitosRearme() {
+        return this.ejercitosRearme.size();
     }
 
     /**
-     * Devuelve el número de ejércitos que tiene el jugador, sin repartir
-     * 
-     * @return
+     * Asigna el número de ejércitos de rearme especificados a este jugador
      */
-    public int getEjercitosSinRepartir() {
-        return this.ejercitosSinRepartir;
+    public void setEjercitosRearme(int num) {
+        this.ejercitosRearme.clear();
+        while (num > 0) {
+            this.ejercitosRearme.add(EjercitoFactory.getEjercito(this.getColor()));
+            num--;
+        }
     }
 
     /**
@@ -178,6 +179,15 @@ public class Jugador {
     }
 
     /**
+     * Devuelve una CartaMision del Jugador
+     * 
+     * @return
+     */
+    public CartaMision getCartaMision() {
+        return this.setCartasMision.iterator().next();
+    }
+
+    /**
      * Devuelve {@code true} si el jugador tiene la CartaMision
      * 
      * @param cartaMision
@@ -185,6 +195,16 @@ public class Jugador {
      */
     public boolean hasMision(CartaMision cartaMision) {
         return this.setCartasMision.contains(cartaMision);
+    }
+
+    /**
+     * Devuelve {@code true} si el jugador tiene ejércitos sin repartir
+     * 
+     * @param cartaMision
+     * @return
+     */
+    public boolean hasEjercitosSinRepartir() {
+        return !ejercitosRearme.isEmpty();
     }
 
     @Override

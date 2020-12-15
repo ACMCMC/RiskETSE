@@ -94,8 +94,8 @@ public class Menu {
             Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(nombrePais));
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano()).autoAdd("frontera", fronterasPais)
-                    .build());
+                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano())
+                    .autoAdd("frontera", fronterasPais).build());
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
@@ -173,8 +173,8 @@ public class Menu {
         try {
             Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
             Partida.getPartida().addJugador(jugador);
-            io.printToOutput(
-                    OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color", Color.getColorByString(color).getNombre()).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
+                    .autoAdd("color", Color.getColorByString(color).getNombre()).build());
         } catch (ExcepcionGeo | ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -192,6 +192,20 @@ public class Menu {
     }
 
     /**
+     * Comando "cambiar cartas <id1> <id2> <id3>"
+     */
+    public void cambiarCartas(String carta1, String carta2, String carta3) {
+
+    }
+
+    /**
+     * Comando "cambiar cartas todas"
+     */
+    public void cambiarCartasTodas() {
+
+    }
+
+    /**
      * Manualmente, se asignan X ejercitos a un país
      * 
      * @param numero
@@ -206,10 +220,11 @@ public class Menu {
                     .filter(p -> p.getJugador().equals(pais.getJugador()))
                     .map(p -> "{ \"" + p.getNombreHumano() + "\", " + Integer.toString(p.getNumEjercitos()) + " }")
                     .collect(Collectors.toSet());
-            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais).autoAdd("jugador", pais.getJugador().getNombre())
+            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais)
+                    .autoAdd("jugador", pais.getJugador().getNombre())
                     .autoAdd("numeroEjercitosAsignados", numeroEjercitosAsignados)
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()
-                    .autoAdd("paisesOcupadosCont", setPaisesOcupadosContinente).build();
+                    .autoAdd("paisesOcupadosContinente", setPaisesOcupadosContinente).build();
             io.printToOutput(output);
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
@@ -356,13 +371,16 @@ public class Menu {
     public void describirJugador(String nombre) {
         try {
             Jugador jugador = Partida.getPartida().getJugador(nombre);
-            String output = OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
-                    .autoAdd("color", jugador.getColor().getNombre()).autoAdd("mision", "RELLENAR")
-                    .autoAdd("numeroEjercitos", jugador.getTotalEjercitos()).autoAdd("paises", jugador.getPaises())
-                    .autoAdd("continentes",
-                            jugador.getContinentesOcupadosExcusivamentePorJugador())
-                    .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR").build();
-            io.printToOutput(output);
+            OutputBuilder output = OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color",
+                    jugador.getColor().getNombre());
+            if (jugador.equals(Partida.getPartida().getJugadorActual())) { // Mostramos la misión solo si es el jugador
+                                                                           // actual
+                output.autoAdd("mision", jugador.getCartaMision());
+            }
+            output.autoAdd("numeroEjercitos", jugador.getTotalEjercitos()).autoAdd("paises", jugador.getPaises())
+                    .autoAdd("continentes", jugador.getContinentesOcupadosExcusivamentePorJugador())
+                    .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR");
+            io.printToOutput(output.build());
         } catch (ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -377,18 +395,24 @@ public class Menu {
         describirJugador(Partida.getPartida().getJugadorActual().getNombre());
     }
 
+    /**
+     * Acaba un turno durante la partida
+     */
     public void acabarTurno() {
         Partida.getPartida().siguienteTurno();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getNumEjercitosRearmarRestantes()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme()).build());
     }
 
+    /**
+     * Durante el reparto inicial de ejércitos, acaba un turno de reparto
+     */
     public void acabarTurnoReparto() {
-        Partida.getPartida().siguienteTurno();
+        Partida.getPartida().siguienteTurnoDeReparto();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build()); // TODO: no sería numeroEjercitosRepartir?
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme()).build());
     }
 
     /**
