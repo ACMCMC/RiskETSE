@@ -389,7 +389,7 @@ public class Menu {
         Partida.getPartida().siguienteTurno();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build()); // TODO: no sería numeroEjercitosRepartir?
     }
 
     /**
@@ -447,11 +447,11 @@ public class Menu {
             } else {
                 continenteConquistado = Optional.empty();
             }
-            io.printToOutput(OutputBuilder.beginBuild()
+            io.printToOutput(OutputBuilder.beginBuild().disableQuoting()
                     .autoAdd("dadosAtaque",
-                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("dadosDefensa",
-                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
                         {
                             add(ejercitosPaisAtaqueAntes);
@@ -462,7 +462,7 @@ public class Menu {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());
                         }
-                    }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
+                    }).enableQuoting().autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
                     .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
                     .autoAdd("continenteConquistado",
                             continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
