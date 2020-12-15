@@ -206,7 +206,7 @@ public class Menu {
                     .filter(p -> p.getJugador().equals(pais.getJugador()))
                     .map(p -> "{ \"" + p.getNombreHumano() + "\", " + Integer.toString(p.getNumEjercitos()) + " }")
                     .collect(Collectors.toSet());
-            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais).autoAdd("jugador", pais.getJugador())
+            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais).autoAdd("jugador", pais.getJugador().getNombre())
                     .autoAdd("numeroEjercitosAsignados", numeroEjercitosAsignados)
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()
                     .autoAdd("paisesOcupadosCont", setPaisesOcupadosContinente).build();
@@ -360,8 +360,7 @@ public class Menu {
                     .autoAdd("color", jugador.getColor().getNombre()).autoAdd("mision", "RELLENAR")
                     .autoAdd("numeroEjercitos", jugador.getTotalEjercitos()).autoAdd("paises", jugador.getPaises())
                     .autoAdd("continentes",
-                            jugador.getPaises().stream().map(p -> p.getContinente()).distinct()
-                                    .collect(Collectors.toSet()))
+                            jugador.getContinentesOcupadosExcusivamentePorJugador())
                     .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR").build();
             io.printToOutput(output);
         } catch (ExcepcionJugador e) {
