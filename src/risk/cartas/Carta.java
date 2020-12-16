@@ -13,7 +13,7 @@ public abstract class Carta {
     }
 
     public String getTipo() {
-        return this.getClass().getName();
+        return this.getClass().getSimpleName();
     }
 
     public abstract int obtenerRearme();

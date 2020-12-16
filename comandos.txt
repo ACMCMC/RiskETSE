@@ -31,7 +31,7 @@ atacar Ontario 5x1x1 USAEste 4
 describir pais USAEste
 describir pais Ontario
 rearmar Alaska 4 Alberta
-asignar carta Infantería&Alaska
+asignar carta Granadero&Alaska
 atacar GBretaña 3 EurSur 4
 acabar turno
 describir jugador Gondorff
