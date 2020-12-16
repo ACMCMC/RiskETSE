@@ -265,7 +265,7 @@ public class Jugador {
         num_ejercitos_obtenidos += cambioCartas.getCarta2().obtenerRearme();
         num_ejercitos_obtenidos += cambioCartas.getCarta3().obtenerRearme();
         num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta1());
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta2()
+        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta2());
         num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta3());
         return num_ejercitos_obtenidos;
     }
