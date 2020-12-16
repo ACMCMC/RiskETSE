@@ -165,8 +165,6 @@ public class Menu {
 
     /**
      * Crea un jugador a partir de un nombre y un color
-     * 
-     * @param file
      */
     public void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
@@ -199,7 +197,7 @@ public class Menu {
     }
 
     /**
-     * Comando "cambiar cartas <id1> <id2> <id3>"
+     * Comando "cambiar cartas id1 id2 id3"
      */
     public void cambiarCartas(String carta1, String carta2, String carta3) {
 
@@ -395,8 +393,6 @@ public class Menu {
 
     /**
      * Muestra las características del jugador que tiene el turno actual
-     * 
-     * @param nombre
      */
     public void describirJugadorActual() {
         describirJugador(Partida.getPartida().getJugadorActual().getNombre());

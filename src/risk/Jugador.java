@@ -153,6 +153,10 @@ public class Jugador {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Calcula el número de ejércitos de rearmar que corresponde inicialmente en este turno a este Jugador, sin perjuicio de que se pueda incrementar al cambiar cartas
+     * @return
+     */
     public int calcularNumEjercitosRearmar() {
         int numEjercitosRearmar = this.getPaises().size() / 3; // El jugador recibe el número de ejércitos que es el
                                                                // resultado de dividir el número de países que
@@ -176,8 +180,6 @@ public class Jugador {
 
     /**
      * Devuelve TRUE si el Jugador ha completado alguna de sus misiones
-     * 
-     * @return
      */
     public boolean jugadorHaCompletadoMision() {
         return this.setCartasMision.stream().allMatch(m -> m.isCompletada());
@@ -198,8 +200,6 @@ public class Jugador {
 
     /**
      * Devuelve el Set de CartaMision del Jugador
-     * 
-     * @return
      */
     public Set<CartaMision> getCartasMision() {
         return this.setCartasMision;
@@ -207,8 +207,6 @@ public class Jugador {
 
     /**
      * Devuelve una CartaMision del Jugador
-     * 
-     * @return
      */
     public CartaMision getCartaMision() {
         return this.setCartasMision.iterator().next();
@@ -218,7 +216,6 @@ public class Jugador {
      * Devuelve {@code true} si el jugador tiene la CartaMision
      * 
      * @param cartaMision
-     * @return
      */
     public boolean hasMision(CartaMision cartaMision) {
         return this.setCartasMision.contains(cartaMision);
@@ -226,9 +223,6 @@ public class Jugador {
 
     /**
      * Devuelve {@code true} si el jugador tiene ejércitos sin repartir
-     * 
-     * @param cartaMision
-     * @return
      */
     public boolean hasEjercitosSinRepartir() {
         return !ejercitosRearme.isEmpty();
