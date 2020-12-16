@@ -49,7 +49,7 @@ public class ComandoProcessor {
             menu.anadirFronterasIndirectas(); // Esto hay que hacerlo manualmente, porque la clase Mapa no sabe cuáles
                                               // son
             // las fronteras indirectas
-            menu.imprimirMapa(); // Imprimimos el mapa una vez creado
+            menu.verMapa(); // Imprimimos el mapa una vez creado
             this.status = ComandoProcessorStatus.CREANDO_JUGADORES;
         } else if (comando.startsWith("crear ")) { // Si el comando es "crear jugador" o "crear jugadores", lo
                                                    // ejecutamos, aunque ya sepamos de antemano que va a fallar
@@ -141,6 +141,8 @@ public class ComandoProcessor {
         } else if (partes.length == 3 && partes[0].equals("cambiar") && partes[1].equals("cartas") && partes[2].equals("todas")) {
             this.status = ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS;
             menu.cambiarCartasTodas();
+        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
+            this.procesarComandoSiemprePermitidoDuranteJuego(comando);
         } else if (comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS;
             this.procesarComando(comando);
@@ -153,6 +155,8 @@ public class ComandoProcessor {
         String partes[] = comando.split(" ");
         if (partes.length == 4 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
             menu.repartirEjercitos(partes[2], partes[3]);
+        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
+            this.procesarComandoSiemprePermitidoDuranteJuego(comando);
         } else if (Partida.getPartida().areEjercitosRepartidos() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.JUGANDO;
             this.procesarComando(comando);
@@ -163,31 +167,36 @@ public class ComandoProcessor {
 
     private void procesarComandoJugandoRearmando(String comando) {
         String partes[] = comando.split(" ");
-        if (partes.length == 4 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
-            //
-        } else if (Partida.getPartida().areEjercitosRepartidos() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
-            //
+        if (partes.length == 4 && partes[0].equals("rearmar")) {
+            menu.rearmar(partes[1], partes[2], partes[3]);
+        } else if (partes.length == 3 && partes[0].equals("asignar") && partes[1].equals("carta")) {
+            menu.asignarCarta(partes[2]);
+        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
+            this.procesarComandoSiemprePermitidoDuranteJuego(comando);
+        } else if (comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
+            this.status = ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS;
+            this.procesarComando(comando);
         } else {
             imprimirComandoNoPermitidoOIncorrecto(comando);
         }
     }
     
-    private void procesarComandoJugando(String comandoCompleto) {
-        String partes[] = comandoCompleto.split(" ");
-        String comando = partes[0];
-        switch (comando) {
+    private void procesarComandoJugando(String comando) {
+        String partes[] = comando.split(" ");
+        String com = partes[0];
+        switch (com) {
             case "rearmar":
                 if (partes.length == 4) {
                     this.status = ComandoProcessorStatus.JUGANDO_REARMANDO;
                     menu.rearmar(partes[1], partes[2], partes[3]);
                 } else {
-                    imprimirComandoNoPermitidoOIncorrecto(comandoCompleto);
+                    imprimirComandoNoPermitidoOIncorrecto(comando);
                 }
             break;
             case "ver":
             if (partes.length == 2) {
                 if (partes[1].equals("mapa")) {
-                    menu.imprimirMapa();
+                    menu.verMapa();
                 }
             }
             break;
@@ -240,12 +249,62 @@ public class ComandoProcessor {
                     status=ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS;
                     menu.acabarTurno();
                 } else {
-                    menu.comandoIncorrecto();
+                    imprimirComandoNoPermitidoOIncorrecto(comando);
                 }
                 break;
+            case "asignar":
+                if (partes.length==3 && partes[1].equals("carta")) {
+                    menu.asignarCarta(partes[2]);
+                } else {
+                    imprimirComandoNoPermitidoOIncorrecto(comando);
+                }
+            break;
             default:
-                imprimirComandoNoPermitidoOIncorrecto(comandoCompleto);
+                imprimirComandoNoPermitidoOIncorrecto(comando);
         }
+    }
+
+    public void procesarComandoSiemprePermitidoDuranteJuego(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 3 && partes[0].equals("describir")) {
+            if (partes[1].equals("jugador")) {
+                menu.describirJugador(partes[2]);
+            }
+            if (partes[1].equals("pais")) {
+                menu.describirPais(partes[2]);
+            }
+            if (partes[1].equals("continente")) {
+                menu.describirContinente(partes[2]);
+            }
+        }
+        if (partes.length==2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
+            menu.verMapa();
+        }
+        if (partes.length==1 && partes[0].equals("jugador")) {
+            menu.describirJugadorActual();
+        }
+    }
+
+    public boolean isComandoSiemprePermitidoDuranteJuego(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 3 && partes[0].equals("describir")) {
+            if (partes[1].equals("jugador")) {
+                return true;
+            }
+            if (partes[1].equals("pais")) {
+                return true;
+            }
+            if (partes[1].equals("continente")) {
+                return true;
+            }
+        }
+        if (partes.length==2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
+            return true;
+        }
+        if (partes.length==1 && partes[0].equals("jugador")) {
+            return true;
+        }
+        return false;
     }
 
     public boolean comprobarSiComandoEsSintacticamenteCorrecto(String comando) {
@@ -303,7 +362,7 @@ public class ComandoProcessor {
                             return true;
                         } else if (partesComando[1].equals("paises")) {
                             return true;
-                        } else if (partesComando[1].equals("cartas")) {
+                        } else if (partesComando[1].equals("carta")) {
                             return true;
                         } else {
                             return true; // En cualquier caso va a ser correcto porque puede ser asignar <jugador>

@@ -10,6 +10,9 @@ import java.util.Set;
 
 import risk.cartasmision.PaisEvent;
 import risk.ejercito.Ejercito;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.ExcepcionRISK;
+import risk.riskexception.RiskExceptionEnum;
 
 public class Pais implements Cloneable {
     private String codigo;
@@ -63,6 +66,17 @@ public class Pais implements Cloneable {
      */
     public Set<Ejercito> getEjercitos() {
         return new HashSet<>(this.ejercitos);
+    }
+
+    /**
+     * Devuelve cualquier ejército de los que tiene el Pais
+     * @return
+     */
+    public Ejercito getAnyEjercito() throws ExcepcionJugador {
+        if (this.ejercitos.isEmpty()) {
+            throw (ExcepcionJugador) RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES.get();
+        }
+        return this.getEjercitos().iterator().next();
     }
 
     /**

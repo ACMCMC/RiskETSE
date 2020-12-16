@@ -193,6 +193,29 @@ public class Menu {
      * Corresponde al comando {@literal rearmar}
      */
     public void rearmar(String nombrePais1, String numeroEjercitos, String nombrePais2) {
+        try {
+            Pais pais1 = Mapa.getMapa().getPais(nombrePais1);
+            Pais pais2 = Mapa.getMapa().getPais(nombrePais2);
+            int numEjercitos = Integer.parseInt(numeroEjercitos);
+            int numeroEjercitosInicialesOrigen = pais1.getNumEjercitos();
+            int numeroEjercitosInicialesDestino = pais2.getNumEjercitos();
+
+            Partida.getPartida().rearmar(pais1, pais2, numEjercitos);
+
+            int numeroEjercitosFinalesOrigen = pais1.getNumEjercitos();
+            int numeroEjercitosFinalesDestino = pais2.getNumEjercitos();
+
+            String output = OutputBuilder.beginBuild().autoAdd("numeroEjercitosInicialesOrigen", numeroEjercitosInicialesOrigen).autoAdd("numeroEjercitosInicialesDestino", numeroEjercitosInicialesDestino).autoAdd("numeroEjercitosFinalesOrigen", numeroEjercitosFinalesOrigen).autoAdd("numeroEjercitosFinalesDestino", numeroEjercitosFinalesDestino).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Asigna una carta de equipamiento al jugador actual
+     */
+    public void asignarCarta(String idCarta) {
 
     }
 
@@ -561,8 +584,11 @@ public class Menu {
     /**
      * Imprime el mapa
      */
-    public void imprimirMapa() {
+    public void verMapa() {
         io.printToOutput(Mapa.getMapa().toString());
+        if (!io.getClass().equals(ConsolaNormal.class)) {
+            System.out.println(Mapa.getMapa().toString());
+        }
     }
 
     /**

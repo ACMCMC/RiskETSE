@@ -26,6 +26,7 @@ repartir ejercitos 6 NGuinea
 acabar turno
 repartir ejercitos 4 Islandia
 describir pais USAEste
+ver mapa
 atacar Ontario 5x1x1 USAEste 4
 describir pais USAEste
 describir pais Ontario
