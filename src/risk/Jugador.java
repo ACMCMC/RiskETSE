@@ -7,9 +7,12 @@ package risk;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
+import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionMision;
 import risk.riskexception.RiskExceptionEnum;
@@ -18,14 +21,23 @@ public class Jugador {
     private String nombre;
     private Color color;
     private Set<CartaMision> setCartasMision;
+    private Set<Carta> setCartasEquipamiento;
     private Set<Ejercito> ejercitosRearme;
 
     public Jugador(String nombre, Color color) {
         this.setCartasMision = new HashSet<>();
+        this.setCartasEquipamiento = new HashSet<>();
         this.ejercitosRearme = new HashSet<>();
         this.setNombre(nombre);
         this.setColor(color);
         this.setEjercitosRearme(0);
+    }
+
+    public void addCartaEquipamiento(Carta carta) throws ExcepcionCarta {
+        if (this.setCartasEquipamiento.contains(carta)) {
+            throw (ExcepcionCarta) RiskExceptionEnum.CARTA_YA_ASIGNADA.get();
+        }
+        this.setCartasEquipamiento.add(carta);
     }
 
     /**
@@ -91,6 +103,28 @@ public class Jugador {
      */
     public int getNumEjercitosRearme() {
         return this.ejercitosRearme.size();
+    }
+
+    /**
+     * Devuelve las Cartas de equipamiento de este Jugador
+     * @return
+     */
+    public Set<Carta> getCartasEquipamiento() {
+        return this.setCartasEquipamiento;
+    }
+
+    /**
+     * Devuelve el número de ejércitos de rearme que corresponden a este Jugador, por tener una Carta de equipamiento concreta y poseer el Pais que indica la Carta
+     */
+    public int getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(Carta carta) throws ExcepcionCarta {
+        if (!this.getCartasEquipamiento().contains(carta)) {
+            throw (ExcepcionCarta) RiskExceptionEnum.CARTAS_NO_PERTENECEN_JUGADOR.get();
+        }
+        if (carta.getPais().getJugador().equals(this)) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     /**

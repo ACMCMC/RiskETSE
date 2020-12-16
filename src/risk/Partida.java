@@ -21,6 +21,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import risk.cartas.Carta;
+import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
@@ -37,6 +39,7 @@ public class Partida {
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
     private Map<Jugador, CartaMision> misionesJugadores;
+    private Turno turnoActual;
 
     private Partida() {
         this.jugadores = new HashMap<>();
@@ -98,19 +101,6 @@ public class Partida {
             return this.jugadores.get(nombre);
         } else {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADOR_NO_EXISTE.get();
-        }
-    }
-
-    /**
-     * Asigna una carta de misión a un Jugador, que tiene que estar registrado
-     * 
-     * @param cartaMision
-     * @param jugador
-     */
-    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) throws ExcepcionMision {
-        if (jugadores.containsValue(jugador)) { // Podría darse el caso de que el Jugador no esté en la Partida
-            this.misionesJugadores.put(jugador, cartaMision);
-            jugador.addCartaMision(cartaMision);
         }
     }
 
@@ -275,14 +265,23 @@ public class Partida {
      * @return
      */
     public Jugador getJugadorActual() {
-        return this.colaJugadores.peek();
+        if (this.turnoActual!=null) {
+            return this.turnoActual.getJugador();
+        } else {
+            return this.colaJugadores.peek();
+        }
     }
 
     /**
      * Avanza el juego un turno
      */
     public void siguienteTurno() {
+        if (turnoActual!=null) {
+            Mapa.getMapa().getPaisEventPublisher().unsubscribe(turnoActual);
+        }
         this.colaJugadores.add(this.colaJugadores.poll());
+        this.turnoActual = new Turno(this.colaJugadores.peek());
+        Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
         getJugadorActual().setEjercitosRearme(getJugadorActual().calcularNumEjercitosRearmar());
     }
 
@@ -304,6 +303,19 @@ public class Partida {
             throw RiskExceptionEnum.MISION_YA_ASIGNADA.get();
         }
         jugador.addCartaMision(cartaMision);
+    }
+
+    private Turno getTurnoActual() {
+        return this.turnoActual;
+    }
+
+    public Carta asignarCartaEquipamiento(String idCarta) throws ExcepcionRISK {
+        if (!getTurnoActual().hasJugadorConquistadoPais()) {
+            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
+        }
+        Carta cartaEquipamiento = CartaEquipamientoFactory.get(idCarta, Mapa.getMapa());
+        this.getTurnoActual().getJugador().addCartaEquipamiento(cartaEquipamiento);
+        return cartaEquipamiento;
     }
 
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {

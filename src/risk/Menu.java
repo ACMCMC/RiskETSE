@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionGeo;
@@ -216,7 +217,12 @@ public class Menu {
      * Asigna una carta de equipamiento al jugador actual
      */
     public void asignarCarta(String idCarta) {
-
+        try {
+            Carta carta = Partida.getPartida().asignarCartaEquipamiento(idCarta);
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("tipoCarta", carta.getTipo()).autoAdd("paisAsociado", carta.getPais()).autoAdd("perteneceAJugador", Partida.getPartida().getJugadorActual().getNombre()).autoAdd("ejercitosDeRearme", Partida.getPartida().getJugadorActual().getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(carta)).build());
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
     }
 
     /**
@@ -360,7 +366,7 @@ public class Menu {
         try {
             Jugador jugadorActual = Partida.getPartida().getJugador(nombreJugador);
             CartaMision mision = CartaMisionFactory.build(idMision, jugadorActual);
-            Partida.getPartida().asignarCartaMisionJugador(mision, jugadorActual);
+            Partida.getPartida().asignarMisionAJugador(mision, jugadorActual);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
                     .autoAdd("mision", mision.getDescripcion()).build());
         } catch (ExcepcionRISK e) {
