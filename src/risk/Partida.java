@@ -206,8 +206,6 @@ public class Partida {
 
     /**
      * Aplica el método atacar() de las clases de Ejercito en los dados
-     * @param dadosAtacante
-     * @param dadosDefensor
      */
     private void procesarDadosAtacante(Pais atacante, Set<Dado> dadosAtacante) {
         Ejercito ejercitoAtacante = EjercitoFactory.getEjercito(atacante.getJugador().getColor());
@@ -237,6 +235,38 @@ public class Partida {
         }
 
         return atacar(atacante, dadosAtacante, defensor, dadosDefensor);
+    }
+
+    public void rearmar(Pais paisOrigen, Pais paisDestino, int numEjercitos) throws ExcepcionGeo, ExcepcionJugador {
+        if (!(paisOrigen.getNumEjercitos()>1)) {
+            throw (ExcepcionJugador) RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES.get();
+        }
+        if (!Mapa.getMapa().getFrontera(paisOrigen, paisDestino).isPresent()) {
+            throw (ExcepcionGeo) RiskExceptionEnum.PAISES_NO_SON_FRONTERA.get();
+        }
+        if (!Partida.getPartida().getJugadorActual().equals(paisOrigen.getJugador())) {
+            throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
+        }
+        if (!Partida.getPartida().getJugadorActual().equals(paisDestino.getJugador())) {
+            throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
+        }
+
+        if (paisOrigen.getNumEjercitos()>numEjercitos) { // El país de origen tiene todos los ejércitos que queremos transferir. Pasamos ese número de ejércitos.
+            while (numEjercitos > 0) {
+                Ejercito ejercitoTransferir;
+                ejercitoTransferir = paisOrigen.getAnyEjercito();
+                paisDestino.addEjercito(ejercitoTransferir);
+                paisOrigen.removeEjercito(ejercitoTransferir);
+                numEjercitos--;
+            }
+        } else { // El país de origen no tiene todos los ejércitos que queremos pasar. Pasamos todos sus ejércitos, menos 1
+            while (paisOrigen.getNumEjercitos()>1) {
+                Ejercito ejercitoTransferir;
+                ejercitoTransferir = paisOrigen.getAnyEjercito();
+                paisDestino.addEjercito(ejercitoTransferir);
+                paisOrigen.removeEjercito(ejercitoTransferir);
+            }
+        }
     }
 
     /**
@@ -277,6 +307,9 @@ public class Partida {
     }
 
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
+        if (!getJugadorActual().hasEjercitosSinRepartir()) {
+            throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();
+        }
         if (!getJugadorActual().equals(pais.getJugador())) { // Si el país no pertenece al jugador actual
             throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }

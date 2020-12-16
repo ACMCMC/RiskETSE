@@ -45,9 +45,6 @@ public class Mapa {
 
     /**
      * Crea un mapa lleno de casillas marítimas
-     * 
-     * @param archivoRelacionPaises
-     * @throws FileNotFoundException
      */
     private Mapa() {
 
@@ -176,7 +173,6 @@ public class Mapa {
      * tener formato
      * [nombreHumanoPais];[codigoPais];[nombreHumanoContinente];[codigoContinente];[X];[Y]
      * 
-     * @param archivoPaises
      * @throws FileNotFoundException
      */
     private void asignarPaisesACasillas(File archivoRelacionPaises) throws FileNotFoundException {
@@ -706,11 +702,12 @@ public class Mapa {
         }
 
         Pais pais = Mapa.getMapa().getPais(nombrePais);
+        Jugador jugador = Partida.getPartida().getJugador(nombreJugador);
         if (pais.getJugador()!=null) {
             throw RiskExceptionEnum.PAIS_YA_ASIGNADO.get();
         }
-        pais.conquistar(Partida.getPartida().getJugador(nombreJugador));
-        Partida.getPartida().getJugador(nombreJugador).asignarEjercitosAPais(1, pais);
+        pais.conquistar(jugador);
+        jugador.asignarEjercitosAPais(1, pais);
     }
 
     /**

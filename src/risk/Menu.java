@@ -165,8 +165,6 @@ public class Menu {
 
     /**
      * Crea un jugador a partir de un nombre y un color
-     * 
-     * @param file
      */
     public void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
@@ -192,7 +190,37 @@ public class Menu {
     }
 
     /**
-     * Comando "cambiar cartas <id1> <id2> <id3>"
+     * Corresponde al comando {@literal rearmar}
+     */
+    public void rearmar(String nombrePais1, String numeroEjercitos, String nombrePais2) {
+        try {
+            Pais pais1 = Mapa.getMapa().getPais(nombrePais1);
+            Pais pais2 = Mapa.getMapa().getPais(nombrePais2);
+            int numEjercitos = Integer.parseInt(numeroEjercitos);
+            int numeroEjercitosInicialesOrigen = pais1.getNumEjercitos();
+            int numeroEjercitosInicialesDestino = pais2.getNumEjercitos();
+
+            Partida.getPartida().rearmar(pais1, pais2, numEjercitos);
+
+            int numeroEjercitosFinalesOrigen = pais1.getNumEjercitos();
+            int numeroEjercitosFinalesDestino = pais2.getNumEjercitos();
+
+            String output = OutputBuilder.beginBuild().autoAdd("numeroEjercitosInicialesOrigen", numeroEjercitosInicialesOrigen).autoAdd("numeroEjercitosInicialesDestino", numeroEjercitosInicialesDestino).autoAdd("numeroEjercitosFinalesOrigen", numeroEjercitosFinalesOrigen).autoAdd("numeroEjercitosFinalesDestino", numeroEjercitosFinalesDestino).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Asigna una carta de equipamiento al jugador actual
+     */
+    public void asignarCarta(String idCarta) {
+
+    }
+
+    /**
+     * Comando "cambiar cartas id1 id2 id3"
      */
     public void cambiarCartas(String carta1, String carta2, String carta3) {
 
@@ -220,7 +248,7 @@ public class Menu {
                     .filter(p -> p.getJugador().equals(pais.getJugador()))
                     .map(p -> "{ \"" + p.getNombreHumano() + "\", " + Integer.toString(p.getNumEjercitos()) + " }")
                     .collect(Collectors.toSet());
-            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais)
+            String output = OutputBuilder.beginBuild().autoAdd("pais", pais.getNombreHumano())
                     .autoAdd("jugador", pais.getJugador().getNombre())
                     .autoAdd("numeroEjercitosAsignados", numeroEjercitosAsignados)
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()
@@ -388,8 +416,6 @@ public class Menu {
 
     /**
      * Muestra las características del jugador que tiene el turno actual
-     * 
-     * @param nombre
      */
     public void describirJugadorActual() {
         describirJugador(Partida.getPartida().getJugadorActual().getNombre());
@@ -558,8 +584,11 @@ public class Menu {
     /**
      * Imprime el mapa
      */
-    public void imprimirMapa() {
+    public void verMapa() {
         io.printToOutput(Mapa.getMapa().toString());
+        if (!io.getClass().equals(ConsolaNormal.class)) {
+            System.out.println(Mapa.getMapa().toString());
+        }
     }
 
     /**
