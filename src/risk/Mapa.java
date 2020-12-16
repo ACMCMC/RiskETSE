@@ -45,9 +45,6 @@ public class Mapa {
 
     /**
      * Crea un mapa lleno de casillas marítimas
-     * 
-     * @param archivoRelacionPaises
-     * @throws FileNotFoundException
      */
     private Mapa() {
 
@@ -176,7 +173,6 @@ public class Mapa {
      * tener formato
      * [nombreHumanoPais];[codigoPais];[nombreHumanoContinente];[codigoContinente];[X];[Y]
      * 
-     * @param archivoPaises
      * @throws FileNotFoundException
      */
     private void asignarPaisesACasillas(File archivoRelacionPaises) throws FileNotFoundException {

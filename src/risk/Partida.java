@@ -206,8 +206,6 @@ public class Partida {
 
     /**
      * Aplica el método atacar() de las clases de Ejercito en los dados
-     * @param dadosAtacante
-     * @param dadosDefensor
      */
     private void procesarDadosAtacante(Pais atacante, Set<Dado> dadosAtacante) {
         Ejercito ejercitoAtacante = EjercitoFactory.getEjercito(atacante.getJugador().getColor());
