@@ -5,10 +5,15 @@
 package risk;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartas.Artilleria;
+import risk.cartas.Caballeria;
+import risk.cartas.CambioCartas;
 import risk.cartas.Carta;
+import risk.cartas.Infanteria;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
@@ -196,20 +201,83 @@ public class Jugador {
                                                                // resultado de dividir el número de países que
                                                                // pertenecen al jugador entre 3
         numEjercitosRearmar += getContinentesOcupadosExcusivamentePorJugador().stream()
-                .mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum(); // Si todos
-                                                                                                          // los países
-                                                                                                          // de un
-                                                                                                          // continente
-                                                                                                          // pertenecen
-                                                                                                          // a dicho
-                                                                                                          // jugador,
-                                                                                                          // recibe el
-                                                                                                          // número de
-                                                                                                          // ejércitos
-                                                                                                          // indicados
-                                                                                                          // en la Tabla
-                                                                                                          // 4
+                .mapToInt(Continente::getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador).sum();
+                // Si todos los países de un continente pertenecen a dicho jugador, recibe el número de ejércitos indicados en la Tabla 4
+        
         return numEjercitosRearmar;
+    }
+
+    /**
+     * Pone el número de Ejercitos de rearme del Jugador al que debiera ser
+     */
+    public void recalcularEjercitosRearme() {
+        this.setEjercitosRearme(this.calcularNumEjercitosRearmar());
+    }
+
+    public Carta getCartaEquipamiento(String idCarta) throws ExcepcionCarta {
+        Optional<Carta> carta = this.getCartasEquipamiento().stream().filter(c -> c.getNombre().equals(idCarta)).findFirst();
+        if (!carta.isPresent()) {
+            throw (ExcepcionCarta) RiskExceptionEnum.CARTAS_NO_PERTENECEN_JUGADOR.get();
+        }
+        return carta.get();
+    }
+
+    /**
+     * Calcula cuál es la mejor combinación posible de cambio de Cartas de equipamiento que puede hacer este Jugador, usando un algoritmo de ramificación y poda.
+     */
+    public Set<Carta> calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() {
+        Set<Carta> configOptima = new HashSet<>();
+        return configOptima;
+    }
+
+    /**
+     * Realiza el cambio de tres Cartas de Equipamiento
+     */
+    public void cambiarCartasEquipamiento(CambioCartas cambioCartas) throws ExcepcionCarta {
+        if (cambioCartas.getSetCartas().stream().anyMatch(c -> !this.hasCartaEquipamiento(c))) {
+            throw (ExcepcionCarta) RiskExceptionEnum.CARTAS_NO_PERTENECEN_JUGADOR.get();
+        }
+        if (!canCartasSerCambiadas(cambioCartas)) {
+            throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CONFIG_CAMBIO.get();
+        }
+        this.addEjercitosRearme(calcularCambioCartas(cambioCartas));
+        this.removeCartaEquipamiento(carta1);
+        this.removeCartaEquipamiento(carta2);
+        this.removeCartaEquipamiento(carta3);
+    }
+
+    /**
+     * Le quita la Carta de equipamiento especificada a este Jugador
+     */
+    private void removeCartaEquipamiento(Carta carta) {
+        this.setCartasEquipamiento.remove(carta);
+    }
+
+    /**
+     * Cambia las 3 Cartas de equipamiento especificadas
+     * @param carta1
+     * @param carta2
+     * @param carta3
+     */
+    private int calcularCambioCartas(CambioCartas cambioCartas) throws ExcepcionCarta {
+        int num_ejercitos_obtenidos = 6;
+        num_ejercitos_obtenidos += cambioCartas.getCarta1().obtenerRearme();
+        num_ejercitos_obtenidos += cambioCartas.getCarta2().obtenerRearme();
+        num_ejercitos_obtenidos += cambioCartas.getCarta3().obtenerRearme();
+        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta1());
+        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta2()
+        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta3());
+        return num_ejercitos_obtenidos;
+    }
+
+    private boolean canCartasSerCambiadas(CambioCartas cambioCartas) {
+        if (cambioCartas.getCarta1().getClaseCarta().equals(cambioCartas.getCarta2().getClaseCarta()) && cambioCartas.getCarta2().getClaseCarta().equals(cambioCartas.getCarta3().getClaseCarta())) {
+            return true;
+        }
+        if (!cambioCartas.getCarta1().getClaseCarta().equals(cambioCartas.getCarta2().getClaseCarta()) && !cambioCartas.getCarta2().getClaseCarta().equals(cambioCartas.getCarta3().getClaseCarta()) && !cambioCartas.getCarta3().getClaseCarta().equals(cambioCartas.getCarta1().getClaseCarta())) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -253,6 +321,15 @@ public class Jugador {
      */
     public boolean hasMision(CartaMision cartaMision) {
         return this.setCartasMision.contains(cartaMision);
+    }
+
+    /**
+     * Devuelve {@code true} si el jugador tiene la Carta
+     * 
+     * @param carta
+     */
+    public boolean hasCartaEquipamiento(Carta carta) {
+        return this.setCartasEquipamiento.contains(carta);
     }
 
     /**

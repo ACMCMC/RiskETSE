@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import risk.cartas.Carta;
+import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionGeo;
@@ -206,7 +208,11 @@ public class Menu {
             int numeroEjercitosFinalesOrigen = pais1.getNumEjercitos();
             int numeroEjercitosFinalesDestino = pais2.getNumEjercitos();
 
-            String output = OutputBuilder.beginBuild().autoAdd("numeroEjercitosInicialesOrigen", numeroEjercitosInicialesOrigen).autoAdd("numeroEjercitosInicialesDestino", numeroEjercitosInicialesDestino).autoAdd("numeroEjercitosFinalesOrigen", numeroEjercitosFinalesOrigen).autoAdd("numeroEjercitosFinalesDestino", numeroEjercitosFinalesDestino).build();
+            String output = OutputBuilder.beginBuild()
+                    .autoAdd("numeroEjercitosInicialesOrigen", numeroEjercitosInicialesOrigen)
+                    .autoAdd("numeroEjercitosInicialesDestino", numeroEjercitosInicialesDestino)
+                    .autoAdd("numeroEjercitosFinalesOrigen", numeroEjercitosFinalesOrigen)
+                    .autoAdd("numeroEjercitosFinalesDestino", numeroEjercitosFinalesDestino).build();
             io.printToOutput(output);
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
@@ -219,7 +225,12 @@ public class Menu {
     public void asignarCarta(String idCarta) {
         try {
             Carta carta = Partida.getPartida().asignarCartaEquipamiento(idCarta);
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("tipoCarta", carta.getTipo()).autoAdd("paisAsociado", carta.getPais()).autoAdd("perteneceAJugador", Partida.getPartida().getJugadorActual().getNombre()).autoAdd("ejercitosDeRearme", Partida.getPartida().getJugadorActual().getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(carta)).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("tipoCarta", carta.getTipo())
+                    .autoAdd("paisAsociado", carta.getPais())
+                    .autoAdd("perteneceAJugador", Partida.getPartida().getJugadorActual().getNombre())
+                    .autoAdd("ejercitosDeRearme", Partida.getPartida().getJugadorActual()
+                            .getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(carta))
+                    .build());
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
@@ -229,7 +240,27 @@ public class Menu {
      * Comando "cambiar cartas id1 id2 id3"
      */
     public void cambiarCartas(String carta1, String carta2, String carta3) {
-
+        try {
+            Carta c1 = CartaEquipamientoFactory.get(carta1, Mapa.getMapa()); // Si alguna de las cartas no existe, se lanzará aquí una excepción
+            Carta c2 = CartaEquipamientoFactory.get(carta2, Mapa.getMapa());
+            Carta c3 = CartaEquipamientoFactory.get(carta3, Mapa.getMapa());
+            Jugador jugador = Partida.getPartida().getJugadorActual();
+            int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
+            jugador.cambiarCartasEquipamiento(c1, c2, c3);
+            int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
+            int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
+            String output = OutputBuilder.beginBuild()
+                    .autoAdd("cartasCambio", new String[] { c1.getNombre(), c2.getNombre(), c3.getNombre() })
+                    .autoAdd("cartasQuedan",
+                            jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
+                    .autoAdd("numEjercitosRearme", numEjercitosRearmeDespuesDelCambio).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
+            if (e.equals(RiskExceptionEnum.IDENTIFICADOR_INCORRECTO.get())) {
+                io.printToErrOutput(RiskExceptionEnum.CARTAS_NO_EXISTEN.get());
+            }
+        }
     }
 
     /**
@@ -388,9 +419,11 @@ public class Menu {
             String output = OutputBuilder.beginBuild().autoAdd("nombre", continente.getNombreHumano())
                     .autoAdd("abreviatura", continente.getCodigo()).disableQuoting().autoAdd("jugadores", listaJugs)
                     .enableQuoting()
-                    .autoAdd("numeroEjercitos", continente.getPaises().stream().reduce(0,
-                            (total, pais) -> total + pais.getNumEjercitos(), Integer::sum))
-                    .autoAdd("rearme", "RELLENAR").build();
+                    .autoAdd("numeroEjercitos",
+                            continente.getPaises().stream().reduce(0, (total, pais) -> total + pais.getNumEjercitos(),
+                                    Integer::sum))
+                    .autoAdd("rearme", continente.getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador())
+                    .build();
             io.printToOutput(output);
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
@@ -411,9 +444,14 @@ public class Menu {
                                                                            // actual
                 output.autoAdd("mision", jugador.getCartaMision());
             }
-            output.autoAdd("numeroEjercitos", jugador.getTotalEjercitos()).autoAdd("paises", jugador.getPaises())
+            output.autoAdd("numeroEjercitos", jugador.getTotalEjercitos())
+                    .autoAdd("paises",
+                            jugador.getPaises().stream().map(Pais::getNombreHumano).collect(Collectors.toSet()))
                     .autoAdd("continentes", jugador.getContinentesOcupadosExcusivamentePorJugador())
-                    .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR");
+                    .autoAdd("cartas",
+                            jugador.getCartasEquipamiento().stream().map(c -> c.getNombre())
+                                    .collect(Collectors.toSet()))
+                    .autoAdd("numEjercitoRearme", jugador.calcularNumEjercitosRearmar());
             io.printToOutput(output.build());
         } catch (ExcepcionJugador e) {
             io.printToErrOutput(e);
@@ -434,7 +472,8 @@ public class Menu {
         Partida.getPartida().siguienteTurno();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme())
+                .build());
     }
 
     /**
@@ -444,7 +483,8 @@ public class Menu {
         Partida.getPartida().siguienteTurnoDeReparto();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme())
+                .build());
     }
 
     /**

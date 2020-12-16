@@ -282,7 +282,7 @@ public class Partida {
         this.colaJugadores.add(this.colaJugadores.poll());
         this.turnoActual = new Turno(this.colaJugadores.peek());
         Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
-        getJugadorActual().setEjercitosRearme(getJugadorActual().calcularNumEjercitosRearmar());
+        getJugadorActual().recalcularEjercitosRearme();
     }
 
     /**
