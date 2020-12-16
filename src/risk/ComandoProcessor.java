@@ -28,6 +28,8 @@ public class ComandoProcessor {
             procesarComandoJugandoCambiandoCartas(comando);
         } else if (status.equals(ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS)) {
             procesarComandoJugandoRepartiendoEjercitos(comando);
+        } else if (status.equals(ComandoProcessorStatus.JUGANDO_REARMANDO)) {
+            procesarComandoJugandoRearmando(comando);
         } else if (status.equals(ComandoProcessorStatus.JUGANDO)) {
             procesarComandoJugando(comando);
         }
@@ -158,11 +160,30 @@ public class ComandoProcessor {
             imprimirComandoNoPermitidoOIncorrecto(comando);
         }
     }
+
+    private void procesarComandoJugandoRearmando(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 4 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
+            //
+        } else if (Partida.getPartida().areEjercitosRepartidos() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
+            //
+        } else {
+            imprimirComandoNoPermitidoOIncorrecto(comando);
+        }
+    }
     
     private void procesarComandoJugando(String comandoCompleto) {
         String partes[] = comandoCompleto.split(" ");
         String comando = partes[0];
         switch (comando) {
+            case "rearmar":
+                if (partes.length == 4) {
+                    this.status = ComandoProcessorStatus.JUGANDO_REARMANDO;
+                    menu.rearmar(partes[1], partes[2], partes[3]);
+                } else {
+                    imprimirComandoNoPermitidoOIncorrecto(comandoCompleto);
+                }
+            break;
             case "ver":
             if (partes.length == 2) {
                 if (partes[1].equals("mapa")) {
