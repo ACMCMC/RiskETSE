@@ -192,6 +192,13 @@ public class Menu {
     }
 
     /**
+     * Corresponde al comando {@literal rearmar}
+     */
+    public void rearmar(String nombrePais1, String numeroEjercitos, String nombrePais2) {
+
+    }
+
+    /**
      * Comando "cambiar cartas <id1> <id2> <id3>"
      */
     public void cambiarCartas(String carta1, String carta2, String carta3) {
@@ -220,7 +227,7 @@ public class Menu {
                     .filter(p -> p.getJugador().equals(pais.getJugador()))
                     .map(p -> "{ \"" + p.getNombreHumano() + "\", " + Integer.toString(p.getNumEjercitos()) + " }")
                     .collect(Collectors.toSet());
-            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais)
+            String output = OutputBuilder.beginBuild().autoAdd("pais", pais.getNombreHumano())
                     .autoAdd("jugador", pais.getJugador().getNombre())
                     .autoAdd("numeroEjercitosAsignados", numeroEjercitosAsignados)
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()

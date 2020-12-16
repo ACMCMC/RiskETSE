@@ -2,11 +2,11 @@ package risk;
 
 import java.util.Scanner;
 
-public class ConsolaConsola implements Consola {
+public class ConsolaNormal implements Consola {
 
     private Scanner scanner;
 
-    ConsolaConsola() {
+    ConsolaNormal() {
         scanner = new Scanner(System.in);
     }
     

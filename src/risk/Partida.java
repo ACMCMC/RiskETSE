@@ -277,6 +277,9 @@ public class Partida {
     }
 
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
+        if (!getJugadorActual().hasEjercitosSinRepartir()) {
+            throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();
+        }
         if (!getJugadorActual().equals(pais.getJugador())) { // Si el país no pertenece al jugador actual
             throw (ExcepcionJugador) RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }

@@ -29,6 +29,31 @@ public class Jugador {
     }
 
     /**
+     * Devuelve uno de los Ejercitos de rearme del Jugador
+     */
+    public Ejercito getAnyEjercitoDeRearme() {
+        return this.ejercitosRearme.iterator().next();
+    }
+
+    /**
+     * Elimina el Ejercito especificado del conjunto de Ejercitos de rearme de este Jugador
+     * @param ejercito
+     */
+    public void removeEjercitoDeRearme(Ejercito ejercito) {
+        this.ejercitosRearme.remove(ejercito);
+    }
+
+    /**
+     * Añade el número especificado de ejércitos de rearme a este Jugador
+     */
+    public void addEjercitosRearme(int num) {
+        while (num > 0) {
+            this.ejercitosRearme.add(EjercitoFactory.getEjercito(this.getColor()));
+            num--;
+        }
+    }
+
+    /**
      * De los ejércitos sin repartir que tiene el jugador, asignar
      * {@code numEjercitos} al país elegido.
      * 
@@ -39,20 +64,22 @@ public class Jugador {
         if (this.getNumEjercitosRearme() >= numEjercitos) { // Tenemos suficientes ejércitos como para realizar la
                                                               // asignación
             for (int i = 0; i < numEjercitos; i++) {
-                pais.addEjercito(EjercitoFactory.getEjercito(pais.getJugador().getColor()));
+                Ejercito ejercitoAnadir = this.getAnyEjercitoDeRearme();
+                pais.addEjercito(ejercitoAnadir);
+                this.removeEjercitoDeRearme(ejercitoAnadir);
             }
-            this.setEjercitosRearme(this.getNumEjercitosRearme() - numEjercitos);
             return (numEjercitos);
         } else if (this.getNumEjercitosRearme() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí
-                                                         // podemos asignar todos los que quedan
+            // podemos asignar todos los que quedan
             int ejercitosSinRepartir = this.getNumEjercitosRearme(); // No es realmente necesario, pero me parece
-                                                                       // buena práctica porque si modificásemos el
-                                                                       // número de ejércitos sin repartir dentro del
-                                                                       // for, entonces habría problemas
+            // buena práctica porque si modificásemos el
+            // número de ejércitos sin repartir dentro del
+            // for, entonces habría problemas
             for (int i = 0; i < ejercitosSinRepartir; i++) {
-                pais.addEjercito(EjercitoFactory.getEjercito(pais.getJugador().getColor()));
+                Ejercito ejercitoAnadir = this.getAnyEjercitoDeRearme();
+                pais.addEjercito(ejercitoAnadir);
+                this.removeEjercitoDeRearme(ejercitoAnadir);
             }
-            this.setEjercitosRearme(0);
             return (ejercitosSinRepartir);
         } else { // No hay ejércitos disponibles
             throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();
