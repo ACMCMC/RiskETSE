@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -28,10 +27,8 @@ import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionJugador;
-import risk.riskexception.ExcepcionMision;
 import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
-import risk.riskexception.RiskExceptionFactory;
 
 public class Partida {
     private static final Partida partidaSingleton = new Partida();

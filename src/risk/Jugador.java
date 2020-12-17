@@ -9,11 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import risk.cartas.Artilleria;
-import risk.cartas.Caballeria;
 import risk.cartas.CambioCartas;
 import risk.cartas.Carta;
-import risk.cartas.Infanteria;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
@@ -241,9 +238,7 @@ public class Jugador {
             throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CONFIG_CAMBIO.get();
         }
         this.addEjercitosRearme(calcularCambioCartas(cambioCartas));
-        this.removeCartaEquipamiento(carta1);
-        this.removeCartaEquipamiento(carta2);
-        this.removeCartaEquipamiento(carta3);
+        cambioCartas.getSetCartas().forEach(this::removeCartaEquipamiento);
     }
 
     /**

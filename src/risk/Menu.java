@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartas.CambioCartas;
 import risk.cartas.Carta;
 import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
@@ -245,12 +246,14 @@ public class Menu {
             Carta c2 = CartaEquipamientoFactory.get(carta2, Mapa.getMapa());
             Carta c3 = CartaEquipamientoFactory.get(carta3, Mapa.getMapa());
             Jugador jugador = Partida.getPartida().getJugadorActual();
+            CambioCartas cambioCartas = new CambioCartas(c1, c2, c3);
+
             int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
-            jugador.cambiarCartasEquipamiento(c1, c2, c3);
+            jugador.cambiarCartasEquipamiento(cambioCartas);
             int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
             int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
             String output = OutputBuilder.beginBuild()
-                    .autoAdd("cartasCambio", new String[] { c1.getNombre(), c2.getNombre(), c3.getNombre() })
+                    .autoAdd("cartasCambio", cambioCartas.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
                     .autoAdd("cartasQuedan",
                             jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
                     .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
