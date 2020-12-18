@@ -222,9 +222,8 @@ public class Jugador {
     /**
      * Calcula cuál es la mejor combinación posible de cambio de Cartas de equipamiento que puede hacer este Jugador, usando un algoritmo de ramificación y poda.
      */
-    public Set<Carta> calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() {
-        Set<Carta> configOptima = new HashSet<>();
-        return configOptima;
+    public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() {
+        return null;
     }
 
     /**

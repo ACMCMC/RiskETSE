@@ -681,8 +681,9 @@ public class Mapa {
      * @return
      */
     public Pais getPais(String codigo) throws ExcepcionGeo {
-        if (this.paises.containsKey(codigo)) {
-            return this.paises.get(codigo);
+        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> p.getCodigo().equals(codigo)).findFirst();
+        if (paisBuscado.isPresent()) {
+            return paisBuscado.get();
         } else {
             throw (ExcepcionGeo) RiskExceptionEnum.PAIS_NO_EXISTE.get();
         }

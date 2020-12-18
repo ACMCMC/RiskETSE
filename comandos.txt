@@ -26,12 +26,11 @@ repartir ejercitos 6 NGuinea
 acabar turno
 repartir ejercitos 4 Islandia
 describir pais USAEste
-ver mapa
 atacar Ontario 5x1x1 USAEste 4
 describir pais USAEste
 describir pais Ontario
 rearmar Alaska 4 Alberta
-asignar carta Granadero&Alaska
+asignar carta Infantería&Alaska
 atacar GBretaña 3 EurSur 4
 acabar turno
 describir jugador Gondorff

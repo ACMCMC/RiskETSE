@@ -97,7 +97,7 @@ public class Menu {
         try {
             Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(nombrePais));
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", Mapa.getMapa().getPais(nombrePais).getNombreHumano())
                     .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano())
                     .autoAdd("frontera", fronterasPais).build());
         } catch (ExcepcionRISK e) {
