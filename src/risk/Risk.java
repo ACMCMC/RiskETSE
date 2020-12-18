@@ -4,6 +4,9 @@
 
 package risk;
 
+/**
+ * Clase principal del programa
+ */
 public class Risk {
     /**
      * @param args argumentos de la línea de comandos.

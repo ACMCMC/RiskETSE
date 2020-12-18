@@ -3,6 +3,9 @@ package risk;
 import risk.cartasmision.PaisEvent;
 import risk.cartasmision.PaisEventSubscriber;
 
+/**
+ * Representa un turno de la Partida.
+ */
 public class Turno implements PaisEventSubscriber {
     private int numConquistasPaises;
     private Jugador jugador;

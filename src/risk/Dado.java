@@ -2,6 +2,9 @@ package risk;
 
 import java.util.Random;
 
+/**
+ * Representa un dado para usarlo al atacar.
+ */
 public class Dado {
     private int valor;
 

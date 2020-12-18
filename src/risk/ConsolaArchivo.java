@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Implementación de la Consola, leyendo y escribiendo a archivos
+ */
 public class ConsolaArchivo implements Consola {
 
     private BufferedWriter bufferedWriter;

@@ -25,6 +25,9 @@ import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa el mapa del juego, guardando información sobre las casillas, continentes y países.
+ */
 public class Mapa {
 
     private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");

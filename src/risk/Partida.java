@@ -30,6 +30,9 @@ import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa la partida. Guarda información sobre los jugadores y su estado.
+ */
 public class Partida {
     private static final Partida partidaSingleton = new Partida();
 

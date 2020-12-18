@@ -29,7 +29,8 @@ import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
- *
+ * Representa el menú: proporciona puntos de entrada a los comandos
+ * 
  * @author Manuel Lama
  */
 public class Menu {
@@ -106,7 +107,7 @@ public class Menu {
     }
 
     /**
-     *
+     * Comando para crear el Mapa
      */
     public void crearMapa() {
         File filePaisesCoordenadas = new File("paisesCoordenadas.csv");

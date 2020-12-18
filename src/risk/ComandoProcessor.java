@@ -1,5 +1,8 @@
 package risk;
 
+/**
+ * Clase auxiliar para procesar los comandos. Guarda la información del estado actual.
+ */
 public class ComandoProcessor {
     private enum ComandoProcessorStatus {
         CREANDO_MAPA, CREANDO_JUGADORES, ASIGNANDO_MISIONES, ASIGNANDO_PAISES, REPARTIENDO_EJERCITOS, JUGANDO_CAMBIANDO_CARTAS, JUGANDO_REPARTIENDO_EJERCITOS, JUGANDO, JUGANDO_REARMANDO;

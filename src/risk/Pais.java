@@ -12,6 +12,9 @@ import risk.ejercito.Ejercito;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa un país dentro de un Continente
+ */
 public class Pais implements Cloneable {
     private String codigo;
     private String nombreHumano;

@@ -1,5 +1,8 @@
 package risk;
 
+/**
+ * Clase que crea el tipo adecuado de Consola
+ */
 public abstract class IOHelperFactory {
     private static Consola iOHelperInstance;
 

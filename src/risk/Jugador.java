@@ -19,6 +19,9 @@ import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionMision;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa un jugador de la Partida
+ */
 public class Jugador {
     private String nombre;
     private Color color;
@@ -109,7 +112,6 @@ public class Jugador {
 
     /**
      * Devuelve las Cartas de equipamiento de este Jugador
-     * @return
      */
     public Set<Carta> getCartasEquipamiento() {
         return this.setCartasEquipamiento;
@@ -152,8 +154,6 @@ public class Jugador {
 
     /**
      * Devuelve el total de ejércitos de este Jugador, buscando por todos sus países
-     * 
-     * @return
      */
     public int getTotalEjercitos() {
         int totalEjercitos = this.getPaises().parallelStream().reduce(0, (accum, pais) -> {
@@ -180,8 +180,6 @@ public class Jugador {
 
     /**
      * Devuelve un Set de los Continentes en que este Jugador es el único presente
-     * 
-     * @return
      */
     public Set<Continente> getContinentesOcupadosExcusivamentePorJugador() {
         return this.getPaises().stream().map(p -> p.getContinente()).distinct()
@@ -191,7 +189,6 @@ public class Jugador {
 
     /**
      * Calcula el número de ejércitos de rearmar que corresponde inicialmente en este turno a este Jugador, sin perjuicio de que se pueda incrementar al cambiar cartas
-     * @return
      */
     public int calcularNumEjercitosRearmar() {
         int numEjercitosRearmar = this.getPaises().size() / 3; // El jugador recibe el número de ejércitos que es el
@@ -249,9 +246,6 @@ public class Jugador {
 
     /**
      * Cambia las 3 Cartas de equipamiento especificadas
-     * @param carta1
-     * @param carta2
-     * @param carta3
      */
     private int calcularCambioCartas(CambioCartas cambioCartas) throws ExcepcionCarta {
         int num_ejercitos_obtenidos = 6;

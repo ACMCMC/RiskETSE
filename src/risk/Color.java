@@ -7,6 +7,9 @@ package risk;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa un Color en el juego
+ */
 public enum Color {
     // El primer parámetro es el nombre del color, el segundo la secuencia para
     // colorear texto de ese color, el tercero para colorear el fondo de ese color
