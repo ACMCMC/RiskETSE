@@ -462,7 +462,7 @@ public class Menu {
                     jugador.getColor().getNombre());
             if (jugador.equals(Partida.getPartida().getJugadorActual())) { // Mostramos la misión solo si es el jugador
                                                                            // actual
-                output.autoAdd("mision", jugador.getCartaMision());
+                output.autoAdd("mision", jugador.getCartaMision().getDescripcion());
             }
             output.autoAdd("numeroEjercitos", jugador.getTotalEjercitos())
                     .autoAdd("paises",
