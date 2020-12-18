@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import risk.cartas.CambioCartas;
+import risk.cartas.CambioCartasFactory;
 import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
@@ -217,10 +218,11 @@ public class Jugador {
     }
 
     /**
-     * Calcula cuál es la mejor combinación posible de cambio de Cartas de equipamiento que puede hacer este Jugador, usando un algoritmo de ramificación y poda.
+     * Devuelve la mejor configuración de cambio de cartas para este Jugador
      */
     public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() {
-        return null;
+        CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento());
+        return cambioCartasFactory.getBestCambioCartas();
     }
 
     /**

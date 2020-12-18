@@ -271,7 +271,23 @@ public class Menu {
      * Comando "cambiar cartas todas"
      */
     public void cambiarCartasTodas() {
-
+        try {
+            Jugador jugador = Partida.getPartida().getJugadorActual();
+            CambioCartas cambioOptimo = jugador.calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento();
+            int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
+            jugador.cambiarCartasEquipamiento(cambioOptimo);
+            int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
+            int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
+            String output = OutputBuilder.beginBuild()
+                    .autoAdd("cartasCambio", cambioOptimo.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("cartasQuedan",
+                            jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
+                    .autoAdd("numEjercitosRearme", numEjercitosRearmeDespuesDelCambio).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
     }
 
     /**
