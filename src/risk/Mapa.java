@@ -26,11 +26,11 @@ import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
- * Representa el mapa del juego, guardando información sobre las casillas, continentes y países.
+ * Representa el mapa del juego, guardando información sobre las casillas,
+ * continentes y países.
  */
 public class Mapa {
 
-    private static final File FILE_COLORES_CONTINENTES = new File("coloresContinentes.csv");
     private static final String NEW_LINE = System.getProperty("line.separator");
 
     private static final Mapa mapaSingleton = new Mapa(); // A Singleton for the Mapa
@@ -60,7 +60,7 @@ public class Mapa {
 
         llenarMapaDeCasillasMaritimas();
     }
-    
+
     /**
      * Al principio, sirve para llenar el mapa de casillas marítimas
      */
@@ -94,7 +94,7 @@ public class Mapa {
     /**
      * @throws FileNotFoundException
      */
-    public static void crearMapa(File file) throws FileNotFoundException, ExcepcionGeo {
+    public static void crearMapa(File file) throws IOException, ExcepcionGeo {
         if (isMapaCreado == true) { // Si el mapa ya está creado, lanzamos una excepción para el error
             throw (ExcepcionGeo) RiskExceptionEnum.MAPA_YA_CREADO.get();
         }
@@ -103,8 +103,6 @@ public class Mapa {
                                                     // handling to the caller
 
         mapaSingleton.anadirFronterasDirectas();
-
-        mapaSingleton.asignarColoresContinentes(FILE_COLORES_CONTINENTES);
 
         isMapaCreado = true;
     }
@@ -124,6 +122,7 @@ public class Mapa {
 
     /**
      * Devuelve el ConquistaPaisPublisher asociado a este Mapa
+     * 
      * @return
      */
     public PaisEventPublisher getPaisEventPublisher() {
@@ -139,35 +138,27 @@ public class Mapa {
      * 
      * @param archivoColores
      */
-    public void asignarColoresContinentes(File archivoColores) {
+    public void asignarColoresContinentes(File archivoColores) throws IOException {
         String linea;
         String[] valores;
         BufferedReader bufferedReader;
 
-        try {
-            bufferedReader = new BufferedReader(new FileReader(archivoColores));
+        bufferedReader = new BufferedReader(new FileReader(archivoColores));
 
-            while ((linea = bufferedReader.readLine()) != null) {
-                valores = linea.split(";");
-                try {
-                    getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
-                } catch (ExcepcionGeo e) { // No se ha encontrado el continente
-                    if (e.equals(RiskExceptionEnum.CONTINENTE_NO_EXISTE.get())) {
-                        // addContinente(new Continente(valores[0], valores[0],
-                        // Color.getColorByString(valores[1]))); // En el archivo no sale el nombre
-                        // humano del continente, así que ponemos que el nombre humano sea el del código
-                        e.printStackTrace();
-                    }
+        while ((linea = bufferedReader.readLine()) != null) {
+            valores = linea.split(";");
+            try {
+                getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
+            } catch (ExcepcionGeo e) { // No se ha encontrado el continente
+                if (e.equals(RiskExceptionEnum.CONTINENTE_NO_EXISTE.get())) {
+                    // addContinente(new Continente(valores[0], valores[0],
+                    // Color.getColorByString(valores[1]))); // En el archivo no sale el nombre
+                    // humano del continente, así que ponemos que el nombre humano sea el del código
+                    e.printStackTrace();
                 }
             }
-            bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
+        bufferedReader.close();
     }
 
     /**
@@ -178,47 +169,41 @@ public class Mapa {
      * 
      * @throws FileNotFoundException
      */
-    private void asignarPaisesACasillas(File archivoRelacionPaises) throws FileNotFoundException {
+    private void asignarPaisesACasillas(File archivoRelacionPaises) throws IOException {
 
         String linea;
         String[] valores;
         BufferedReader bufferedReader;
 
-        try { // Reemplazamos las casillas del mapa por las que nos pone el archivo
-            bufferedReader = new BufferedReader(new FileReader(archivoRelacionPaises));
-            while ((linea = bufferedReader.readLine()) != null) {
-                valores = linea.split(";");
+        bufferedReader = new BufferedReader(new FileReader(archivoRelacionPaises));
+        while ((linea = bufferedReader.readLine()) != null) {
+            valores = linea.split(";");
 
-                String nombreHumanoPais, codigoPais, nombreHumanoContinente, codigoContinente, posX, posY;
-                nombreHumanoPais = valores[0];
-                codigoPais = valores[1];
-                nombreHumanoContinente = valores[2];
-                codigoContinente = valores[3];
-                posX = valores[4];
-                posY = valores[5];
+            String nombreHumanoPais, codigoPais, nombreHumanoContinente, codigoContinente, posX, posY;
+            nombreHumanoPais = valores[0];
+            codigoPais = valores[1];
+            nombreHumanoContinente = valores[2];
+            codigoContinente = valores[3];
+            posX = valores[4];
+            posY = valores[5];
 
-                Continente continenteDelPais;
-                try {
-                    continenteDelPais = getContinente(codigoContinente);
-                } catch (ExcepcionGeo e) {
-                    // Creamos el continente, porque no está en la lista
-                    continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
-                    continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
-                }
-                // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva
-                // casilla con país
-                CasillaPais casillaPais = new CasillaPais(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)),
-                        new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
-                casillas.replace(casillaPais.getCoordenadas(), casillaPais);
-                paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista
-                                                                                      // de países
+            Continente continenteDelPais;
+            try {
+                continenteDelPais = getContinente(codigoContinente);
+            } catch (ExcepcionGeo e) {
+                // Creamos el continente, porque no está en la lista
+                continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
+                continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
             }
-            bufferedReader.close();
-        } catch (FileNotFoundException ex) {
-            throw ex; // Lanzamos de vuelta la excepción
-        } catch (IOException e) {
-            e.printStackTrace();
+            // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva
+            // casilla con país
+            CasillaPais casillaPais = new CasillaPais(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)),
+                    new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
+            casillas.replace(casillaPais.getCoordenadas(), casillaPais);
+            paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista
+                                                                                  // de países
         }
+        bufferedReader.close();
     }
 
     /**
@@ -622,25 +607,28 @@ public class Mapa {
     }
 
     /**
-     * Devuelve un Set de los nombres de los países con los que el país argumento hace frontera
+     * Devuelve un Set de los nombres de los países con los que el país argumento
+     * hace frontera
      */
     public Set<String> getNombresPaisesFrontera(Pais pais) {
-        return this.getPaisesFrontera(pais).stream().map(paisFrontera -> paisFrontera.getNombreHumano()).collect(Collectors.toSet());
+        return this.getPaisesFrontera(pais).stream().map(paisFrontera -> paisFrontera.getNombreHumano())
+                .collect(Collectors.toSet());
     }
-    
+
     /**
      * Devuelve un Set de los países con los que el país argumento hace frontera
+     * 
      * @param pais
      * @return
      */
     public Set<Pais> getPaisesFrontera(Pais pais) {
         return this.getFronteras(pais).stream().map((Frontera frontera) -> {
             return (frontera.getPaises().stream().filter((Pais paisComp) -> {
-                    return (!pais.equals(paisComp)); // Buscamos, dentro de los
-                                                                               // dos países
-                                                                               // de esa frontera, el país
-                                                                               // que no
-                                                                               // sea el de la consulta
+                return (!pais.equals(paisComp)); // Buscamos, dentro de los
+                                                 // dos países
+                                                 // de esa frontera, el país
+                                                 // que no
+                                                 // sea el de la consulta
             }).collect(Collectors.toList()).get(0)); // El otro país
         }).collect(Collectors.toSet());
     }
@@ -694,10 +682,11 @@ public class Mapa {
 
     /**
      * Indica si todos los Paises del Mapa tienen asignado un Jugador
+     * 
      * @return
      */
     public boolean arePaisesAsignados() {
-        return this.getPaises().stream().allMatch(p -> p.getJugador()!=null);
+        return this.getPaises().stream().allMatch(p -> p.getJugador() != null);
     }
 
     public void asignarPaisAJugadorInicialmente(String nombrePais, String nombreJugador) throws ExcepcionRISK {
@@ -707,7 +696,7 @@ public class Mapa {
 
         Pais pais = Mapa.getMapa().getPais(nombrePais);
         Jugador jugador = Partida.getPartida().getJugador(nombreJugador);
-        if (pais.getJugador()!=null) {
+        if (pais.getJugador() != null) {
             throw RiskExceptionEnum.PAIS_YA_ASIGNADO.get();
         }
         pais.conquistar(jugador);

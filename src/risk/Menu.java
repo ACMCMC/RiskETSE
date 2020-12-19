@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,7 +99,8 @@ public class Menu {
         try {
             Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(nombrePais));
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", Mapa.getMapa().getPais(nombrePais).getNombreHumano())
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
+                    .autoAdd("pais", Mapa.getMapa().getPais(nombrePais).getNombreHumano())
                     .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano())
                     .autoAdd("frontera", fronterasPais).build());
         } catch (ExcepcionRISK e) {
@@ -111,9 +113,65 @@ public class Menu {
      */
     public void crearMapa() {
         File filePaisesCoordenadas = new File("paisesCoordenadas.csv");
+        File fileColoresContinentes = new File("coloresContinentes.csv");
         try {
             Mapa.crearMapa(filePaisesCoordenadas);
-        } catch (FileNotFoundException ex) {
+            try {
+                Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+            } catch (FileNotFoundException e) {
+                try {
+                    FileCreatorFallback.crearArchivoColoresContinentes(fileColoresContinentes);
+                    Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+                } catch (IOException ex) {
+                    io.printToErrOutput(
+                            new ExcepcionRISK(0, "No se puede leer ni crear el archivo de colores de los continentes") {
+                                private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                            });
+                }
+            } catch (IOException e) {
+                io.printToErrOutput(new ExcepcionRISK(0, "No se puede leer el archivo de colores de los continentes") {
+                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                });
+            }
+        } catch (IOException ex) {
+            if (ex instanceof FileNotFoundException) {
+                try {
+                    FileCreatorFallback.crearArchivoPaisesCoordenadas(filePaisesCoordenadas);
+                    try {
+                        Mapa.crearMapa(filePaisesCoordenadas);
+                        try {
+                            Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+                        } catch (FileNotFoundException e) {
+                            try {
+                                FileCreatorFallback.crearArchivoColoresContinentes(fileColoresContinentes);
+                                Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+                            } catch (IOException exc) {
+                                io.printToErrOutput(new ExcepcionRISK(0,
+                                        "No se puede leer ni crear el archivo de colores de los continentes") {
+                                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                                });
+                            }
+                        } catch (IOException e) {
+                            io.printToErrOutput(
+                                    new ExcepcionRISK(0, "No se puede leer el archivo de colores de los continentes") {
+                                        private static final long serialVersionUID = 1L; // Solo para que no de un
+                                                                                         // warning
+                                    });
+                        }
+                    } catch (ExcepcionGeo e) {
+                        io.printToErrOutput(e);
+                    }
+                } catch (IOException e) {
+                    io.printToErrOutput(
+                            new ExcepcionRISK(0, "No se puede leer ni crear el archivo de coordenadas de los países") {
+                                private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                            });
+                }
+            } else {
+                io.printToErrOutput(new ExcepcionRISK(0, "No se puede leer el archivo de coordenadas de los países") {
+                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                });
+            }
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
@@ -243,7 +301,8 @@ public class Menu {
      */
     public void cambiarCartas(String carta1, String carta2, String carta3) {
         try {
-            Carta c1 = CartaEquipamientoFactory.get(carta1, Mapa.getMapa()); // Si alguna de las cartas no existe, se lanzará aquí una excepción
+            Carta c1 = CartaEquipamientoFactory.get(carta1, Mapa.getMapa()); // Si alguna de las cartas no existe, se
+                                                                             // lanzará aquí una excepción
             Carta c2 = CartaEquipamientoFactory.get(carta2, Mapa.getMapa());
             Carta c3 = CartaEquipamientoFactory.get(carta3, Mapa.getMapa());
             Jugador jugador = Partida.getPartida().getJugadorActual();
@@ -254,7 +313,8 @@ public class Menu {
             int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
             int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
             String output = OutputBuilder.beginBuild()
-                    .autoAdd("cartasCambio", cambioCartas.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("cartasCambio",
+                            cambioCartas.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
                     .autoAdd("cartasQuedan",
                             jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
                     .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
@@ -279,7 +339,8 @@ public class Menu {
             int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
             int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
             String output = OutputBuilder.beginBuild()
-                    .autoAdd("cartasCambio", cambioOptimo.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("cartasCambio",
+                            cambioOptimo.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
                     .autoAdd("cartasQuedan",
                             jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
                     .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
@@ -344,7 +405,7 @@ public class Menu {
         String Continente;
         try {
             Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("continente", Continente).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
