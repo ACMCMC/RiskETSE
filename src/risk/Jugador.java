@@ -220,7 +220,7 @@ public class Jugador {
     /**
      * Devuelve la mejor configuración de cambio de cartas para este Jugador
      */
-    public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() {
+    public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() throws ExcepcionCarta {
         CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento());
         return cambioCartasFactory.getBestCambioCartas();
     }

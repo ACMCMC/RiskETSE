@@ -7,12 +7,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import risk.riskexception.ExcepcionCarta;
+import risk.riskexception.RiskExceptionEnum;
+
 /**
  * Busca la configuración de cambio de cartas óptima, y la devuelve
  */
 public class CambioCartasFactory {
     private Set<Carta> cartasOriginales;
-    public CambioCartasFactory(Set<Carta> cartasOriginales){
+    public CambioCartasFactory(Set<Carta> cartasOriginales) throws ExcepcionCarta {
+        if (cartasOriginales.size()<3) {
+            throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CARTAS_SUFICIENTES.get();
+        }
         this.cartasOriginales = cartasOriginales;
     }
 

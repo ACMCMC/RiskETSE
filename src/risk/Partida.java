@@ -306,6 +306,9 @@ public class Partida {
     }
 
     private Turno getTurnoActual() {
+        if (this.turnoActual==null) {
+            this.turnoActual = new Turno(this.colaJugadores.peek());
+        }
         return this.turnoActual;
     }
 
