@@ -31,7 +31,7 @@ public class Turno implements PaisEventSubscriber {
 
     @Override
     public void update(PaisEvent evento) {
-        if (evento.getPaisAntes().getJugador().equals(evento.getPaisDespues().getJugador())) {
+        if (!evento.getPaisAntes().getJugador().equals(evento.getPaisDespues().getJugador())) {
             if (evento.getPaisDespues().getJugador().equals(jugador)) {
                 this.numConquistasPaises++;
             }
