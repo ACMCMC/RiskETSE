@@ -14,29 +14,32 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import risk.cartas.Carta;
+import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionJugador;
-import risk.riskexception.ExcepcionMision;
 import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
-import risk.riskexception.RiskExceptionFactory;
 
+/**
+ * Representa la partida. Guarda información sobre los jugadores y su estado.
+ */
 public class Partida {
     private static final Partida partidaSingleton = new Partida();
 
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
     private Map<Jugador, CartaMision> misionesJugadores;
+    private Turno turnoActual;
 
     private Partida() {
         this.jugadores = new HashMap<>();
@@ -54,7 +57,7 @@ public class Partida {
      * @return
      */
     public Set<Jugador> getJugadores() {
-        return jugadores.entrySet().parallelStream().map(entry -> {
+        return jugadores.entrySet().stream().map(entry -> {
             return (entry.getValue());
         }).collect(Collectors.toSet());
     }
@@ -102,26 +105,13 @@ public class Partida {
     }
 
     /**
-     * Asigna una carta de misión a un Jugador, que tiene que estar registrado
-     * 
-     * @param cartaMision
-     * @param jugador
-     */
-    public void asignarCartaMisionJugador(CartaMision cartaMision, Jugador jugador) throws ExcepcionMision {
-        if (jugadores.containsValue(jugador)) { // Podría darse el caso de que el Jugador no esté en la Partida
-            this.misionesJugadores.put(jugador, cartaMision);
-            jugador.addCartaMision(cartaMision);
-        }
-    }
-
-    /**
      * Devuelve el jugador del Color especificado, o null
      * 
      * @param color
      * @return
      */
     public Jugador getJugador(Color color) {
-        Optional<Jugador> jugador = this.jugadores.entrySet().parallelStream().map(entry -> {
+        Optional<Jugador> jugador = this.jugadores.entrySet().stream().map(entry -> {
             return (entry.getValue());
         }).filter(jug -> {
             return (jug.getColor().equals(color));
@@ -275,15 +265,24 @@ public class Partida {
      * @return
      */
     public Jugador getJugadorActual() {
-        return this.colaJugadores.peek();
+        if (this.turnoActual!=null) {
+            return this.turnoActual.getJugador();
+        } else {
+            return this.colaJugadores.peek();
+        }
     }
 
     /**
      * Avanza el juego un turno
      */
     public void siguienteTurno() {
+        if (turnoActual!=null) {
+            Mapa.getMapa().getPaisEventPublisher().unsubscribe(turnoActual);
+        }
         this.colaJugadores.add(this.colaJugadores.poll());
-        getJugadorActual().setEjercitosRearme(getJugadorActual().calcularNumEjercitosRearmar());
+        this.turnoActual = new Turno(this.colaJugadores.peek());
+        Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
+        getJugadorActual().recalcularEjercitosRearme();
     }
 
     /**
@@ -304,6 +303,22 @@ public class Partida {
             throw RiskExceptionEnum.MISION_YA_ASIGNADA.get();
         }
         jugador.addCartaMision(cartaMision);
+    }
+
+    private Turno getTurnoActual() {
+        if (this.turnoActual==null) {
+            this.turnoActual = new Turno(this.colaJugadores.peek());
+        }
+        return this.turnoActual;
+    }
+
+    public Carta asignarCartaEquipamiento(String idCarta) throws ExcepcionRISK {
+        if (!getTurnoActual().hasJugadorConquistadoPais()) {
+            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
+        }
+        Carta cartaEquipamiento = CartaEquipamientoFactory.get(idCarta, Mapa.getMapa());
+        this.getTurnoActual().getJugador().addCartaEquipamiento(cartaEquipamiento);
+        return cartaEquipamiento;
     }
 
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
@@ -404,10 +419,10 @@ public class Partida {
                     tupla -> new Float(2));
         }
 
-        Map<Jugador, List<TuplaContinenteJugadorPorcentaje>> tuplasJugs = tuplas.parallelStream()
+        Map<Jugador, List<TuplaContinenteJugadorPorcentaje>> tuplasJugs = tuplas.stream()
                 .collect(Collectors.groupingBy(TuplaContinenteJugadorPorcentaje::getJugador));
         // Un Map que relaciona Jugadores con sus tuplas
-        tuplasJugs.entrySet().parallelStream()
+        tuplasJugs.entrySet().stream()
                 .filter(entry -> entry.getValue().stream().allMatch(tupla -> tupla.getPorcentaje() < 0.25))
                 // Nos quedamos solo con las entradas del Map en las que todas las tuplas dicen
                 // que el jugador tiene menos del 25% del porcentaje (es decir, solo nos
@@ -454,7 +469,7 @@ public class Partida {
         // que tengan menos fronteras
         Stream.generate(colaAsignar::poll);
         colaAsignar.stream().sorted(colaAsignar.comparator()).forEach(continente -> {
-            continente.getPaises().parallelStream().filter(pais -> pais.getEjercitos().size() == 1).forEach(pais -> {
+            continente.getPaises().stream().filter(pais -> pais.getEjercitos().size() == 1).forEach(pais -> {
                 try {
                     pais.getJugador().asignarEjercitosAPais(1, pais);
                 } catch (ExcepcionJugador e) {
@@ -467,7 +482,7 @@ public class Partida {
             Predicate<TuplaContinenteJugadorPorcentaje> predicadoFiltrado,
             Function<TuplaContinenteJugadorPorcentaje, Float> factorDivision) {
 
-        Set<TuplaContinenteJugadorPorcentaje> tuplasFiltradas = setTuplas.parallelStream().filter(predicadoFiltrado)
+        Set<TuplaContinenteJugadorPorcentaje> tuplasFiltradas = setTuplas.stream().filter(predicadoFiltrado)
                 .collect(Collectors.toSet()); // Aplicamos el predicado de filtrado a las tuplas
 
         if (tuplasFiltradas.isEmpty()) {
@@ -491,7 +506,7 @@ public class Partida {
 
         if (tuplasFiltradas.size() > 1) { // Si hay varios continentes que cumplen la condición... (R2)
 
-            float procentajeMaximo = tuplasFiltradas.parallelStream()
+            float procentajeMaximo = tuplasFiltradas.stream()
                     .max(Comparator.comparing(TuplaContinenteJugadorPorcentaje::getPorcentaje)).get().getPorcentaje();
             // Obtenemos el porcentaje máximo de las tuplas que resultaron del filtrado, ya
             // que sólo vamos a aplicar la regla en un continente
@@ -553,7 +568,7 @@ public class Partida {
      * @return un Set de Tuplas
      */
     private Set<TuplaContinenteJugadorPorcentaje> obtenerTuplasContinenteJugadorPorcentaje() {
-        Set<TuplaContinenteJugadorPorcentaje> tuplas = Mapa.getMapa().getContinentes().parallelStream()
+        Set<TuplaContinenteJugadorPorcentaje> tuplas = Mapa.getMapa().getContinentes().stream()
                 .map(continente -> { // Por cada continente...
                     List<Jugador> listaJugadoresContinente = continente.getPaises().stream()
                             .map(pais -> pais.getJugador()).collect(Collectors.toList()); // Elaboro una lista de

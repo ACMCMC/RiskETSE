@@ -5,15 +5,16 @@
 package risk;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import risk.cartasmision.PaisEvent;
 import risk.ejercito.Ejercito;
 import risk.riskexception.ExcepcionJugador;
-import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa un país dentro de un Continente
+ */
 public class Pais implements Cloneable {
     private String codigo;
     private String nombreHumano;

@@ -1,5 +1,8 @@
 package risk.riskexception;
 
+/**
+ * Fábrica de excepciones del Risk
+ */
 public class RiskExceptionFactory {
 
     public static ExcepcionRISK fromCode(int code) {

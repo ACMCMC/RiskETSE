@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Clase auxiliar que sirve para construir las salidas de los comandos
+ */
 public class OutputBuilder {
 
     private static final int nivelSangrado = 4; // El nivel de sangrado por defecto

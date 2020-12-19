@@ -1,5 +1,8 @@
 package risk;
 
+/**
+ * Una casilla del Mapa
+ */
 public abstract class Casilla {
     /**
      * Representa los bordes de la casilla. Se usa después para representar el mapa
