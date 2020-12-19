@@ -5,7 +5,7 @@ package risk;
  */
 public class ComandoProcessor {
     private enum ComandoProcessorStatus {
-        CREANDO_MAPA, CREANDO_JUGADORES, ASIGNANDO_MISIONES, ASIGNANDO_PAISES, REPARTIENDO_EJERCITOS, JUGANDO_CAMBIANDO_CARTAS, JUGANDO_REPARTIENDO_EJERCITOS, JUGANDO, JUGANDO_REARMANDO;
+        CREANDO_MAPA, CREANDO_JUGADORES, ASIGNANDO_MISIONES, ASIGNANDO_PAISES, REPARTIENDO_EJERCITOS, JUGANDO_CAMBIANDO_CARTAS, JUGANDO_REPARTIENDO_EJERCITOS, JUGANDO_ATACANDO, JUGANDO_REARMANDO;
     }
 
     private ComandoProcessorStatus status;
@@ -17,7 +17,11 @@ public class ComandoProcessor {
     }
 
     public void procesarComando(String comando) {
-        if (status.equals(ComandoProcessorStatus.CREANDO_MAPA)) {
+        if (!comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
+            imprimirComandoNoPermitidoOIncorrecto(comando);
+        } else if (isComandoSiemprePermitido(comando)) {
+            procesarComandoSiemprePermitido(comando);
+        } else if (status.equals(ComandoProcessorStatus.CREANDO_MAPA)) {
             procesarComandoCreandoMapa(comando);
         } else if (status.equals(ComandoProcessorStatus.CREANDO_JUGADORES)) {
             procesarComandoCreandoJugadores(comando);
@@ -27,14 +31,16 @@ public class ComandoProcessor {
             procesarComandoAsignandoPaises(comando);
         } else if (status.equals(ComandoProcessorStatus.REPARTIENDO_EJERCITOS)) {
             procesarComandoRepartiendoEjercitos(comando);
+        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
+            procesarComandoSiemprePermitidoDuranteJuego(comando);
         } else if (status.equals(ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS)) {
             procesarComandoJugandoCambiandoCartas(comando);
         } else if (status.equals(ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS)) {
             procesarComandoJugandoRepartiendoEjercitos(comando);
         } else if (status.equals(ComandoProcessorStatus.JUGANDO_REARMANDO)) {
             procesarComandoJugandoRearmando(comando);
-        } else if (status.equals(ComandoProcessorStatus.JUGANDO)) {
-            procesarComandoJugando(comando);
+        } else if (status.equals(ComandoProcessorStatus.JUGANDO_ATACANDO)) {
+            procesarComandoJugandoAtacando(comando);
         }
     }
 
@@ -144,8 +150,6 @@ public class ComandoProcessor {
         } else if (partes.length == 3 && partes[0].equals("cambiar") && partes[1].equals("cartas") && partes[2].equals("todas")) {
             this.status = ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS;
             menu.cambiarCartasTodas();
-        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
-            this.procesarComandoSiemprePermitidoDuranteJuego(comando);
         } else if (comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
             this.status = ComandoProcessorStatus.JUGANDO_REPARTIENDO_EJERCITOS;
             this.procesarComando(comando);
@@ -158,10 +162,8 @@ public class ComandoProcessor {
         String partes[] = comando.split(" ");
         if (partes.length == 4 && partes[0].equals("repartir") && partes[1].equals("ejercitos")) {
             menu.repartirEjercitos(partes[2], partes[3]);
-        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
-            this.procesarComandoSiemprePermitidoDuranteJuego(comando);
         } else if (Partida.getPartida().areEjercitosRepartidos() && comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
-            this.status = ComandoProcessorStatus.JUGANDO;
+            this.status = ComandoProcessorStatus.JUGANDO_ATACANDO;
             this.procesarComando(comando);
         } else {
             imprimirComandoNoPermitidoOIncorrecto(comando);
@@ -174,9 +176,8 @@ public class ComandoProcessor {
             menu.rearmar(partes[1], partes[2], partes[3]);
         } else if (partes.length == 3 && partes[0].equals("asignar") && partes[1].equals("carta")) {
             menu.asignarCarta(partes[2]);
-        } else if (isComandoSiemprePermitidoDuranteJuego(comando)) {
-            this.procesarComandoSiemprePermitidoDuranteJuego(comando);
-        } else if (comprobarSiComandoEsSintacticamenteCorrecto(comando)) {
+        } else if (partes.length==2 && partes[0].equals("acabar") && partes[1].equals("turno")) {
+            menu.acabarTurno();
             this.status = ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS;
             this.procesarComando(comando);
         } else {
@@ -184,38 +185,18 @@ public class ComandoProcessor {
         }
     }
     
-    private void procesarComandoJugando(String comando) {
+    private void procesarComandoJugandoAtacando(String comando) {
         String partes[] = comando.split(" ");
         String com = partes[0];
         switch (com) {
             case "rearmar":
                 if (partes.length == 4) {
                     this.status = ComandoProcessorStatus.JUGANDO_REARMANDO;
-                    menu.rearmar(partes[1], partes[2], partes[3]);
+                    this.procesarComando(comando);
                 } else {
                     imprimirComandoNoPermitidoOIncorrecto(comando);
                 }
             break;
-            case "ver":
-            if (partes.length == 2) {
-                if (partes[1].equals("mapa")) {
-                    menu.verMapa();
-                }
-            }
-            break;
-            case "obtener":
-            if (partes.length == 3) {
-                    if (partes[1].equals("color")) {
-                        menu.obtenerColor(partes[2]);
-                    } else if (partes[1].equals("frontera")) {
-                        menu.obtenerFronteras(partes[2]);
-                    } else if (partes[1].equals("paises")) {
-                        menu.obtenerPaisesContinente(partes[2]);
-                    } else {
-                        menu.comandoIncorrecto();
-                    }
-                }
-                break;
             case "atacar":
                 if (partes.length == 3) {
                     menu.atacar(partes[1], partes[2]);
@@ -225,39 +206,18 @@ public class ComandoProcessor {
                     menu.comandoIncorrecto();
                 }
                 break;
-            case "describir":
-                if (partes.length == 3) {
-                    if (partes[1].equals("pais")) {
-                        menu.describirPais(partes[2]);
-                    } else if (partes[1].equals("continente")) {
-                        menu.describirContinente(partes[2]);
-                    } else if (partes[1].equals("jugador")) {
-                        menu.describirJugador(partes[2]);
-                    } else {
-                        menu.comandoIncorrecto();
-                    }
-                } else {
-                    menu.comandoIncorrecto();
-                }
-                break;
-            case "jugador":
-                if (partes.length == 1) {
-                    menu.describirJugadorActual();
-                } else {
-                    menu.comandoIncorrecto();
-                }
-                break;
             case "acabar":
                 if (partes.length == 2 && partes[1].equals("turno")) {
-                    status=ComandoProcessorStatus.JUGANDO_CAMBIANDO_CARTAS;
-                    menu.acabarTurno();
+                    status=ComandoProcessorStatus.JUGANDO_REARMANDO;
+                    this.procesarComando(comando);
                 } else {
                     imprimirComandoNoPermitidoOIncorrecto(comando);
                 }
                 break;
-            case "asignar":
+                case "asignar":
                 if (partes.length==3 && partes[1].equals("carta")) {
-                    menu.asignarCarta(partes[2]);
+                    status=ComandoProcessorStatus.JUGANDO_REARMANDO;
+                    this.procesarComando(comando);
                 } else {
                     imprimirComandoNoPermitidoOIncorrecto(comando);
                 }
@@ -301,10 +261,50 @@ public class ComandoProcessor {
                 return true;
             }
         }
-        if (partes.length==2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
+        if (partes.length==1 && partes[0].equals("jugador")) {
             return true;
         }
-        if (partes.length==1 && partes[0].equals("jugador")) {
+        return false;
+    }
+
+    public void procesarComandoSiemprePermitido(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 3 && partes[0].equals("obtener")) {
+            if (partes[1].equals("color")) {
+                menu.obtenerColor(partes[2]);
+            }
+            if (partes[1].equals("frontera")) {
+                menu.obtenerFronteras(partes[2]);
+            }
+            if (partes[1].equals("continente")) {
+                menu.obtenerContinente(partes[2]);
+            }
+            if (partes[1].equals("paises")) {
+                menu.obtenerPaisesContinente(partes[2]);
+            }
+        }
+        if (partes.length==2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
+            menu.verMapa();
+        }
+    }
+
+    public boolean isComandoSiemprePermitido(String comando) {
+        String partes[] = comando.split(" ");
+        if (partes.length == 3 && partes[0].equals("obtener")) {
+            if (partes[1].equals("frontera")) {
+                return true;
+            }
+            if (partes[1].equals("color")) {
+                return true;
+            }
+            if (partes[1].equals("continente")) {
+                return true;
+            }
+            if (partes[1].equals("paises")) {
+                return true;
+            }
+        }
+        if (partes.length==2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
             return true;
         }
         return false;
