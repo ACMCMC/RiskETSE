@@ -9,3 +9,5 @@ Al implementar la clase abstracta de las cartas de equipamiento, ya que cada una
 El comando `jugador` o `describir jugador [nombre]`, en el campo `numEjercitoRearme` muestra los ejércitos que le corresponderían a un jugador al inicio de su turno, no los ejércitos que le quedan por rearmar en el turno actual.
 
 Una vez que se asigna una carta de equipamiento al jugador, ya no puede atacar. Lo único que puede hacer es rearmar, antes de acabar su turno.
+
+Si los archivos que incluyen la información del mapa no existen o no se encuentran en el momento de la ejecución del programa, se crearán automáticamente.
