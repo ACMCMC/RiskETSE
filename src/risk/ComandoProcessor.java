@@ -319,10 +319,8 @@ public class ComandoProcessor {
                         return true;
                     } else if (partesComando.length == 3) {
                         return true;
-                    } else {
-                        return false;
                     }
-
+                break;
                 case "obtener":
                     if (partesComando.length == 3) {
                         if (partesComando[1].equals("frontera")) {
@@ -336,29 +334,23 @@ public class ComandoProcessor {
                         } else {
                             return false;
                         }
-                    } else {
-                        return false;
                     }
-
+                break;
                 case "repartir":
                     if (partesComando.length == 2 && partesComando[1].equals("ejercitos")) {
                         return true;
                     } else if (partesComando.length == 4 && partesComando[1].equals("ejercitos")) {
                         return true;
-                    } else {
-                        return false;
                     }
-
+                    break;
                 case "cambiar":
                     if (partesComando.length == 3 && partesComando[1].equals("cartas")
                             && partesComando[2].equals("todas")) {
                         return true;
                     } else if (partesComando.length == 5 && partesComando[1].equals("cartas")) {
                         return true;
-                    } else {
-                        return false;
                     }
-
+                    break;
                 case "asignar":
                     if (partesComando.length == 3) {
                         if (partesComando[1].equals("misiones")) {
@@ -371,10 +363,10 @@ public class ComandoProcessor {
                             return true; // En cualquier caso va a ser correcto porque puede ser asignar <jugador>
                                          // <pais>
                         }
-                    } else {
-                        return false;
+                    } else if (partesComando.length==4 && partesComando[0].equals("asignar") && partesComando[1].equals("mision")) {
+                        return true;
                     }
-
+                    break;
                 case "describir":
                     if (partesComando.length == 3) {
                         if (partesComando[1].equals("jugador")) {
@@ -386,38 +378,28 @@ public class ComandoProcessor {
                         } else {
                             return false;
                         }
-                    } else {
-                        return false;
                     }
-
+                    break;
                 case "atacar":
                     if (partesComando.length == 3) {
                         return true;
                     } else if (partesComando.length == 5) {
                         return true;
-                    } else {
-                        return false;
                     }
-
+                    break;
                 case "rearmar":
                     if (partesComando.length == 4) {
                         return true;
-                    } else {
-                        return false;
                     }
-
+                    break;
                 case "acabar":
                     if (partesComando.length == 2 && partesComando[1].equals("turno"))
-                        return true;
-                    else
-                        return false;
-
+                        {return true;}
+                        break;
                 case "ver":
                     if (partesComando.length == 2 && partesComando[1].equals("mapa"))
-                        return true;
-                    else
-                        return false;
-
+                        {return true;}
+                    break;
                 default:
                     return false;
             }
@@ -426,5 +408,6 @@ public class ComandoProcessor {
         } else {
             return false;
         }
+        return false;
     }
 }

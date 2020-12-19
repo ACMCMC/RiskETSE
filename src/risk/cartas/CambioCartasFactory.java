@@ -97,10 +97,15 @@ public class CambioCartasFactory {
         
         for (Carta carta : cartasOriginales) {
             if (!nodoPadre.getSetCartas().contains(carta)) {
-                Set<Carta> cartasHijo = new HashSet<>();
-                cartasHijo.addAll(nodoPadre.getSetCartas());
-                Nodo nodoHijo = new Nodo(cartasHijo, beneficioCartaMax);
-                hijos.add(nodoHijo);
+                boolean esCartaQueSePuedeAnadir = false; // Solo se puede añadir la carta si tiene el mismo tipo que todas las anteriores, o es de un tipo distinto (para al final tres cartas de distinto tipo, o del mismo, pero no dos del mismo y una diferente)
+                esCartaQueSePuedeAnadir = nodoPadre.getSetCartas().stream().allMatch(c -> c.getClaseCarta().equals(carta.getClaseCarta())); // Aquí miramos si la carta tiene el mismo tipo que todas las demás
+                esCartaQueSePuedeAnadir = esCartaQueSePuedeAnadir || nodoPadre.getSetCartas().stream().allMatch(c -> !c.getClaseCarta().equals(carta.getClaseCarta())); // Si no, miramos si las cartas tendrían todas distinto tipo
+                if (esCartaQueSePuedeAnadir) {
+                    Set<Carta> cartasHijo = new HashSet<>();
+                    cartasHijo.addAll(nodoPadre.getSetCartas());
+                    Nodo nodoHijo = new Nodo(cartasHijo, beneficioCartaMax);
+                    hijos.add(nodoHijo);
+                }
             }
         }
 
