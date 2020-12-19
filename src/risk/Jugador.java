@@ -147,7 +147,7 @@ public class Jugador {
      * Devuelve un Set de los Paises de este Jugador
      */
     public Set<Pais> getPaises() {
-        Set<Pais> paisesJugador = Mapa.getMapa().getPaises().parallelStream().filter(pais -> {
+        Set<Pais> paisesJugador = Mapa.getMapa().getPaises().stream().filter(pais -> {
             return (pais.getJugador() != null ? pais.getJugador().equals(this) : false);
         }).collect(Collectors.toSet());
         return paisesJugador;
@@ -157,7 +157,7 @@ public class Jugador {
      * Devuelve el total de ejércitos de este Jugador, buscando por todos sus países
      */
     public int getTotalEjercitos() {
-        int totalEjercitos = this.getPaises().parallelStream().reduce(0, (accum, pais) -> {
+        int totalEjercitos = this.getPaises().stream().reduce(0, (accum, pais) -> {
             return (accum + pais.getNumEjercitos());
         }, Integer::sum);
         return totalEjercitos;

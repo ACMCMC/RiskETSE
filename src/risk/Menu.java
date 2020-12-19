@@ -424,7 +424,7 @@ public class Menu {
         fronterasPaises.add(new String[] { "EurSur", "Egipto" });
         fronterasPaises.add(new String[] { "SAsiático", "Indonesia" });
 
-        fronterasPaises.parallelStream().map(paises -> {
+        fronterasPaises.stream().map(paises -> {
             List<Pais> par = new ArrayList<>();
             try {
                 par.add(Mapa.getMapa().getPais(paises[0]));

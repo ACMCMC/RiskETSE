@@ -212,7 +212,7 @@ public class Mapa {
      * @return
      */
     public Set<Pais> getPaises() {
-        return (this.paises.entrySet().parallelStream().map((entrada) -> {
+        return (this.paises.entrySet().stream().map((entrada) -> {
             return (entrada.getValue());
         }).collect(Collectors.toSet()));
     }
@@ -225,7 +225,7 @@ public class Mapa {
      * @return
      */
     public Set<Frontera> getFronterasIntercontinentales(Continente c) {
-        return (this.fronteras.parallelStream()
+        return (this.fronteras.stream()
                 .filter(frontera -> frontera.getPaises().stream().anyMatch(pais -> pais.getContinente().equals(c)))
                 .filter(frontera -> !frontera.getPaises().stream().allMatch(pais -> pais.getContinente().equals(c)))
                 .collect(Collectors.toSet()));
@@ -546,7 +546,7 @@ public class Mapa {
      */
     public Casilla getCasillaPais(Pais pais) {
         try {
-            return (this.casillas.entrySet().parallelStream().filter((entrada) -> {
+            return (this.casillas.entrySet().stream().filter((entrada) -> {
                 if (entrada.getValue() instanceof CasillaPais) {
                     return (((CasillaPais) entrada.getValue()).getPais().equals(pais));
                 } else { // La casilla es marítima, no puede tener asociado un país
@@ -597,7 +597,7 @@ public class Mapa {
      * @return
      */
     public Set<Frontera> getFronteras(Pais pais) {
-        return (this.fronteras.parallelStream().filter((Frontera f) -> {
+        return (this.fronteras.stream().filter((Frontera f) -> {
             if (f.getPaises().contains(pais)) {
                 return true;
             } else {
@@ -707,7 +707,7 @@ public class Mapa {
      * Devuelve un Set de todos los Continentes del mapa
      */
     public Set<Continente> getContinentes() {
-        return this.continentes.entrySet().parallelStream().map(entry -> entry.getValue()).collect(Collectors.toSet());
+        return this.continentes.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toSet());
     }
 
     /**

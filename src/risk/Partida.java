@@ -57,7 +57,7 @@ public class Partida {
      * @return
      */
     public Set<Jugador> getJugadores() {
-        return jugadores.entrySet().parallelStream().map(entry -> {
+        return jugadores.entrySet().stream().map(entry -> {
             return (entry.getValue());
         }).collect(Collectors.toSet());
     }
@@ -111,7 +111,7 @@ public class Partida {
      * @return
      */
     public Jugador getJugador(Color color) {
-        Optional<Jugador> jugador = this.jugadores.entrySet().parallelStream().map(entry -> {
+        Optional<Jugador> jugador = this.jugadores.entrySet().stream().map(entry -> {
             return (entry.getValue());
         }).filter(jug -> {
             return (jug.getColor().equals(color));
@@ -419,10 +419,10 @@ public class Partida {
                     tupla -> new Float(2));
         }
 
-        Map<Jugador, List<TuplaContinenteJugadorPorcentaje>> tuplasJugs = tuplas.parallelStream()
+        Map<Jugador, List<TuplaContinenteJugadorPorcentaje>> tuplasJugs = tuplas.stream()
                 .collect(Collectors.groupingBy(TuplaContinenteJugadorPorcentaje::getJugador));
         // Un Map que relaciona Jugadores con sus tuplas
-        tuplasJugs.entrySet().parallelStream()
+        tuplasJugs.entrySet().stream()
                 .filter(entry -> entry.getValue().stream().allMatch(tupla -> tupla.getPorcentaje() < 0.25))
                 // Nos quedamos solo con las entradas del Map en las que todas las tuplas dicen
                 // que el jugador tiene menos del 25% del porcentaje (es decir, solo nos
@@ -469,7 +469,7 @@ public class Partida {
         // que tengan menos fronteras
         Stream.generate(colaAsignar::poll);
         colaAsignar.stream().sorted(colaAsignar.comparator()).forEach(continente -> {
-            continente.getPaises().parallelStream().filter(pais -> pais.getEjercitos().size() == 1).forEach(pais -> {
+            continente.getPaises().stream().filter(pais -> pais.getEjercitos().size() == 1).forEach(pais -> {
                 try {
                     pais.getJugador().asignarEjercitosAPais(1, pais);
                 } catch (ExcepcionJugador e) {
@@ -482,7 +482,7 @@ public class Partida {
             Predicate<TuplaContinenteJugadorPorcentaje> predicadoFiltrado,
             Function<TuplaContinenteJugadorPorcentaje, Float> factorDivision) {
 
-        Set<TuplaContinenteJugadorPorcentaje> tuplasFiltradas = setTuplas.parallelStream().filter(predicadoFiltrado)
+        Set<TuplaContinenteJugadorPorcentaje> tuplasFiltradas = setTuplas.stream().filter(predicadoFiltrado)
                 .collect(Collectors.toSet()); // Aplicamos el predicado de filtrado a las tuplas
 
         if (tuplasFiltradas.isEmpty()) {
@@ -506,7 +506,7 @@ public class Partida {
 
         if (tuplasFiltradas.size() > 1) { // Si hay varios continentes que cumplen la condición... (R2)
 
-            float procentajeMaximo = tuplasFiltradas.parallelStream()
+            float procentajeMaximo = tuplasFiltradas.stream()
                     .max(Comparator.comparing(TuplaContinenteJugadorPorcentaje::getPorcentaje)).get().getPorcentaje();
             // Obtenemos el porcentaje máximo de las tuplas que resultaron del filtrado, ya
             // que sólo vamos a aplicar la regla en un continente
@@ -568,7 +568,7 @@ public class Partida {
      * @return un Set de Tuplas
      */
     private Set<TuplaContinenteJugadorPorcentaje> obtenerTuplasContinenteJugadorPorcentaje() {
-        Set<TuplaContinenteJugadorPorcentaje> tuplas = Mapa.getMapa().getContinentes().parallelStream()
+        Set<TuplaContinenteJugadorPorcentaje> tuplas = Mapa.getMapa().getContinentes().stream()
                 .map(continente -> { // Por cada continente...
                     List<Jugador> listaJugadoresContinente = continente.getPaises().stream()
                             .map(pais -> pais.getJugador()).collect(Collectors.toList()); // Elaboro una lista de
