@@ -284,17 +284,19 @@ public class Partida {
         Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
         getJugadorActual().recalcularEjercitosRearme();
     }
+
+    /**
+     * Registra los manejadores de eventos del juego
+     */
+    public void iniciarJuego() {
+        Mapa.getMapa().getPaisEventPublisher().subscribe(this.getTurnoActual());
+    }
     
     /**
      * Avanza el turno de reparto (no recalcula el número de ejércitos que le tocan al jugador)
      */
     public void siguienteTurnoDeReparto() {
-        if (turnoActual!=null) {
-            Mapa.getMapa().getPaisEventPublisher().unsubscribe(turnoActual);
-        }
         this.colaJugadores.add(this.colaJugadores.poll());
-        this.turnoActual = new Turno(this.colaJugadores.peek());
-        Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
     }
 
     /**
@@ -312,11 +314,7 @@ public class Partida {
 
     private Turno getTurnoActual() {
         if (this.turnoActual==null) {
-            if (turnoActual!=null) {
-                Mapa.getMapa().getPaisEventPublisher().unsubscribe(turnoActual);
-            }
             this.turnoActual = new Turno(this.colaJugadores.peek());
-            Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
         }
         return this.turnoActual;
     }
