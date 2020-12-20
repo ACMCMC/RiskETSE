@@ -1,11 +1,14 @@
 package risk;
 
+/**
+ * Clase que crea el tipo adecuado de Consola
+ */
 public abstract class IOHelperFactory {
     private static Consola iOHelperInstance;
 
     public static void setType(Class<?> clase) {
-        if (clase == ConsolaConsola.class) {
-            iOHelperInstance = new ConsolaConsola();
+        if (clase == ConsolaNormal.class) {
+            iOHelperInstance = new ConsolaNormal();
         } else if (clase == ConsolaArchivo.class) {
             iOHelperInstance = new ConsolaArchivo("output.txt", "comandos.txt");
         } else {

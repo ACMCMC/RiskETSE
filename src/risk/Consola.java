@@ -1,5 +1,8 @@
 package risk;
 
+/**
+ * Interfaz Consola, que contiene funciones de lectura y escritura
+ */
 public interface Consola {
 
     public static final String PROMPT = "$> ";

@@ -1,5 +1,8 @@
 package risk;
 
+/**
+ * Una casilla del Mapa que no tiene asociado un país
+ */
 public class CasillaMaritima extends Casilla {
 
     CasillaMaritima(Coordenadas coordenadas) {

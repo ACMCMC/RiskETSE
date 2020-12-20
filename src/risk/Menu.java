@@ -8,8 +8,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartas.CambioCartas;
+import risk.cartas.Carta;
+import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionGeo;
@@ -25,7 +30,8 @@ import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
- *
+ * Representa el menú: proporciona puntos de entrada a los comandos
+ * 
  * @author Manuel Lama
  */
 public class Menu {
@@ -93,22 +99,79 @@ public class Menu {
         try {
             Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
             Set<String> fronterasPais = Mapa.getMapa().getNombresPaisesFrontera(Mapa.getMapa().getPais(nombrePais));
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador).autoAdd("pais", nombrePais)
-                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano()).autoAdd("frontera", fronterasPais)
-                    .build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
+                    .autoAdd("pais", Mapa.getMapa().getPais(nombrePais).getNombreHumano())
+                    .autoAdd("continente", Mapa.getMapa().getPais(nombrePais).getContinente().getNombreHumano())
+                    .autoAdd("frontera", fronterasPais).build());
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
 
     /**
-     *
+     * Comando para crear el Mapa
      */
     public void crearMapa() {
         File filePaisesCoordenadas = new File("paisesCoordenadas.csv");
+        File fileColoresContinentes = new File("coloresContinentes.csv");
         try {
             Mapa.crearMapa(filePaisesCoordenadas);
-        } catch (FileNotFoundException ex) {
+            try {
+                Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+            } catch (FileNotFoundException e) {
+                try {
+                    FileCreatorFallback.crearArchivoColoresContinentes(fileColoresContinentes);
+                    Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+                } catch (IOException ex) {
+                    io.printToErrOutput(
+                            new ExcepcionRISK(0, "No se puede leer ni crear el archivo de colores de los continentes") {
+                                private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                            });
+                }
+            } catch (IOException e) {
+                io.printToErrOutput(new ExcepcionRISK(0, "No se puede leer el archivo de colores de los continentes") {
+                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                });
+            }
+        } catch (IOException ex) {
+            if (ex instanceof FileNotFoundException) {
+                try {
+                    FileCreatorFallback.crearArchivoPaisesCoordenadas(filePaisesCoordenadas);
+                    try {
+                        Mapa.crearMapa(filePaisesCoordenadas);
+                        try {
+                            Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+                        } catch (FileNotFoundException e) {
+                            try {
+                                FileCreatorFallback.crearArchivoColoresContinentes(fileColoresContinentes);
+                                Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
+                            } catch (IOException exc) {
+                                io.printToErrOutput(new ExcepcionRISK(0,
+                                        "No se puede leer ni crear el archivo de colores de los continentes") {
+                                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                                });
+                            }
+                        } catch (IOException e) {
+                            io.printToErrOutput(
+                                    new ExcepcionRISK(0, "No se puede leer el archivo de colores de los continentes") {
+                                        private static final long serialVersionUID = 1L; // Solo para que no de un
+                                                                                         // warning
+                                    });
+                        }
+                    } catch (ExcepcionGeo e) {
+                        io.printToErrOutput(e);
+                    }
+                } catch (IOException e) {
+                    io.printToErrOutput(
+                            new ExcepcionRISK(0, "No se puede leer ni crear el archivo de coordenadas de los países") {
+                                private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                            });
+                }
+            } else {
+                io.printToErrOutput(new ExcepcionRISK(0, "No se puede leer el archivo de coordenadas de los países") {
+                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
+                });
+            }
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
@@ -165,16 +228,14 @@ public class Menu {
 
     /**
      * Crea un jugador a partir de un nombre y un color
-     * 
-     * @param file
      */
     public void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
         try {
             Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
             Partida.getPartida().addJugador(jugador);
-            io.printToOutput(
-                    OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color", Color.getColorByString(color).getNombre()).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
+                    .autoAdd("color", Color.getColorByString(color).getNombre()).build());
         } catch (ExcepcionGeo | ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -187,6 +248,105 @@ public class Menu {
         try {
             Partida.getPartida().repartirEjercitos();
         } catch (ExcepcionGeo e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Corresponde al comando {@literal rearmar}
+     */
+    public void rearmar(String nombrePais1, String numeroEjercitos, String nombrePais2) {
+        try {
+            Pais pais1 = Mapa.getMapa().getPais(nombrePais1);
+            Pais pais2 = Mapa.getMapa().getPais(nombrePais2);
+            int numEjercitos = Integer.parseInt(numeroEjercitos);
+            int numeroEjercitosInicialesOrigen = pais1.getNumEjercitos();
+            int numeroEjercitosInicialesDestino = pais2.getNumEjercitos();
+
+            Partida.getPartida().rearmar(pais1, pais2, numEjercitos);
+
+            int numeroEjercitosFinalesOrigen = pais1.getNumEjercitos();
+            int numeroEjercitosFinalesDestino = pais2.getNumEjercitos();
+
+            String output = OutputBuilder.beginBuild()
+                    .autoAdd("numeroEjercitosInicialesOrigen", numeroEjercitosInicialesOrigen)
+                    .autoAdd("numeroEjercitosInicialesDestino", numeroEjercitosInicialesDestino)
+                    .autoAdd("numeroEjercitosFinalesOrigen", numeroEjercitosFinalesOrigen)
+                    .autoAdd("numeroEjercitosFinalesDestino", numeroEjercitosFinalesDestino).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Asigna una carta de equipamiento al jugador actual
+     */
+    public void asignarCarta(String idCarta) {
+        try {
+            Carta carta = Partida.getPartida().asignarCartaEquipamiento(idCarta);
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("tipoCarta", carta.getTipo())
+                    .autoAdd("paisAsociado", carta.getPais())
+                    .autoAdd("perteneceAJugador", Partida.getPartida().getJugadorActual().getNombre())
+                    .autoAdd("ejercitosDeRearme", Partida.getPartida().getJugadorActual()
+                            .getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(carta))
+                    .build());
+        } catch (ExcepcionRISK e) {
+            io.printToErrOutput(e);
+        }
+    }
+
+    /**
+     * Comando "cambiar cartas id1 id2 id3"
+     */
+    public void cambiarCartas(String carta1, String carta2, String carta3) {
+        try {
+            Carta c1 = CartaEquipamientoFactory.get(carta1, Mapa.getMapa()); // Si alguna de las cartas no existe, se
+                                                                             // lanzará aquí una excepción
+            Carta c2 = CartaEquipamientoFactory.get(carta2, Mapa.getMapa());
+            Carta c3 = CartaEquipamientoFactory.get(carta3, Mapa.getMapa());
+            Jugador jugador = Partida.getPartida().getJugadorActual();
+            CambioCartas cambioCartas = new CambioCartas(c1, c2, c3);
+
+            int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
+            jugador.cambiarCartasEquipamiento(cambioCartas);
+            int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
+            int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
+            String output = OutputBuilder.beginBuild()
+                    .autoAdd("cartasCambio",
+                            cambioCartas.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("cartasQuedan",
+                            jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
+                    .autoAdd("numEjercitosRearme", numEjercitosRearmeDespuesDelCambio).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
+            if (e.equals(RiskExceptionEnum.IDENTIFICADOR_INCORRECTO.get())) {
+                io.printToErrOutput(RiskExceptionEnum.CARTAS_NO_EXISTEN.get());
+            }
+        }
+    }
+
+    /**
+     * Comando "cambiar cartas todas"
+     */
+    public void cambiarCartasTodas() {
+        try {
+            Jugador jugador = Partida.getPartida().getJugadorActual();
+            CambioCartas cambioOptimo = jugador.calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento();
+            int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
+            jugador.cambiarCartasEquipamiento(cambioOptimo);
+            int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
+            int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
+            String output = OutputBuilder.beginBuild()
+                    .autoAdd("cartasCambio",
+                            cambioOptimo.getSetCartas().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("cartasQuedan",
+                            jugador.getCartasEquipamiento().stream().map(Carta::getNombre).collect(Collectors.toSet()))
+                    .autoAdd("numeroEjercitosCambiados", numEjercitosCambiados)
+                    .autoAdd("numEjercitosRearme", numEjercitosRearmeDespuesDelCambio).build();
+            io.printToOutput(output);
+        } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
     }
@@ -206,10 +366,11 @@ public class Menu {
                     .filter(p -> p.getJugador().equals(pais.getJugador()))
                     .map(p -> "{ \"" + p.getNombreHumano() + "\", " + Integer.toString(p.getNumEjercitos()) + " }")
                     .collect(Collectors.toSet());
-            String output = OutputBuilder.beginBuild().autoAdd("pais", nombrePais).autoAdd("jugador", pais.getJugador())
+            String output = OutputBuilder.beginBuild().autoAdd("pais", pais.getNombreHumano())
+                    .autoAdd("jugador", pais.getJugador().getNombre())
                     .autoAdd("numeroEjercitosAsignados", numeroEjercitosAsignados)
                     .autoAdd("numeroEjercitosTotales", pais.getNumEjercitos()).disableQuoting()
-                    .autoAdd("paisesOcupadosCont", setPaisesOcupadosContinente).build();
+                    .autoAdd("paisesOcupadosContinente", setPaisesOcupadosContinente).build();
             io.printToOutput(output);
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
@@ -244,7 +405,7 @@ public class Menu {
         String Continente;
         try {
             Continente = Mapa.getMapa().getPais(abrevPais).getContinente().getNombreHumano();
-            io.printToOutput(OutputBuilder.beginBuild().autoAdd("Continente", Continente).build());
+            io.printToOutput(OutputBuilder.beginBuild().autoAdd("continente", Continente).build());
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
@@ -263,7 +424,7 @@ public class Menu {
         fronterasPaises.add(new String[] { "EurSur", "Egipto" });
         fronterasPaises.add(new String[] { "SAsiático", "Indonesia" });
 
-        fronterasPaises.parallelStream().map(paises -> {
+        fronterasPaises.stream().map(paises -> {
             List<Pais> par = new ArrayList<>();
             try {
                 par.add(Mapa.getMapa().getPais(paises[0]));
@@ -317,7 +478,7 @@ public class Menu {
         try {
             Jugador jugadorActual = Partida.getPartida().getJugador(nombreJugador);
             CartaMision mision = CartaMisionFactory.build(idMision, jugadorActual);
-            Partida.getPartida().asignarCartaMisionJugador(mision, jugadorActual);
+            Partida.getPartida().asignarMisionAJugador(mision, jugadorActual);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", nombreJugador)
                     .autoAdd("mision", mision.getDescripcion()).build());
         } catch (ExcepcionRISK e) {
@@ -339,9 +500,11 @@ public class Menu {
             String output = OutputBuilder.beginBuild().autoAdd("nombre", continente.getNombreHumano())
                     .autoAdd("abreviatura", continente.getCodigo()).disableQuoting().autoAdd("jugadores", listaJugs)
                     .enableQuoting()
-                    .autoAdd("numeroEjercitos", continente.getPaises().stream().reduce(0,
-                            (total, pais) -> total + pais.getNumEjercitos(), Integer::sum))
-                    .autoAdd("rearme", "RELLENAR").build();
+                    .autoAdd("numeroEjercitos",
+                            continente.getPaises().stream().reduce(0, (total, pais) -> total + pais.getNumEjercitos(),
+                                    Integer::sum))
+                    .autoAdd("rearme", continente.getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador())
+                    .build();
             io.printToOutput(output);
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
@@ -356,14 +519,21 @@ public class Menu {
     public void describirJugador(String nombre) {
         try {
             Jugador jugador = Partida.getPartida().getJugador(nombre);
-            String output = OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
-                    .autoAdd("color", jugador.getColor().getNombre()).autoAdd("mision", "RELLENAR")
-                    .autoAdd("numeroEjercitos", jugador.getTotalEjercitos()).autoAdd("paises", jugador.getPaises())
-                    .autoAdd("continentes",
-                            jugador.getPaises().stream().map(p -> p.getContinente()).distinct()
+            OutputBuilder output = OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre()).autoAdd("color",
+                    jugador.getColor().getNombre());
+            if (jugador.equals(Partida.getPartida().getJugadorActual())) { // Mostramos la misión solo si es el jugador
+                                                                           // actual
+                output.autoAdd("mision", jugador.getCartaMision().getDescripcion());
+            }
+            output.autoAdd("numeroEjercitos", jugador.getTotalEjercitos())
+                    .autoAdd("paises",
+                            jugador.getPaises().stream().map(Pais::getNombreHumano).collect(Collectors.toSet()))
+                    .autoAdd("continentes", jugador.getContinentesOcupadosExcusivamentePorJugador())
+                    .autoAdd("cartas",
+                            jugador.getCartasEquipamiento().stream().map(c -> c.getNombre())
                                     .collect(Collectors.toSet()))
-                    .autoAdd("cartas", "RELLENAR").autoAdd("numEjercitoRearme", "RELLENAR").build();
-            io.printToOutput(output);
+                    .autoAdd("numEjercitoRearme", jugador.calcularNumEjercitosRearmar());
+            io.printToOutput(output.build());
         } catch (ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -371,25 +541,31 @@ public class Menu {
 
     /**
      * Muestra las características del jugador que tiene el turno actual
-     * 
-     * @param nombre
      */
     public void describirJugadorActual() {
         describirJugador(Partida.getPartida().getJugadorActual().getNombre());
     }
 
+    /**
+     * Acaba un turno durante la partida
+     */
     public void acabarTurno() {
         Partida.getPartida().siguienteTurno();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getNumEjercitosRearmarRestantes()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme())
+                .build());
     }
 
+    /**
+     * Durante el reparto inicial de ejércitos, acaba un turno de reparto
+     */
     public void acabarTurnoReparto() {
-        Partida.getPartida().siguienteTurno();
+        Partida.getPartida().siguienteTurnoDeReparto();
         io.printToOutput(OutputBuilder.beginBuild()
                 .autoAdd("nombre", Partida.getPartida().getJugadorActual().getNombre())
-                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getEjercitosSinRepartir()).build());
+                .autoAdd("numeroEjercitosRearmar", Partida.getPartida().getJugadorActual().getNumEjercitosRearme())
+                .build());
     }
 
     /**
@@ -447,11 +623,11 @@ public class Menu {
             } else {
                 continenteConquistado = Optional.empty();
             }
-            io.printToOutput(OutputBuilder.beginBuild()
+            io.printToOutput(OutputBuilder.beginBuild().disableQuoting()
                     .autoAdd("dadosAtaque",
-                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                            resultadoAtacar.get(paisAtacante).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("dadosDefensa",
-                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
+                            resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
                         {
                             add(ejercitosPaisAtaqueAntes);
@@ -462,7 +638,7 @@ public class Menu {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());
                         }
-                    }).autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
+                    }).enableQuoting().autoAdd("paisAtaquePerteneceA", paisAtacante.getJugador().getNombre())
                     .autoAdd("paisDefensaPerteneceA", paisDefensor.getJugador().getNombre())
                     .autoAdd("continenteConquistado",
                             continenteConquistado.map(continente -> continente.getCodigo()).orElse("null"))
@@ -535,8 +711,11 @@ public class Menu {
     /**
      * Imprime el mapa
      */
-    public void imprimirMapa() {
+    public void verMapa() {
         io.printToOutput(Mapa.getMapa().toString());
+        if (!io.getClass().equals(ConsolaNormal.class)) {
+            System.out.println(Mapa.getMapa().toString());
+        }
     }
 
     /**

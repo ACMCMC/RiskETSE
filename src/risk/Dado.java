@@ -2,6 +2,9 @@ package risk;
 
 import java.util.Random;
 
+/**
+ * Representa un dado para usarlo al atacar.
+ */
 public class Dado {
     private int valor;
 
@@ -15,5 +18,14 @@ public class Dado {
 
     public int getValor() {
         return this.valor;
+    }
+
+    public void setValor(int newValor) {
+        this.valor = newValor;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(valor);
     }
 }

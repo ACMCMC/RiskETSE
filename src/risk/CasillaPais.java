@@ -4,6 +4,9 @@
 
 package risk;
 
+/**
+ * Una casilla del Mapa que tiene asociado un Pais
+ */
 public class CasillaPais extends Casilla {
 
     private final Pais pais; // Nunca puede ser NULL

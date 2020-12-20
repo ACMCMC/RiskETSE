@@ -4,6 +4,9 @@
 
 package risk;
 
+/**
+ * Representa un par de coordenadas (X,Y)
+ */
 public class Coordenadas implements Comparable {
 
     private final int X;

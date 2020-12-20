@@ -22,13 +22,7 @@ public class EjercitoRojo extends EjercitoBase {
             nuevoValor = nuevoValor + 1;
         }
 
-        Dado dadoNuevo = new Dado(nuevoValor);
-
-        for (int i = 0; i < dados.length; i++) {
-            if (dados[i].equals(dadoMenor)) {
-                dados[i] = dadoNuevo;
-            }
-        }
+        dadoMenor.setValor(nuevoValor);
 
         return dados;
     }

@@ -4,6 +4,9 @@
 
 package risk.riskexception;
 
+/**
+ * Clase base que representa una excepción del RISK
+ */
 public abstract class ExcepcionRISK extends Exception {
 
     final int codigo;

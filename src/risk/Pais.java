@@ -5,13 +5,17 @@
 package risk;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import risk.cartasmision.PaisEvent;
 import risk.ejercito.Ejercito;
+import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.RiskExceptionEnum;
 
-public class Pais {
+/**
+ * Representa un país dentro de un Continente
+ */
+public class Pais implements Cloneable {
     private String codigo;
     private String nombreHumano;
     private Continente continente;
@@ -29,6 +33,7 @@ public class Pais {
         this.setContinente(continente);
         this.jugador = null;
         this.ejercitos = new HashSet<>();
+        this.vecesConquistado = -1;
         addToContinente();
     }
 
@@ -49,6 +54,13 @@ public class Pais {
     }
 
     /**
+     * Indica si hay algun Ejercito en este Pais
+     */
+    public boolean hasEjercitos() {
+        return !this.ejercitos.isEmpty();
+    }
+
+    /**
      * Devuelve un Set de los Ejercitos de este Pais
      * 
      * @return un HashSet con los Ejercitos del Pais, pero no el HashSet original
@@ -58,29 +70,52 @@ public class Pais {
     }
 
     /**
+     * Devuelve cualquier ejército de los que tiene el Pais
+     * @return
+     */
+    public Ejercito getAnyEjercito() throws ExcepcionJugador {
+        if (this.ejercitos.isEmpty()) {
+            throw (ExcepcionJugador) RiskExceptionEnum.NO_HAY_EJERCITOS_SUFICIENTES.get();
+        }
+        return this.getEjercitos().iterator().next();
+    }
+
+    /**
      * Añade un Ejercito al Set de Ejercitos de este Pais
      * 
      * @param ejercito
      */
     public void addEjercito(Ejercito ejercito) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
+        if (this.ejercitos.stream().anyMatch(e -> !e.getClass().equals(ejercito.getClass()))) { // Si el tipo ejército que añadimos no coincide con el de alguno de los que ya hay, lanzamos una excepción (Por ejemplo, si intento añadir un EjercitoVerde a un Pais que tenga ya un EjercitoRojo)
+            throw new IllegalArgumentException("Se ha intentado añadir un ejército del tipo incorrecto al país");
+        }
         this.ejercitos.add(ejercito);
-        notificarCambioPais();
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
     /**
      * Elimina un Ejercito cualquiera de este Pais
      */
     public void removeEjercito() {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.ejercitos.remove(this.ejercitos.stream().findFirst().orElse(null));
-        notificarCambioPais();
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
-
+    
     /**
      * Elimina un Ejercito concreto de este Pais
      */
     public void removeEjercito(Ejercito ejercito) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.ejercitos.remove(ejercito);
-        notificarCambioPais();
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
     /**
@@ -97,9 +132,15 @@ public class Pais {
      * @param conquistador
      */
     public void conquistar(Jugador conquistador) {
+        if (!this.getEjercitos().isEmpty()) {
+            throw new IllegalStateException("El país que se intenta conquistar aún tiene ejércitos");
+        }
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.setJugador(conquistador);
         this.vecesConquistado++;
-        notificarCambioPais();
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
     private void setJugador(Jugador jugador) {
@@ -154,8 +195,7 @@ public class Pais {
         return this.vecesConquistado;
     }
 
-    public void notificarCambioPais() {
-        PaisEvent evento = new PaisEvent(this);
+    public void notificarCambioPais(PaisEvent evento) {
         Mapa.getMapa().getPaisEventPublisher().updateSubscribers(evento);
     }
 
@@ -188,7 +228,22 @@ public class Pais {
         if (!this.getJugador().equals(other.getJugador())) {
             return false;
         }
+        if (this.getNumVecesConquistado()!=other.getNumVecesConquistado()) {
+            return false;
+        }
+        if (!this.getEjercitos().containsAll(other.getEjercitos())) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public Pais clone() {
+        Pais clonedPais = new Pais(this.getCodigo(), this.getNombreHumano(), this.getContinente());
+        clonedPais.setJugador(this.getJugador());
+        clonedPais.ejercitos = new HashSet<>(this.getEjercitos());
+        clonedPais.vecesConquistado = this.getNumVecesConquistado();
+        return clonedPais;
     }
 
 }
