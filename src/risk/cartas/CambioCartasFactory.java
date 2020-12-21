@@ -29,7 +29,7 @@ public class CambioCartasFactory {
     /**
      * Calcula cuál es la mejor combinación posible de cambio de Cartas de equipamiento que puede hacer este Jugador, usando un algoritmo de ramificación y poda.
      */
-    public CambioCartas getBestCambioCartas() {
+    public CambioCartas getBestCambioCartas() throws ExcepcionCarta {
         int beneficioCartaMax = cartasOriginales.stream().mapToInt(Carta::obtenerRearme).max().orElse(0);
         List<Nodo> listaNodosVivos = new ArrayList<>();
         
@@ -55,6 +55,10 @@ public class CambioCartasFactory {
                     }
                 }
             }
+        }
+
+        if (bestCambio.equals(nodoInicio) || bestCambio.getNivel()!=3) {
+            throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CONFIG_CAMBIO.get();
         }
 
         Iterator<Carta> iteratorCartas = bestCambio.getSetCartas().iterator();
