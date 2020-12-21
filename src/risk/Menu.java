@@ -80,14 +80,16 @@ public class Menu {
                 asignarPais(nombreJugador, nombrePais);
             }
             bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (FileNotFoundException fileNotFoundException) {
+            // Si no se encuentra el archivo, falla el programa
+            io.printToErrOutput(new ExcepcionRISK(0, "No se encuentra el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            io.printToErrOutput(new ExcepcionRISK(0, "Error leyendo el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         }
-
     }
 
     /**
@@ -219,10 +221,13 @@ public class Menu {
             bufferLector.close();
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
-            fileNotFoundException.printStackTrace();
+            io.printToErrOutput(new ExcepcionRISK(0, "No se encuentra el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            io.printToErrOutput(new ExcepcionRISK(0, "Error leyendo el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         }
     }
 
