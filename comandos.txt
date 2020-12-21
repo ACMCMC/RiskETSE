@@ -78,3 +78,4 @@ acabar turno
 repartir ejercitos 10 Argentina
 acabar turno
 cambiar cartas todas
+ver mapa

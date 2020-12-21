@@ -4,6 +4,7 @@ import risk.cartas.Carta;
 import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.PaisEvent;
 import risk.cartasmision.PaisEventSubscriber;
+import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
@@ -19,6 +20,14 @@ public class Turno implements PaisEventSubscriber {
         this.numConquistasPaises = 0;
         this.hasJugadorCambiadoCarta = false;
         this.jugador = jugadorTurno;
+        if (this.getJugador().getCartasEquipamiento().size() >= 6) {
+            try {
+                this.getJugador().realizarCambioOptimoDeCartasDeEquipamiento();
+            } catch (ExcepcionCarta e) {
+                // Por algún motivo, no se pudo encontrar un cambio para las cartas (no debería ocurrir), así que eliminamos una carta cualquiera
+                this.getJugador().removeCartaEquipamiento(this.getJugador().getCartasEquipamiento().iterator().next());
+            }
+        }
     }
 
     /**

@@ -336,9 +336,8 @@ public class Menu {
     public void cambiarCartasTodas() {
         try {
             Jugador jugador = Partida.getPartida().getJugadorActual();
-            CambioCartas cambioOptimo = jugador.calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento();
             int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
-            jugador.cambiarCartasEquipamiento(cambioOptimo);
+            CambioCartas cambioOptimo = jugador.realizarCambioOptimoDeCartasDeEquipamiento();
             int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
             int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
             String output = OutputBuilder.beginBuild()

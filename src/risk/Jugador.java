@@ -18,6 +18,7 @@ import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionMision;
+import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
@@ -39,9 +40,12 @@ public class Jugador {
         this.setEjercitosRearme(0);
     }
 
-    public void addCartaEquipamiento(Carta carta) throws ExcepcionCarta {
-        if (this.setCartasEquipamiento.contains(carta)) {
-            throw (ExcepcionCarta) RiskExceptionEnum.CARTA_YA_ASIGNADA.get();
+    public void addCartaEquipamiento(Carta carta) throws ExcepcionRISK {
+        if (this.getCartasEquipamiento().contains(carta)) {
+            throw RiskExceptionEnum.CARTA_YA_ASIGNADA.get();
+        }
+        if (this.getCartasEquipamiento().size()>=6) {
+            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
         }
         this.setCartasEquipamiento.add(carta);
     }
@@ -220,9 +224,11 @@ public class Jugador {
     /**
      * Devuelve la mejor configuración de cambio de cartas para este Jugador
      */
-    public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() throws ExcepcionCarta {
+    public CambioCartas realizarCambioOptimoDeCartasDeEquipamiento() throws ExcepcionCarta {
         CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento(), this);
-        return cambioCartasFactory.getBestCambioCartas();
+        CambioCartas cambioOptimo = cambioCartasFactory.getBestCambioCartas();
+        this.cambiarCartasEquipamiento(cambioOptimo);
+        return cambioOptimo;
     }
 
     /**
@@ -239,7 +245,7 @@ public class Jugador {
     /**
      * Le quita la Carta de equipamiento especificada a este Jugador
      */
-    private void removeCartaEquipamiento(Carta carta) {
+    public void removeCartaEquipamiento(Carta carta) {
         this.setCartasEquipamiento.remove(carta);
     }
 
