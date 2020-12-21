@@ -221,7 +221,7 @@ public class Jugador {
      * Devuelve la mejor configuración de cambio de cartas para este Jugador
      */
     public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() throws ExcepcionCarta {
-        CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento());
+        CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento(), this);
         return cambioCartasFactory.getBestCambioCartas();
     }
 
@@ -232,10 +232,7 @@ public class Jugador {
         if (cambioCartas.getSetCartas().stream().anyMatch(c -> !this.hasCartaEquipamiento(c))) {
             throw (ExcepcionCarta) RiskExceptionEnum.CARTAS_NO_PERTENECEN_JUGADOR.get();
         }
-        if (!canCartasSerCambiadas(cambioCartas)) {
-            throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CONFIG_CAMBIO.get();
-        }
-        this.addEjercitosRearme(calcularCambioCartas(cambioCartas));
+        this.addEjercitosRearme(cambioCartas.getValorCambio());
         cambioCartas.getSetCartas().forEach(this::removeCartaEquipamiento);
     }
 
@@ -244,30 +241,6 @@ public class Jugador {
      */
     private void removeCartaEquipamiento(Carta carta) {
         this.setCartasEquipamiento.remove(carta);
-    }
-
-    /**
-     * Cambia las 3 Cartas de equipamiento especificadas
-     */
-    private int calcularCambioCartas(CambioCartas cambioCartas) throws ExcepcionCarta {
-        int num_ejercitos_obtenidos = 6;
-        num_ejercitos_obtenidos += cambioCartas.getCarta1().obtenerRearme();
-        num_ejercitos_obtenidos += cambioCartas.getCarta2().obtenerRearme();
-        num_ejercitos_obtenidos += cambioCartas.getCarta3().obtenerRearme();
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta1());
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta2());
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta3());
-        return num_ejercitos_obtenidos;
-    }
-
-    private boolean canCartasSerCambiadas(CambioCartas cambioCartas) {
-        if (cambioCartas.getCarta1().getClaseCarta().equals(cambioCartas.getCarta2().getClaseCarta()) && cambioCartas.getCarta2().getClaseCarta().equals(cambioCartas.getCarta3().getClaseCarta())) {
-            return true;
-        }
-        if (!cambioCartas.getCarta1().getClaseCarta().equals(cambioCartas.getCarta2().getClaseCarta()) && !cambioCartas.getCarta2().getClaseCarta().equals(cambioCartas.getCarta3().getClaseCarta()) && !cambioCartas.getCarta3().getClaseCarta().equals(cambioCartas.getCarta1().getClaseCarta())) {
-            return true;
-        }
-        return false;
     }
 
     /**

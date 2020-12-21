@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import risk.Jugador;
 import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.RiskExceptionEnum;
 
@@ -15,11 +16,14 @@ import risk.riskexception.RiskExceptionEnum;
  */
 public class CambioCartasFactory {
     private Set<Carta> cartasOriginales;
-    public CambioCartasFactory(Set<Carta> cartasOriginales) throws ExcepcionCarta {
+    private Jugador jugador;
+
+    public CambioCartasFactory(Set<Carta> cartasOriginales, Jugador jugador) throws ExcepcionCarta {
         if (cartasOriginales.size()<3) {
             throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CARTAS_SUFICIENTES.get();
         }
         this.cartasOriginales = cartasOriginales;
+        this.jugador = jugador;
     }
 
     /**
@@ -29,7 +33,7 @@ public class CambioCartasFactory {
         int beneficioCartaMax = cartasOriginales.stream().mapToInt(Carta::obtenerRearme).max().orElse(0);
         List<Nodo> listaNodosVivos = new ArrayList<>();
         
-        Nodo nodoInicio = new Nodo(new HashSet<>(), beneficioCartaMax);
+        Nodo nodoInicio = new Nodo(new HashSet<>(), beneficioCartaMax, this.jugador);
         Nodo bestCambio = nodoInicio;
         
         listaNodosVivos.add(nodoInicio);
@@ -40,7 +44,7 @@ public class CambioCartasFactory {
             listaNodosVivos.remove(nodoActual);
             if (nodoActual.getCotaSuperior() > cotaPoda) {
                 for (Nodo hijo : generarHijos(nodoActual, cartasOriginales)) {
-                    if (solucion(hijo) && (hijo.getBeneficioEstimado()>bestCambio.getBeneficioEstimado())) {
+                    if (solucion(hijo) && (hijo.getBeneficioEstimado() > bestCambio.getBeneficioEstimado())) {
                         bestCambio = hijo;
                         cotaPoda = Integer.max(cotaPoda, hijo.getBeneficioEstimado());
                     } else if (!solucion(hijo) && (hijo.getCotaSuperior() > cotaPoda)) {
@@ -58,7 +62,12 @@ public class CambioCartasFactory {
         Carta carta2 = iteratorCartas.next();
         Carta carta3 = iteratorCartas.next();
 
-        CambioCartas resultado = new CambioCartas(carta1, carta2, carta3);
+        CambioCartas resultado;
+        try {
+            resultado = new CambioCartas(carta1, carta2, carta3, jugador);
+        } catch (ExcepcionCarta e) {
+            throw new IllegalStateException("No se ha podido encontrar una configuración adecuada de cambio")
+;        }
         
         return resultado;
     }
@@ -70,9 +79,11 @@ public class CambioCartasFactory {
     private class Nodo {
         Set<Carta> cartasNodo;
         int cotaSuperior;
-        Nodo(Set<Carta> cartas, int beneficioCartaMax) {
+        Jugador jugador;
+        Nodo(Set<Carta> cartas, int beneficioCartaMax, Jugador jugador) {
             this.cartasNodo = cartas;
-            this.cotaSuperior = (3-this.getNivel())*beneficioCartaMax; // Suponemos las restantes asignaciones con el máximo global
+            this.jugador = jugador;
+            this.cotaSuperior = 3 + 12 + this.getCotaInferior() + (3-this.getNivel())*beneficioCartaMax; // Suponemos las restantes asignaciones con el máximo global
         }
         Set<Carta> getSetCartas() {
             return this.cartasNodo;
@@ -81,12 +92,21 @@ public class CambioCartasFactory {
             return this.getSetCartas().size();
         }
         int getCotaInferior() {
-            return this.getSetCartas().stream().mapToInt(c -> c.obtenerRearme()).sum();
+            return 6 + this.getSetCartas().stream().mapToInt(c -> c.obtenerRearme()).sum();
         }
-        int getCotaSuperior(){
+        int getCotaSuperior() {
             return this.cotaSuperior;
         }
         int getBeneficioEstimado() {
+            if (getNivel()==3) {
+                Iterator<Carta> itCartas = this.getSetCartas().iterator();
+                try {
+                    CambioCartas cambio = new CambioCartas(itCartas.next(), itCartas.next(), itCartas.next(), jugador);
+                    return cambio.getValorCambio();
+                } catch (ExcepcionCarta e) {
+                    // Devolvemos el valor estándar
+                }
+            }
             return ((this.getCotaSuperior())+(this.getCotaInferior()))/2;
         }
     }
@@ -97,13 +117,22 @@ public class CambioCartasFactory {
         
         for (Carta carta : cartasOriginales) {
             if (!nodoPadre.getSetCartas().contains(carta)) {
-                boolean esCartaQueSePuedeAnadir = false; // Solo se puede añadir la carta si tiene el mismo tipo que todas las anteriores, o es de un tipo distinto (para al final tres cartas de distinto tipo, o del mismo, pero no dos del mismo y una diferente)
-                esCartaQueSePuedeAnadir = nodoPadre.getSetCartas().stream().allMatch(c -> c.getClaseCarta().equals(carta.getClaseCarta())); // Aquí miramos si la carta tiene el mismo tipo que todas las demás
-                esCartaQueSePuedeAnadir = esCartaQueSePuedeAnadir || nodoPadre.getSetCartas().stream().allMatch(c -> !c.getClaseCarta().equals(carta.getClaseCarta())); // Si no, miramos si las cartas tendrían todas distinto tipo
-                if (esCartaQueSePuedeAnadir) {
+                boolean esCartaDeLaMismaClaseQueLasDemas = false; // Solo se puede añadir la carta si tiene el mismo tipo que todas las anteriores, o es de un tipo distinto (para al final tres cartas de distinto tipo, o del mismo, pero no dos del mismo y una diferente)
+                esCartaDeLaMismaClaseQueLasDemas = nodoPadre.getSetCartas().stream().allMatch(c -> c.getClaseCarta().equals(carta.getClaseCarta())); // Aquí miramos si la carta tiene el mismo tipo que todas las demás
+                boolean sonDistintasTodasLasCartas = false;
+                if (nodoPadre.getSetCartas().size()==nodoPadre.getSetCartas().stream().map(c -> c.getClaseCarta()).distinct().count()) {
+                    if (!nodoPadre.getSetCartas().isEmpty()) {
+                        if (!nodoPadre.getSetCartas().iterator().next().getClaseCarta().equals(carta.getClaseCarta())) {
+                            sonDistintasTodasLasCartas = true;
+                        }
+                    }
+                }
+                // Si no, miramos si las cartas tendrían todas distinto tipo (todas sus clases son diferentes, y diferentes a la carta que queremos meter)
+                if (esCartaDeLaMismaClaseQueLasDemas || sonDistintasTodasLasCartas) {
                     Set<Carta> cartasHijo = new HashSet<>();
                     cartasHijo.addAll(nodoPadre.getSetCartas());
-                    Nodo nodoHijo = new Nodo(cartasHijo, beneficioCartaMax);
+                    cartasHijo.add(carta);
+                    Nodo nodoHijo = new Nodo(cartasHijo, beneficioCartaMax, this.jugador);
                     hijos.add(nodoHijo);
                 }
             }
