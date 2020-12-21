@@ -38,12 +38,10 @@ public class Partida {
 
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
-    private Map<Jugador, CartaMision> misionesJugadores;
     private Turno turnoActual;
 
     private Partida() {
         this.jugadores = new HashMap<>();
-        this.misionesJugadores = new HashMap<>();
         this.colaJugadores = new LinkedList<>();
     }
 
@@ -63,7 +61,7 @@ public class Partida {
     }
 
     public void addJugador(Jugador jugador) throws ExcepcionJugador, ExcepcionGeo {
-        if (!Mapa.getMapa().isMapaCreado()) {
+        if (!Mapa.isMapaCreado()) {
             throw (ExcepcionGeo) RiskExceptionEnum.MAPA_NO_CREADO.get();
         }
         if (this.jugadores.entrySet().stream().anyMatch(jug -> jug.getValue().getColor().equals(jugador.getColor()))) { // Si
