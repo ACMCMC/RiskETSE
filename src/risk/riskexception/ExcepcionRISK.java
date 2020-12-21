@@ -9,6 +9,8 @@ package risk.riskexception;
  */
 public abstract class ExcepcionRISK extends Exception {
 
+    private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+
     final int codigo;
     final String codigoTexto;
 

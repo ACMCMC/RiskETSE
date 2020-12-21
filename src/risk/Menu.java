@@ -8,10 +8,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,14 +78,16 @@ public class Menu {
                 asignarPais(nombreJugador, nombrePais);
             }
             bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (FileNotFoundException fileNotFoundException) {
+            // Si no se encuentra el archivo, falla el programa
+            io.printToErrOutput(new ExcepcionRISK(0, "No se encuentra el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            io.printToErrOutput(new ExcepcionRISK(0, "Error leyendo el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         }
-
     }
 
     /**
@@ -219,10 +219,13 @@ public class Menu {
             bufferLector.close();
         } catch (FileNotFoundException fileNotFoundException) {
             // Si no se encuentra el archivo, falla el programa
-            fileNotFoundException.printStackTrace();
+            io.printToErrOutput(new ExcepcionRISK(0, "No se encuentra el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            io.printToErrOutput(new ExcepcionRISK(0, "Error leyendo el archivo"){
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+            });
         }
     }
 
@@ -464,9 +467,11 @@ public class Menu {
             }
         } catch (IOException e) {
             io.printToErrOutput(new ExcepcionRISK(0, "Error de lectura del archivo") {
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
             });
         } catch (ArrayIndexOutOfBoundsException e) {
             io.printToErrOutput(new ExcepcionRISK(0, "El archivo de lectura de misiones tiene un formato erróneo") {
+                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
             });
         }
     }
@@ -629,11 +634,13 @@ public class Menu {
                     .autoAdd("dadosDefensa",
                             resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
                         {
                             add(ejercitosPaisAtaqueAntes);
                             add(paisAtacante.getNumEjercitos());
                         }
                     }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
                         {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());
@@ -689,11 +696,13 @@ public class Menu {
                     .autoAdd("dadosDefensa",
                             resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
                         {
                             add(ejercitosPaisAtaqueAntes);
                             add(paisAtacante.getNumEjercitos());
                         }
                     }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
                         {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());

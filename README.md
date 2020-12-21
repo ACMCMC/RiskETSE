@@ -11,3 +11,7 @@ El comando `jugador` o `describir jugador [nombre]`, en el campo `numEjercitoRea
 Una vez que se asigna una carta de equipamiento al jugador, ya no puede atacar. Lo único que puede hacer es rearmar, antes de acabar su turno.
 
 Si los archivos que incluyen la información del mapa no existen o no se encuentran en el momento de la ejecución del programa, se crearán automáticamente.
+
+Hemos añadido excepciones propias con ID 0, cuando se producen errores de lectura de los archivos.
+
+Los comandos optativos `repartir ejercitos` y `cambiar cartas todas` han sido implementados.
