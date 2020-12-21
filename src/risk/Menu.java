@@ -309,7 +309,7 @@ public class Menu {
             Carta c2 = CartaEquipamientoFactory.get(carta2, Mapa.getMapa());
             Carta c3 = CartaEquipamientoFactory.get(carta3, Mapa.getMapa());
             Jugador jugador = Partida.getPartida().getJugadorActual();
-            CambioCartas cambioCartas = new CambioCartas(c1, c2, c3);
+            CambioCartas cambioCartas = new CambioCartas(c1, c2, c3, Partida.getPartida().getJugadorActual());
 
             int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
             jugador.cambiarCartasEquipamiento(cambioCartas);
@@ -336,9 +336,8 @@ public class Menu {
     public void cambiarCartasTodas() {
         try {
             Jugador jugador = Partida.getPartida().getJugadorActual();
-            CambioCartas cambioOptimo = jugador.calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento();
             int numEjercitosRearmeAntesDelCambio = jugador.getNumEjercitosRearme();
-            jugador.cambiarCartasEquipamiento(cambioOptimo);
+            CambioCartas cambioOptimo = jugador.realizarCambioOptimoDeCartasDeEquipamiento();
             int numEjercitosRearmeDespuesDelCambio = jugador.getNumEjercitosRearme();
             int numEjercitosCambiados = numEjercitosRearmeDespuesDelCambio - numEjercitosRearmeAntesDelCambio;
             String output = OutputBuilder.beginBuild()

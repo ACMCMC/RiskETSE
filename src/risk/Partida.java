@@ -282,16 +282,17 @@ public class Partida {
         Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
         getJugadorActual().recalcularEjercitosRearme();
     }
-
+    
     /**
      * Registra los manejadores de eventos del juego
      */
     public void iniciarJuego() {
         Mapa.getMapa().getPaisEventPublisher().subscribe(this.getTurnoActual());
+        getJugadorActual().recalcularEjercitosRearme();
     }
     
     /**
-     * Avanza el turno de reparto (no recalcula el número de ejércitos que le tocan al jugador)
+     * Avanza el Turno de reparto (no recalcula el número de ejércitos que le tocan al jugador)
      */
     public void siguienteTurnoDeReparto() {
         this.colaJugadores.add(this.colaJugadores.poll());
@@ -317,15 +318,16 @@ public class Partida {
         return this.turnoActual;
     }
 
+    /**
+     * Asigna una Carta de equipamiento al Jugador del Turno actual
+     */
     public Carta asignarCartaEquipamiento(String idCarta) throws ExcepcionRISK {
-        if (!getTurnoActual().hasJugadorConquistadoPais()) {
-            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
-        }
-        Carta cartaEquipamiento = CartaEquipamientoFactory.get(idCarta, Mapa.getMapa());
-        this.getTurnoActual().getJugador().addCartaEquipamiento(cartaEquipamiento);
-        return cartaEquipamiento;
+        return this.getTurnoActual().asignarCartaEquipamiento(idCarta);
     }
 
+    /**
+     * Reparte el número seleccionado de Ejercitos al Pais
+     */
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
         if (!getJugadorActual().hasEjercitosSinRepartir()) {
             throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();
