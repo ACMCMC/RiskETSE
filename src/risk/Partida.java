@@ -155,6 +155,12 @@ public class Partida {
         if (!atacante.getJugador().equals(Partida.getPartida().getJugadorActual())) {
             throw RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
+        if (dadosAtacante.size()>3) {
+            throw RiskExceptionEnum.NUM_DADOS_NO_PERMITIDO.get();
+        }
+        if (dadosDefensor.size()>3) {
+            throw RiskExceptionEnum.NUM_DADOS_NO_PERMITIDO.get();
+        }
 
         Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
         Dado dadoAtacante;

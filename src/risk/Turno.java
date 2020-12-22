@@ -62,7 +62,7 @@ public class Turno implements PaisEventSubscriber {
         }
         Carta cartaEquipamiento = CartaEquipamientoFactory.get(idCarta, Mapa.getMapa());
         if (this.hasJugadorCambiadoCarta==true) {
-            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
+            //throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
         }
         this.getJugador().addCartaEquipamiento(cartaEquipamiento);
         this.hasJugadorCambiadoCarta = true;

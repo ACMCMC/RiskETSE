@@ -37,4 +37,9 @@ public abstract class Carta {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        return this.getNombre().hashCode();
+    }
 }
