@@ -229,6 +229,7 @@ public class Menu {
     public void repartirEjercitos() {
         try {
             Partida.getPartida().repartirEjercitos();
+            verMapa();
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
