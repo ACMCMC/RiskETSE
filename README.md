@@ -12,6 +12,14 @@ Una vez que se asigna una carta de equipamiento al jugador, ya no puede atacar. 
 
 Si los archivos que incluyen la información del mapa no existen o no se encuentran en el momento de la ejecución del programa, se crearán automáticamente.
 
-Hemos añadido excepciones propias con ID 0, cuando se producen errores de lectura de los archivos.
+Hemos añadido algunas excepciones propias, que no se contemplan en la documentación original. Para eso, hemos creado un nuevo tipo de excepción dentro de la jerarquía especificada, que se llama ExcepcionPropia. Se correcponde con los siguientes códigos:
+
+- "El archivo especificado no existe" (200)
+- "No se ha podido leer del archivo" (201)
+- "No se ha podido leer ni crear el archivo" (202)
+- "El formato del archivo no es correcto" (203)
+- "Se ha lanzado una cantidad de dados no permitida" (205). Se lanza cuando.
+- "El valor de los dados no es correcto" (206). Se lanza cuando un jugador usa `atacar pais1 dados pais2 dados`, si el valor de alguno de los dados es incorrecto (por ejemplo, los dados "6x9x2").
+- "El formato de los dados no es correcto" (207). Se lanza cuando un jugador usa `atacar pais1 dados pais2 dados`, si el formato de alguno de los dados es incorrecto (por ejemplo, los dados "6xB6x2").
 
 Los comandos optativos `repartir ejercitos` y `cambiar cartas todas` han sido implementados.

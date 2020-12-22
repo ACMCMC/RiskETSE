@@ -27,7 +27,15 @@ public enum RiskExceptionEnum {
     CARTAS_NO_EXISTEN(123, "Algunas cartas no existen"),
     NO_HAY_EJERCITOS_SUFICIENTES(124, "No hay ejércitos suficientes"),
     IDENTIFICADOR_INCORRECTO(125, "El identificador no sigue el formato correcto"),
-    CARTA_YA_ASIGNADA(126, "Carta de equipamiento ya asignada");
+    CARTA_YA_ASIGNADA(126, "Carta de equipamiento ya asignada"),
+    ARCHIVO_NO_EXISTE(200, "El archivo especificado no existe"),
+    NO_SE_HA_PODIDO_LEER(201, "No se ha podido leer del archivo"),
+    NO_SE_HA_PODIDO_LEER_NI_CREAR(202, "No se ha podido leer ni crear el archivo"),
+    FORMATO_ARCHIVO_INCORRECTO(203, "El formato del archivo no es correcto"),
+    NO_SE_HA_CONQUISTADO_PAIS(204, "No se ha conquistado ningún país"),
+    NUM_DADOS_NO_PERMITIDO(205, "Se ha lanzado una cantidad de dados no permitida"),
+    VALOR_DADOS_INCORRECTO(206, "El valor de los dados no es correcto"),
+    FORMATO_DADOS_INCORRECTO(207, "El formato de los dados no es correcto");
 
     final int codigo;
     final String codigoTexto;
@@ -46,6 +54,6 @@ public enum RiskExceptionEnum {
     }
 
     public ExcepcionRISK get() {
-        return RiskExceptionFactory.fromCode(getCodigo());
+        return RiskExceptionFactory.fromCode(getCodigo(), getCodigoTexto());
     }
 }

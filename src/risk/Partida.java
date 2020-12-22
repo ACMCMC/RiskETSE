@@ -162,9 +162,14 @@ public class Partida {
         int ejercitosAtacados = dadosAtacante.size(); // El número de ejércitos con los que ataca el atacante, para después saber
                                    // cuántos hay que poner en el país defensor si es conquistado
 
-        mapaValores.put(atacante, dadosAtacante.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
+        
+        mapaValores.put(atacante, dadosAtacante.stream().map(d -> {
+            try {return new Dado(d.getValor());} catch (ExcepcionRISK e) {return null;}
+        }).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
                                                                                                 // devolverlos después
-        mapaValores.put(defensor, dadosDefensor.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet()));
+        mapaValores.put(defensor, dadosDefensor.stream().map(d -> {
+            try {return new Dado(d.getValor());} catch (ExcepcionRISK e) {return null;}
+        }).collect(Collectors.toSet()));
 
         procesarDadosAtacante(atacante, dadosAtacante);
 
