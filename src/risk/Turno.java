@@ -58,7 +58,7 @@ public class Turno implements PaisEventSubscriber {
      */
     public Carta asignarCartaEquipamiento(String idCarta) throws ExcepcionRISK {
         if (!this.hasJugadorConquistadoPais()) {
-            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
+            throw RiskExceptionEnum.NO_SE_HA_CONQUISTADO_PAIS.get();
         }
         Carta cartaEquipamiento = CartaEquipamientoFactory.get(idCarta, Mapa.getMapa());
         if (this.hasJugadorCambiadoCarta==true) {

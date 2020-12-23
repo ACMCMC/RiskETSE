@@ -3,7 +3,6 @@ package risk;
 import java.util.Random;
 
 import risk.riskexception.ExcepcionPropia;
-import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
