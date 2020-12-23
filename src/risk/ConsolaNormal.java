@@ -31,7 +31,6 @@ public class ConsolaNormal implements Consola {
 
     @Override
     public void escribirFinComandos() {
-        // TODO Auto-generated method stub
         System.out.println("EOF");
     }
 }
