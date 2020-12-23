@@ -19,7 +19,6 @@ public class Continente {
     private Color color;
     private String codigo;
     private String nombreHumano;
-    private int numEjercitosRepartirCuandoOcupadoExcusivamentePorJugador;
     private Map<String, Pais> paises;
 
     /**
@@ -59,20 +58,11 @@ public class Continente {
     private void setNombreHumano(String nombreHumano) {
         this.nombreHumano = nombreHumano;
     }
-
-    /**
-     * Establece el número de ejércitos emperejado a este continente, que se le dará a un jugador cuando ocupe de forma exclusiva este continente
-     * @param numEjercitosRepartirCuandoOcupadoExcusivamentePorJugador
-     */
-    public void setNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador(int numEjercitosRepartirCuandoOcupadoExcusivamentePorJugador) {
-        this.numEjercitosRepartirCuandoOcupadoExcusivamentePorJugador = numEjercitosRepartirCuandoOcupadoExcusivamentePorJugador;
-    }
     
     /**
      * Devuelve el número de ejércitos emperejado a este continente, que se le dará a un jugador cuando ocupe de forma exclusiva este continente
      */
     public int getNumEjercitosRepartirCuandoOcupadoExcusivamentePorJugador() {
-        // TODO: Esto se podría implementar con un archivo aparte
         switch (this.getCodigo()) {
             case "Asia":
             return 7;

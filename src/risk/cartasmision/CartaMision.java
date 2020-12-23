@@ -2,6 +2,9 @@ package risk.cartasmision;
 
 import risk.Jugador;
 
+/**
+ * Clase abstracta base que representa una de las cartas de misión del Risk
+ */
 public abstract class CartaMision implements PaisEventSubscriber {
 
     boolean completada;

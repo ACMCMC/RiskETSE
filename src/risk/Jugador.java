@@ -18,6 +18,7 @@ import risk.ejercito.EjercitoFactory;
 import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionMision;
+import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
@@ -39,9 +40,12 @@ public class Jugador {
         this.setEjercitosRearme(0);
     }
 
-    public void addCartaEquipamiento(Carta carta) throws ExcepcionCarta {
-        if (this.setCartasEquipamiento.contains(carta)) {
-            throw (ExcepcionCarta) RiskExceptionEnum.CARTA_YA_ASIGNADA.get();
+    public void addCartaEquipamiento(Carta carta) throws ExcepcionRISK {
+        if (this.getCartasEquipamiento().contains(carta)) {
+            throw RiskExceptionEnum.CARTA_YA_ASIGNADA.get();
+        }
+        if (this.getCartasEquipamiento().size()>=6) {
+            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
         }
         this.setCartasEquipamiento.add(carta);
     }
@@ -220,9 +224,11 @@ public class Jugador {
     /**
      * Devuelve la mejor configuración de cambio de cartas para este Jugador
      */
-    public CambioCartas calcularConfiguracionOptimaDeCambioDeCartasDeEquipamiento() throws ExcepcionCarta {
-        CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento());
-        return cambioCartasFactory.getBestCambioCartas();
+    public CambioCartas realizarCambioOptimoDeCartasDeEquipamiento() throws ExcepcionCarta {
+        CambioCartasFactory cambioCartasFactory = new CambioCartasFactory(this.getCartasEquipamiento(), this);
+        CambioCartas cambioOptimo = cambioCartasFactory.getBestCambioCartas();
+        this.cambiarCartasEquipamiento(cambioOptimo);
+        return cambioOptimo;
     }
 
     /**
@@ -232,42 +238,15 @@ public class Jugador {
         if (cambioCartas.getSetCartas().stream().anyMatch(c -> !this.hasCartaEquipamiento(c))) {
             throw (ExcepcionCarta) RiskExceptionEnum.CARTAS_NO_PERTENECEN_JUGADOR.get();
         }
-        if (!canCartasSerCambiadas(cambioCartas)) {
-            throw (ExcepcionCarta) RiskExceptionEnum.NO_HAY_CONFIG_CAMBIO.get();
-        }
-        this.addEjercitosRearme(calcularCambioCartas(cambioCartas));
+        this.addEjercitosRearme(cambioCartas.getValorCambio());
         cambioCartas.getSetCartas().forEach(this::removeCartaEquipamiento);
     }
 
     /**
      * Le quita la Carta de equipamiento especificada a este Jugador
      */
-    private void removeCartaEquipamiento(Carta carta) {
+    public void removeCartaEquipamiento(Carta carta) {
         this.setCartasEquipamiento.remove(carta);
-    }
-
-    /**
-     * Cambia las 3 Cartas de equipamiento especificadas
-     */
-    private int calcularCambioCartas(CambioCartas cambioCartas) throws ExcepcionCarta {
-        int num_ejercitos_obtenidos = 6;
-        num_ejercitos_obtenidos += cambioCartas.getCarta1().obtenerRearme();
-        num_ejercitos_obtenidos += cambioCartas.getCarta2().obtenerRearme();
-        num_ejercitos_obtenidos += cambioCartas.getCarta3().obtenerRearme();
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta1());
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta2());
-        num_ejercitos_obtenidos += this.getNumEjercitosRearmeAsociadosACartaPorPoseerPaisDeCarta(cambioCartas.getCarta3());
-        return num_ejercitos_obtenidos;
-    }
-
-    private boolean canCartasSerCambiadas(CambioCartas cambioCartas) {
-        if (cambioCartas.getCarta1().getClaseCarta().equals(cambioCartas.getCarta2().getClaseCarta()) && cambioCartas.getCarta2().getClaseCarta().equals(cambioCartas.getCarta3().getClaseCarta())) {
-            return true;
-        }
-        if (!cambioCartas.getCarta1().getClaseCarta().equals(cambioCartas.getCarta2().getClaseCarta()) && !cambioCartas.getCarta2().getClaseCarta().equals(cambioCartas.getCarta3().getClaseCarta()) && !cambioCartas.getCarta3().getClaseCarta().equals(cambioCartas.getCarta1().getClaseCarta())) {
-            return true;
-        }
-        return false;
     }
 
     /**

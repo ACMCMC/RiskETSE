@@ -8,10 +8,13 @@ public abstract class Casilla {
      * Representa los bordes de la casilla. Se usa después para representar el mapa
      */
     enum BordeCasilla {
-        TOP, VERTICAL, VERTICAL_LEFT, LEFT_TOP, // Cuando la ruta pasa por la casilla de la izquierda y va a la de
+        TOP, VERTICAL,
+        VERTICAL_LEFT,
+        LEFT_TOP, // Cuando la ruta pasa por la casilla de la izquierda y va a la de
                                                 // arriba a la derecha, pero no pasa por esta
         LEFT_BOTTOM, // Se usa en las casillas de la derecha que no pertenecen a la ruta
-        LEFT_BOTTOM_HORIZONTAL, LEFT_TOP_HORIZONTAL, // La frontera empieza arriba, y baja por la izquierda y se
+        LEFT_BOTTOM_HORIZONTAL,
+        LEFT_TOP_HORIZONTAL, // La frontera empieza arriba, y baja por la izquierda y se
                                                      // convierte en horizontal
         HORIZONTAL, NONE
     }

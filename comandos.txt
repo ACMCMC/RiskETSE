@@ -1,37 +1,101 @@
 crear mapa
-crear mapa
 crear jugadores jugadores.csv
-crear Gondorff AZUL
-crear JT VERDE
-asignar paises paises.csv
 asignar misiones misiones.csv
-crear JT CYAN
-asignar paises paises.csv
 asignar mision Hooker M32
 asignar paises paises.csv
-asignar pais Gondorff Rusia
-repartir ejercitos 8 Alaska
-repartir ejercitos 5 Groenlan
-repartir ejercitos 5 Urales
-repartir ejercitos 3 Quebec
-repartir ejercitos 7 Ontario
+repartir ejercitos
+jugador
+repartir ejercitos 4 Islandia
+atacar Rusia 6x6x6 Irkutsk 4x4
+atacar Rusia 6x6x6 Irkstsk 4x4
+asignar carta Granadero&Rusia
 acabar turno
-repartir ejercitos 10 Venezuela
-repartir ejercitos 5 ANorte
-repartir ejercitos 6 Egipto
-repartir ejercitos 5 India
+repartir ejercitos Urales 4
+repartir ejercitos 4 Urales
+atacar Urales 6x6x6 Rusia 4x4
+asignar carta Granadero&Rusia
 acabar turno
-repartir ejercitos 15 Indonesia
-repartir ejercitos 6 NGuinea
+repartir ejercitos 6 Sudáfrica
+atacar Congo 6x6x6 ANorte 4x4
+asignar carta Granadero&Rusia
+atacar Congo 6x6x6 ANorte 4x4
 acabar turno
 repartir ejercitos 4 Islandia
-describir pais USAEste
-atacar Ontario 5x1x1 USAEste 4
-describir pais USAEste
-describir pais Ontario
-rearmar Alaska 4 Alberta
-asignar carta Infantería&Alaska
-atacar GBretaña 3 EurSur 4
+atacar Irkutsk 6x6x6 Rusia 1
+atacar Irkutsk 6x6x6 Rusia 1x1
+asignar carta DeCaballo&Egipto
 acabar turno
-describir jugador Gondorff
-describir continente AméricaNorte
+repartir ejercitos 4 Afgan
+acabar turno
+repartir ejercitos 7 Argentina
+acabar turno
+repartir ejercitos 5 Siberia
+atacar Rusia 6x6x6 Irkutsk 4x4
+atacar Rusia 6x6x6 Irkutsk 4x4
+atacar Rusia 6x6x6 Irkutsk 4x4
+atacar Rusia 6x6x6 Irkutsk 4x4
+asignar carta Antiaerea&AOriental
+asignar carta Antiaerea&Madagasca
+asignar carta Antiaerea&Madagasca
+acabar turno
+repartir ejercitos 4 Japón
+acabar turno
+repartir ejercitos 7 Argentina
+acabar turno
+repartir ejercitos 4 Rusia
+atacar EurNorte 6x6x6 EurSur 1x1
+asignar carta Antiaerea&Madagasca
+acabar turno
+repartir ejercitos 4 Egipto
+acabar turno
+repartir ejercitos 7 Brasil
+acabar turno
+repartir ejercitos 10 Islandia
+atacar Irkutsk 6x6x6 Mongolia 1x1
+atacar Irkutsk 6x6x6 Mongolia 1x1
+asignar carta DeCaballo&ANorte
+acabar turno
+repartir ejercitos 4 Japón
+acabar turno
+repartir ejercitos 7 Argentina
+acabar turno
+repartir ejercitos 10 Ontario
+atacar Ontario 6x6x6 USAEste 1x1
+asignar carta Granadero&GBretaña
+acabar turno
+repartir ejercitos 10 Japón
+acabar turno
+repartir ejercitos 10 Argentina
+acabar turno
+repartir ejercitos 20 USAEste
+atacar USAEste 6x6x6 AmeCentra 1x1
+atacar USAEste 6x6x6 AmeCentra 1x1
+atacar USAEste 6x6Ax6 AmeCentra 1x1
+atacar USAEste 6x6x6x6 USAOeste 1x1
+asignar carta DeCamello&Congo
+acabar turno
+repartir ejercitos 10 Japón
+acabar turno
+repartir ejercitos 10 Argentina
+acabar turno
+repartir ejercitos 20 USAEste
+atacar AmeCentra 6x6x6 Venezuela 1x1
+atacar AmeCentra 6x6x6 Venezuela 1x1
+asignar carta Fusilero&Congo
+acabar turno
+repartir ejercitos 10 Japón
+acabar turno
+repartir ejercitos 10 Argentina
+acabar turno
+repartir ejercitos 20 USAEste
+atacar Venezuela 6x6x6 Perú 1x1
+atacar Venezuela 6x6x6 Perú 1x1
+asignar carta DeCaballo&Rusia
+asignar carta DeCampanha&Rusia
+acabar turno
+repartir ejercitos 10 Japón
+acabar turno
+repartir ejercitos 10 Argentina
+acabar turno
+cambiar cartas todas
+ver mapa

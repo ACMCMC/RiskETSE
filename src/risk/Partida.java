@@ -4,6 +4,7 @@
 
 package risk;
 
+import java.text.Collator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import risk.cartas.Carta;
-import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
@@ -38,12 +38,10 @@ public class Partida {
 
     private Map<String, Jugador> jugadores;
     private Queue<Jugador> colaJugadores;
-    private Map<Jugador, CartaMision> misionesJugadores;
     private Turno turnoActual;
 
     private Partida() {
         this.jugadores = new HashMap<>();
-        this.misionesJugadores = new HashMap<>();
         this.colaJugadores = new LinkedList<>();
     }
 
@@ -63,7 +61,7 @@ public class Partida {
     }
 
     public void addJugador(Jugador jugador) throws ExcepcionJugador, ExcepcionGeo {
-        if (!Mapa.getMapa().isMapaCreado()) {
+        if (!Mapa.isMapaCreado()) {
             throw (ExcepcionGeo) RiskExceptionEnum.MAPA_NO_CREADO.get();
         }
         if (this.jugadores.entrySet().stream().anyMatch(jug -> jug.getValue().getColor().equals(jugador.getColor()))) { // Si
@@ -97,8 +95,11 @@ public class Partida {
         if (!this.areJugadoresCreados()) {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
         }
-        if (this.jugadores.containsKey(nombre)) {
-            return this.jugadores.get(nombre);
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Jugador> jugadorBuscado = this.getJugadores().stream().filter(j -> colInstance.compare(j.getNombre(), nombre)==0).findFirst();
+        if (jugadorBuscado.isPresent()) {
+            return jugadorBuscado.get();
         } else {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADOR_NO_EXISTE.get();
         }
@@ -157,6 +158,12 @@ public class Partida {
         if (!atacante.getJugador().equals(Partida.getPartida().getJugadorActual())) {
             throw RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
+        if (dadosAtacante.size()>3) {
+            throw RiskExceptionEnum.NUM_DADOS_NO_PERMITIDO.get();
+        }
+        if (dadosDefensor.size()>3) {
+            throw RiskExceptionEnum.NUM_DADOS_NO_PERMITIDO.get();
+        }
 
         Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
         Dado dadoAtacante;
@@ -164,9 +171,14 @@ public class Partida {
         int ejercitosAtacados = dadosAtacante.size(); // El número de ejércitos con los que ataca el atacante, para después saber
                                    // cuántos hay que poner en el país defensor si es conquistado
 
-        mapaValores.put(atacante, dadosAtacante.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
+        
+        mapaValores.put(atacante, dadosAtacante.stream().map(d -> {
+            try {return new Dado(d.getValor());} catch (ExcepcionRISK e) {return null;}
+        }).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
                                                                                                 // devolverlos después
-        mapaValores.put(defensor, dadosDefensor.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet()));
+        mapaValores.put(defensor, dadosDefensor.stream().map(d -> {
+            try {return new Dado(d.getValor());} catch (ExcepcionRISK e) {return null;}
+        }).collect(Collectors.toSet()));
 
         procesarDadosAtacante(atacante, dadosAtacante);
 
@@ -284,9 +296,17 @@ public class Partida {
         Mapa.getMapa().getPaisEventPublisher().subscribe(turnoActual);
         getJugadorActual().recalcularEjercitosRearme();
     }
-
+    
     /**
-     * Avanza el turno de reparto (no recalcula el número de ejércitos que le tocan al jugador)
+     * Registra los manejadores de eventos del juego
+     */
+    public void iniciarJuego() {
+        Mapa.getMapa().getPaisEventPublisher().subscribe(this.getTurnoActual());
+        getJugadorActual().recalcularEjercitosRearme();
+    }
+    
+    /**
+     * Avanza el Turno de reparto (no recalcula el número de ejércitos que le tocan al jugador)
      */
     public void siguienteTurnoDeReparto() {
         this.colaJugadores.add(this.colaJugadores.poll());
@@ -312,15 +332,16 @@ public class Partida {
         return this.turnoActual;
     }
 
+    /**
+     * Asigna una Carta de equipamiento al Jugador del Turno actual
+     */
     public Carta asignarCartaEquipamiento(String idCarta) throws ExcepcionRISK {
-        if (!getTurnoActual().hasJugadorConquistadoPais()) {
-            throw RiskExceptionEnum.COMANDO_NO_PERMITIDO.get();
-        }
-        Carta cartaEquipamiento = CartaEquipamientoFactory.get(idCarta, Mapa.getMapa());
-        this.getTurnoActual().getJugador().addCartaEquipamiento(cartaEquipamiento);
-        return cartaEquipamiento;
+        return this.getTurnoActual().asignarCartaEquipamiento(idCarta);
     }
 
+    /**
+     * Reparte el número seleccionado de Ejercitos al Pais
+     */
     public int repartirEjercitos(int numero, Pais pais) throws ExcepcionJugador {
         if (!getJugadorActual().hasEjercitosSinRepartir()) {
             throw (ExcepcionJugador) RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get();

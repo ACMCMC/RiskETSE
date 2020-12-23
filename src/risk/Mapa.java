@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -154,7 +155,6 @@ public class Mapa {
                     // addContinente(new Continente(valores[0], valores[0],
                     // Color.getColorByString(valores[1]))); // En el archivo no sale el nombre
                     // humano del continente, así que ponemos que el nombre humano sea el del código
-                    e.printStackTrace();
                 }
             }
         }
@@ -575,8 +575,11 @@ public class Mapa {
      * @return
      */
     public Continente getContinente(String codigo) throws ExcepcionGeo {
-        if (this.continentes.containsKey(codigo)) {
-            return this.continentes.get(codigo);
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Continente> continenteBuscado = this.getContinentes().stream().filter(c -> colInstance.compare(c.getCodigo(), codigo)==0).findFirst();
+        if (continenteBuscado.isPresent()) {
+            return continenteBuscado.get();
         } else {
             throw (ExcepcionGeo) RiskExceptionEnum.CONTINENTE_NO_EXISTE.get();
         }
@@ -637,11 +640,16 @@ public class Mapa {
      * Contiene los códigos Unicode necesarios para imprimir el mapa
      */
     private static enum CodigosMapa {
-        LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'),
+        /*LINEA_VERTICAL('\u2502'), LINEA_HORIZONTAL('\u2500'), BORDE_IZQ_TOP('\u250C'), BORDE_DER_TOP('\u2510'),
         BORDE_IZQ_BOTTOM('\u2514'), BORDE_DER_BOTTOM('\u2518'), CRUZ('\u253C'), BORDE_IZQ_MIDDLE('\u251C'),
         BORDE_DER_MIDDLE('\u2524'), BORDE_MIDDLE_BOTTOM('\u2534'), BORDE_MIDDLE_TOP('\u252C'),
         LINEA_HORIZONTAL_BOLD('\u2501'), LINEA_VERTICAL_BOLD('\u2503'), CRUZ_BOLD('\u254B'),
-        LINEA_VERTICALTOHORIZONTAL_BOLD('\u250F'), LINEA_HORIZONTALTOVERTICAL_BOLD('\u251B');
+        LINEA_VERTICALTOHORIZONTAL_BOLD('\u250F'), LINEA_HORIZONTALTOVERTICAL_BOLD('\u251B');*/
+        LINEA_VERTICAL('|'), LINEA_HORIZONTAL('='), BORDE_IZQ_TOP('|'), BORDE_DER_TOP('|'),
+        BORDE_IZQ_BOTTOM('|'), BORDE_DER_BOTTOM('|'), CRUZ('|'), BORDE_IZQ_MIDDLE('|'),
+        BORDE_DER_MIDDLE('|'), BORDE_MIDDLE_BOTTOM('|'), BORDE_MIDDLE_TOP('|'),
+        LINEA_HORIZONTAL_BOLD('-'), LINEA_VERTICAL_BOLD('|'), CRUZ_BOLD('|'),
+        LINEA_VERTICALTOHORIZONTAL_BOLD('|'), LINEA_HORIZONTALTOVERTICAL_BOLD('|');
 
         char codigo;
 
@@ -672,7 +680,9 @@ public class Mapa {
      * @return
      */
     public Pais getPais(String codigo) throws ExcepcionGeo {
-        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> p.getCodigo().equals(codigo)).findFirst();
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> colInstance.compare(p.getCodigo(), codigo)==0).findFirst();
         if (paisBuscado.isPresent()) {
             return paisBuscado.get();
         } else {
