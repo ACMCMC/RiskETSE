@@ -154,7 +154,6 @@ public class Mapa {
                     // addContinente(new Continente(valores[0], valores[0],
                     // Color.getColorByString(valores[1]))); // En el archivo no sale el nombre
                     // humano del continente, así que ponemos que el nombre humano sea el del código
-                    e.printStackTrace();
                 }
             }
         }

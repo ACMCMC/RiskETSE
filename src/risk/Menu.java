@@ -418,7 +418,11 @@ public class Menu {
             } catch (ExcepcionGeo e) { // Sería conveniente implementar manejo de excepciones
             }
             return (par);
-        }).forEach(par -> Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1)));
+        }).forEach(par -> {
+            try{
+            Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1));}
+            catch(IndexOutOfBoundsException e) {}
+        });
     }
 
     /**

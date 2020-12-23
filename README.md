@@ -6,11 +6,15 @@ Para lanzar el error 126, "Carta de equipamiento ya asignada", como la semántic
 
 Al implementar la clase abstracta de las cartas de equipamiento, ya que cada una se refiere a un país, he modificado la declaración de la clase abstracta para que lo guarde también.
 
-El comando `jugador` o `describir jugador [nombre]`, en el campo `numEjercitoRearme` muestra los ejércitos que le corresponderían a un jugador al inicio de su turno, no los ejércitos que le quedan por rearmar en el turno actual.
+El comando `jugador` o `describir jugador [nombre]`, en el campo `numEjercitoRearme` muestra los ejércitos que le corresponderían a un jugador al inicio de su turno, no los ejércitos que le quedan por rearmar en el turno actual (entendemos que es a eso a lo que se refiere la documentación).
 
-Una vez que se asigna una carta de equipamiento al jugador, ya no puede atacar. Lo único que puede hacer es rearmar, antes de acabar su turno.
+Una vez que se asigna una carta de equipamiento al jugador, ya no puede atacar. Lo único que puede hacer es rearmar, antes de acabar su turno. Sólo se puede asignar una carta de equipamiento por turno.
 
 Si los archivos que incluyen la información del mapa no existen o no se encuentran en el momento de la ejecución del programa, se crearán automáticamente.
+
+El programa controla automáticamente las condiciones de victoria, pero como la documentación no especifica nada al respecto, cuando un jugador gana, la partida continúa igualmente.
+
+Si un jugador alcanza las 6 cartas de equipamiento al inicio de su turno, se realiza una llamada implícita al comando `cambiar cartas todas`.
 
 Hemos añadido algunas excepciones propias, que no se contemplan en la documentación original. Para eso, hemos creado un nuevo tipo de excepción dentro de la jerarquía especificada, que se llama ExcepcionPropia. Se correcponde con los siguientes códigos:
 
@@ -26,4 +30,4 @@ Los comandos optativos `repartir ejercitos` y `cambiar cartas todas` han sido im
 
 Hemos supuesto que `ver mapa` y sus comandos asociados se pueden ejecutar durante la fase de inicialización.
 
-Hemos cambiado el comando `Jugador` por `jugador`, ya que entendemos que los comandos, como regla general, deben ir siempre en minúsculas.
+Hemos cambiado el comando `Jugador` por `jugador`, ya que entendemos que los comandos, como regla general, deben ir siempre en minúsculas. Pese a todo, por compatibilidad, mantenemos las dos posibles sintaxis.

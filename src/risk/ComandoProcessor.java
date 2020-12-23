@@ -239,7 +239,7 @@ public class ComandoProcessor {
     public void procesarComandoSiemprePermitidoDuranteJuego(String comando) {
         String partes[] = comando.split(" ");
         if (partes.length == 3 && partes[0].equals("describir")) {
-            if (partes[1].equals("jugador")) {
+            if (partes[1].equals("jugador") || partes[1].equals("Jugador")) {
                 menu.describirJugador(partes[2]);
             }
             if (partes[1].equals("pais")) {
@@ -260,7 +260,7 @@ public class ComandoProcessor {
     public boolean isComandoSiemprePermitidoDuranteJuego(String comando) {
         String partes[] = comando.split(" ");
         if (partes.length == 3 && partes[0].equals("describir")) {
-            if (partes[1].equals("jugador")) {
+            if (partes[1].equals("jugador") || partes[1].equals("Jugador")) {
                 return true;
             }
             if (partes[1].equals("pais")) {
