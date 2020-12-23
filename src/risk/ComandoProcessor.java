@@ -239,7 +239,7 @@ public class ComandoProcessor {
     public void procesarComandoSiemprePermitidoDuranteJuego(String comando) {
         String partes[] = comando.split(" ");
         if (partes.length == 3 && partes[0].equals("describir")) {
-            if (partes[1].equals("jugador") || partes[1].equals("Jugador")) {
+            if (partes[1].equals("jugador")) {
                 menu.describirJugador(partes[2]);
             }
             if (partes[1].equals("pais")) {
@@ -252,7 +252,7 @@ public class ComandoProcessor {
         if (partes.length == 2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
             menu.verMapa();
         }
-        if (partes.length == 1 && partes[0].equals("jugador")) {
+        if (partes.length == 1 && (partes[0].equals("jugador") || partes[0].equals("Jugador"))) {
             menu.describirJugadorActual();
         }
     }
@@ -260,7 +260,7 @@ public class ComandoProcessor {
     public boolean isComandoSiemprePermitidoDuranteJuego(String comando) {
         String partes[] = comando.split(" ");
         if (partes.length == 3 && partes[0].equals("describir")) {
-            if (partes[1].equals("jugador") || partes[1].equals("Jugador")) {
+            if (partes[1].equals("jugador")) {
                 return true;
             }
             if (partes[1].equals("pais")) {
@@ -270,7 +270,7 @@ public class ComandoProcessor {
                 return true;
             }
         }
-        if (partes.length == 1 && partes[0].equals("jugador")) {
+        if (partes.length == 1 && (partes[0].equals("jugador") || partes[0].equals("Jugador"))) {
             return true;
         }
         return false;

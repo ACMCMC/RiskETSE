@@ -4,6 +4,7 @@
 
 package risk;
 
+import java.text.Collator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -95,8 +96,11 @@ public class Partida {
         if (!this.areJugadoresCreados()) {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
         }
-        if (this.jugadores.containsKey(nombre)) {
-            return this.jugadores.get(nombre);
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Jugador> jugadorBuscado = this.getJugadores().stream().filter(j -> colInstance.compare(j.getNombre(), nombre)==0).findFirst();
+        if (jugadorBuscado.isPresent()) {
+            return jugadorBuscado.get();
         } else {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADOR_NO_EXISTE.get();
         }

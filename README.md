@@ -31,3 +31,5 @@ Los comandos optativos `repartir ejercitos` y `cambiar cartas todas` han sido im
 Hemos supuesto que `ver mapa` y sus comandos asociados se pueden ejecutar durante la fase de inicialización.
 
 Hemos cambiado el comando `Jugador` por `jugador`, ya que entendemos que los comandos, como regla general, deben ir siempre en minúsculas. Pese a todo, por compatibilidad, mantenemos las dos posibles sintaxis.
+
+Tras la fase inicial de reparto de ejércitos, hemos entendido que se inicia un turno estándar. Como eso implica un reparto de ejércitos, si el jugador introduce `repartir ejercitos`, después va a tener que introducir `repartir ejercitos [num] [pais]`, ya que acaba de comenzar su turno.

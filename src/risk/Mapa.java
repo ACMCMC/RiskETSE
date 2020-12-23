@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -574,8 +575,11 @@ public class Mapa {
      * @return
      */
     public Continente getContinente(String codigo) throws ExcepcionGeo {
-        if (this.continentes.containsKey(codigo)) {
-            return this.continentes.get(codigo);
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Continente> continenteBuscado = this.getContinentes().stream().filter(c -> colInstance.compare(c.getCodigo(), codigo)==0).findFirst();
+        if (continenteBuscado.isPresent()) {
+            return continenteBuscado.get();
         } else {
             throw (ExcepcionGeo) RiskExceptionEnum.CONTINENTE_NO_EXISTE.get();
         }
@@ -676,7 +680,9 @@ public class Mapa {
      * @return
      */
     public Pais getPais(String codigo) throws ExcepcionGeo {
-        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> p.getCodigo().equals(codigo)).findFirst();
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> colInstance.compare(p.getCodigo(), codigo)==0).findFirst();
         if (paisBuscado.isPresent()) {
             return paisBuscado.get();
         } else {
