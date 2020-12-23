@@ -1,1 +1,0 @@
-javadoc -private -d ./docs -sourcepath ./src/ risk -subpackages risk.cartas:risk.cartasmision:risk.ejercito:risk.riskexception
