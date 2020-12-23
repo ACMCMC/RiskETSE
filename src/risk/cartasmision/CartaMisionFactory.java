@@ -4,6 +4,9 @@ import risk.Jugador;
 import risk.riskexception.ExcepcionMision;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Clase auxiliar que genera Cartas de Misión
+ */
 public abstract class CartaMisionFactory {
 
     public static CartaMision build(String idMision, Jugador jugadorActual) throws ExcepcionMision {

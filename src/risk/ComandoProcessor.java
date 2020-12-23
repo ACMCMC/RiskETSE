@@ -252,7 +252,7 @@ public class ComandoProcessor {
         if (partes.length == 2 && partes[0].equals("ver") && partes[1].equals("mapa")) {
             menu.verMapa();
         }
-        if (partes.length == 1 && partes[0].equals("jugador")) {
+        if (partes.length == 1 && (partes[0].equals("jugador") || partes[0].equals("Jugador"))) {
             menu.describirJugadorActual();
         }
     }
@@ -270,7 +270,7 @@ public class ComandoProcessor {
                 return true;
             }
         }
-        if (partes.length == 1 && partes[0].equals("jugador")) {
+        if (partes.length == 1 && (partes[0].equals("jugador") || partes[0].equals("Jugador"))) {
             return true;
         }
         return false;
@@ -374,6 +374,9 @@ public class ComandoProcessor {
                         }
                     } else if (partesComando.length == 4 && partesComando[0].equals("asignar")
                             && partesComando[1].equals("mision")) {
+                        return true;
+                    } else if (partesComando.length == 4 && partesComando[0].equals("asignar")
+                            && partesComando[1].equals("pais")) {
                         return true;
                     }
                     break;

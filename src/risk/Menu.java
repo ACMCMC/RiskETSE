@@ -72,21 +72,19 @@ public class Menu {
             String linea;
             while ((linea = bufferedReader.readLine()) != null) {
                 String partes[] = linea.split(";");
-                String nombrePais = partes[1];
-                String nombreJugador = partes[0];
-
-                asignarPais(nombreJugador, nombrePais);
+                try {
+                    String nombrePais = partes[1];
+                    String nombreJugador = partes[0];
+                    asignarPais(nombreJugador, nombrePais);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    io.printToErrOutput(RiskExceptionEnum.FORMATO_ARCHIVO_INCORRECTO.get());
+                }
             }
             bufferedReader.close();
         } catch (FileNotFoundException fileNotFoundException) {
-            // Si no se encuentra el archivo, falla el programa
-            io.printToErrOutput(new ExcepcionRISK(0, "No se encuentra el archivo"){
-                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
-            });
+            io.printToErrOutput(RiskExceptionEnum.ARCHIVO_NO_EXISTE.get());
         } catch (IOException e) {
-            io.printToErrOutput(new ExcepcionRISK(0, "Error leyendo el archivo"){
-                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
-            });
+            io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
         }
     }
 
@@ -123,15 +121,10 @@ public class Menu {
                     FileCreatorFallback.crearArchivoColoresContinentes(fileColoresContinentes);
                     Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
                 } catch (IOException ex) {
-                    io.printToErrOutput(
-                            new ExcepcionRISK(0, "No se puede leer ni crear el archivo de colores de los continentes") {
-                                private static final long serialVersionUID = 1L; // Solo para que no de un warning
-                            });
+                    io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER_NI_CREAR.get());
                 }
             } catch (IOException e) {
-                io.printToErrOutput(new ExcepcionRISK(0, "No se puede leer el archivo de colores de los continentes") {
-                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
-                });
+                io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
             }
         } catch (IOException ex) {
             if (ex instanceof FileNotFoundException) {
@@ -146,31 +139,19 @@ public class Menu {
                                 FileCreatorFallback.crearArchivoColoresContinentes(fileColoresContinentes);
                                 Mapa.getMapa().asignarColoresContinentes(fileColoresContinentes);
                             } catch (IOException exc) {
-                                io.printToErrOutput(new ExcepcionRISK(0,
-                                        "No se puede leer ni crear el archivo de colores de los continentes") {
-                                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
-                                });
+                                io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER_NI_CREAR.get());
                             }
                         } catch (IOException e) {
-                            io.printToErrOutput(
-                                    new ExcepcionRISK(0, "No se puede leer el archivo de colores de los continentes") {
-                                        private static final long serialVersionUID = 1L; // Solo para que no de un
-                                                                                         // warning
-                                    });
+                            io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
                         }
                     } catch (ExcepcionGeo e) {
                         io.printToErrOutput(e);
                     }
                 } catch (IOException e) {
-                    io.printToErrOutput(
-                            new ExcepcionRISK(0, "No se puede leer ni crear el archivo de coordenadas de los países") {
-                                private static final long serialVersionUID = 1L; // Solo para que no de un warning
-                            });
+                    io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
                 }
             } else {
-                io.printToErrOutput(new ExcepcionRISK(0, "No se puede leer el archivo de coordenadas de los países") {
-                    private static final long serialVersionUID = 1L; // Solo para que no de un warning
-                });
+                io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
             }
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
@@ -213,19 +194,16 @@ public class Menu {
                             .autoAdd("color", color.getNombre()).build());
                 } catch (ExcepcionRISK e) {
                     io.printToErrOutput(e);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    io.printToErrOutput(RiskExceptionEnum.FORMATO_ARCHIVO_INCORRECTO.get());
                 }
             }
 
             bufferLector.close();
         } catch (FileNotFoundException fileNotFoundException) {
-            // Si no se encuentra el archivo, falla el programa
-            io.printToErrOutput(new ExcepcionRISK(0, "No se encuentra el archivo"){
-                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
-            });
+            io.printToErrOutput(RiskExceptionEnum.ARCHIVO_NO_EXISTE.get());
         } catch (IOException e) {
-            io.printToErrOutput(new ExcepcionRISK(0, "Error leyendo el archivo"){
-                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
-            });
+            io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
         }
     }
 
@@ -250,6 +228,7 @@ public class Menu {
     public void repartirEjercitos() {
         try {
             Partida.getPartida().repartirEjercitos();
+            verMapa();
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
@@ -279,6 +258,8 @@ public class Menu {
             io.printToOutput(output);
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
+        } catch (NumberFormatException e) {
+            io.printToErrOutput(RiskExceptionEnum.COMANDO_INCORRECTO.get());
         }
     }
 
@@ -376,6 +357,8 @@ public class Menu {
             io.printToOutput(output);
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
+        } catch (NumberFormatException e) {
+            io.printToErrOutput(RiskExceptionEnum.COMANDO_INCORRECTO.get());
         }
     }
 
@@ -434,7 +417,11 @@ public class Menu {
             } catch (ExcepcionGeo e) { // Sería conveniente implementar manejo de excepciones
             }
             return (par);
-        }).forEach(par -> Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1)));
+        }).forEach(par -> {
+            try{
+            Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1));}
+            catch(IndexOutOfBoundsException e) {}
+        });
     }
 
     /**
@@ -462,16 +449,15 @@ public class Menu {
             String linea;
             while ((linea = bufferedReader.readLine()) != null) {
                 String partesLinea[] = linea.split(";");
-                asignarMisionJugador(partesLinea[0], partesLinea[1]);
+                try {
+                    asignarMisionJugador(partesLinea[0], partesLinea[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    io.printToErrOutput(RiskExceptionEnum.FORMATO_ARCHIVO_INCORRECTO.get());
+                }
             }
+            bufferedReader.close();
         } catch (IOException e) {
-            io.printToErrOutput(new ExcepcionRISK(0, "Error de lectura del archivo") {
-                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
-            });
-        } catch (ArrayIndexOutOfBoundsException e) {
-            io.printToErrOutput(new ExcepcionRISK(0, "El archivo de lectura de misiones tiene un formato erróneo") {
-                private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
-            });
+            io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
         }
     }
 
@@ -617,7 +603,8 @@ public class Menu {
             ejercitosPaisDefensaAntes = paisDefensor.getNumEjercitos();
 
             Map<Pais, Set<Dado>> resultadoAtacar = Partida.getPartida().atacar(paisAtacante,
-                    parsearStringDados(dadosAtaque), paisDefensor, parsearStringDados(dadosDefensa));
+                    DadoFactory.getDadosFromString(dadosAtaque), paisDefensor,
+                    DadoFactory.getDadosFromString(dadosDefensa));
 
             if (paisDefensor.getContinente().getJugadores().size() == 1) { // Solo queda un Jugador en el continente del
                                                                            // país defendido, esto implica que es el
@@ -633,13 +620,15 @@ public class Menu {
                     .autoAdd("dadosDefensa",
                             resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toList()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
-                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el
+                                                                         // warning
                         {
                             add(ejercitosPaisAtaqueAntes);
                             add(paisAtacante.getNumEjercitos());
                         }
                     }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
-                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el
+                                                                         // warning
                         {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());
@@ -652,19 +641,6 @@ public class Menu {
         } catch (ExcepcionRISK e) {
             io.printToErrOutput(e);
         }
-    }
-
-    public Set<Dado> parsearStringDados(String stringDados) {
-        Set<Dado> setRetorno = new HashSet<>();
-        String dados[] = stringDados.split("x");
-        for (int i = 0; i < dados.length; i++) {
-            int numeroDado;
-            Dado dadoActual;
-            numeroDado = Integer.parseInt(dados[i]);
-            dadoActual = new Dado(numeroDado);
-            setRetorno.add(dadoActual);
-        }
-        return setRetorno;
     }
 
     public void atacar(String nombrePaisAtacante, String nombrePaisDefensor) {
@@ -695,13 +671,15 @@ public class Menu {
                     .autoAdd("dadosDefensa",
                             resultadoAtacar.get(paisDefensor).stream().map(Dado::getValor).collect(Collectors.toSet()))
                     .autoAdd("ejercitosPaisAtaque", new ArrayList<Integer>() {
-                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el
+                                                                         // warning
                         {
                             add(ejercitosPaisAtaqueAntes);
                             add(paisAtacante.getNumEjercitos());
                         }
                     }).autoAdd("ejercitosPaisDefensa", new ArrayList<Integer>() {
-                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el warning
+                        private static final long serialVersionUID = 1L; // No tiene funcionalidad, sólo evita el
+                                                                         // warning
                         {
                             add(ejercitosPaisDefensaAntes);
                             add(paisDefensor.getNumEjercitos());

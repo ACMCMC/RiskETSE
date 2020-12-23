@@ -36,8 +36,6 @@ public class ConsolaArchivo implements Consola {
             printToOutput(Consola.PROMPT + linea);
             return linea;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
             return null;
         }
     }
@@ -70,8 +68,6 @@ public class ConsolaArchivo implements Consola {
             bufferedWriter.write("EOF");
             bufferedWriter.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 

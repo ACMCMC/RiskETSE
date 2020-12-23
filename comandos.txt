@@ -70,8 +70,28 @@ acabar turno
 repartir ejercitos 20 USAEste
 atacar USAEste 6x6x6 AmeCentra 1x1
 atacar USAEste 6x6x6 AmeCentra 1x1
-atacar USAEste 6x6x6 AmeCentra 1x1
+atacar USAEste 6x6Ax6 AmeCentra 1x1
+atacar USAEste 6x6x6x6 USAOeste 1x1
 asignar carta DeCamello&Congo
+acabar turno
+repartir ejercitos 10 Japón
+acabar turno
+repartir ejercitos 10 Argentina
+acabar turno
+repartir ejercitos 20 USAEste
+atacar AmeCentra 6x6x6 Venezuela 1x1
+atacar AmeCentra 6x6x6 Venezuela 1x1
+asignar carta Fusilero&Congo
+acabar turno
+repartir ejercitos 10 Japón
+acabar turno
+repartir ejercitos 10 Argentina
+acabar turno
+repartir ejercitos 20 USAEste
+atacar Venezuela 6x6x6 Perú 1x1
+atacar Venezuela 6x6x6 Perú 1x1
+asignar carta DeCaballo&Rusia
+asignar carta DeCampanha&Rusia
 acabar turno
 repartir ejercitos 10 Japón
 acabar turno

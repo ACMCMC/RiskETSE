@@ -3,6 +3,9 @@ package risk.cartasmision;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Se encarga de publicar eventos PaisEvent
+ */
 public class PaisEventPublisher {
     
     private List<PaisEventSubscriber> ListSubscribers; // Una lista, y no un conjunto, porque puede haber varios suscriptores iguales

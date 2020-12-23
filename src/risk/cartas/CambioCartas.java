@@ -7,6 +7,9 @@ import risk.Jugador;
 import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Representa una mano de tres Cartas de equipamiento, que van a ser cambiadas
+ */
 public class CambioCartas {
     Carta carta1;
     Carta carta2;

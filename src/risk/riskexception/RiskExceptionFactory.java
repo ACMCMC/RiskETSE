@@ -5,64 +5,66 @@ package risk.riskexception;
  */
 public class RiskExceptionFactory {
 
-    public static ExcepcionRISK fromCode(int code) {
+    public static ExcepcionRISK fromCode(int code, String codigoTexto) {
+
+
         switch (code) {
             case (99):
-                return (new ExcepcionComando(code, "Comando no permitido en este momento"));
+                return (new ExcepcionComando(code, codigoTexto));
             case (100):
-                return (new ExcepcionGeo(code, "Color no permitido"));
+                return (new ExcepcionGeo(code, codigoTexto));
             case (101):
-                return (new ExcepcionComando(code, "Comando incorrecto"));
+                return (new ExcepcionComando(code, codigoTexto));
             case (102):
-                return (new ExcepcionGeo(code, "El continente no existe"));
+                return (new ExcepcionGeo(code, codigoTexto));
             case (103):
-                return (new ExcepcionJugador(code, "El jugador no existe"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (104):
-                return (new ExcepcionJugador(code, "El jugador ya existe"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (105):
-                return (new ExcepcionJugador(code, "Los jugadores no están creados"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (106):
-                return (new ExcepcionGeo(code, "El mapa no está creado"));
+                return (new ExcepcionGeo(code, codigoTexto));
             case (107):
-                return (new ExcepcionGeo(code, "El mapa ya ha sido creado"));
+                return (new ExcepcionGeo(code, codigoTexto));
             case (109):
-                return (new ExcepcionGeo(code, "El país no existe"));
+                return (new ExcepcionGeo(code, codigoTexto));
             case (110):
-                return (new ExcepcionJugador(code, "El país no pertenece al jugador"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (111):
-                return (new ExcepcionJugador(code, "El país pertenece al jugador"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (112):
-                return (new ExcepcionGeo(code, "Los países no son frontera"));
+                return (new ExcepcionGeo(code, codigoTexto));
             case (113):
-                return (new ExcepcionJugador(code, "El país ya está asignado"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (114):
-                return (new ExcepcionJugador(code, "El color ya está asignado"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (115):
-                return (new ExcepcionMision(code, "La misión ya está asignada"));
+                return (new ExcepcionMision(code, codigoTexto));
             case (116):
-                return (new ExcepcionMision(code, "La misión no existe"));
+                return (new ExcepcionMision(code, codigoTexto));
             case (117):
-                return (new ExcepcionMision(code, "El jugador ya tiene asignada una misión"));
+                return (new ExcepcionMision(code, codigoTexto));
             case (118):
-                return (new ExcepcionMision(code, "Las misiones no están asignadas"));
+                return (new ExcepcionMision(code, codigoTexto));
             case (119):
-                return (new ExcepcionJugador(code, "Ejércitos no disponibles"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (120):
-                return (new ExcepcionCarta(code, "No hay cartas suficientes"));
+                return (new ExcepcionCarta(code, codigoTexto));
             case (121):
-                return (new ExcepcionCarta(code, "No hay configuración de cambio"));
+                return (new ExcepcionCarta(code, codigoTexto));
             case (122):
-                return (new ExcepcionCarta(code, "Algunas cartas no pertenecen al jugador"));
+                return (new ExcepcionCarta(code, codigoTexto));
             case (123):
-                return (new ExcepcionCarta(code, "Algunas cartas no existen"));
+                return (new ExcepcionCarta(code, codigoTexto));
             case (124):
-                return (new ExcepcionJugador(code, "No hay ejércitos suficientes"));
+                return (new ExcepcionJugador(code, codigoTexto));
             case (125):
-                return (new ExcepcionCarta(code, "El identificador no sigue el formato correcto"));
+                return (new ExcepcionCarta(code, codigoTexto));
             case (126):
-                return (new ExcepcionCarta(code, "Carta de equipamiento ya asignada"));
+                return (new ExcepcionCarta(code, codigoTexto));
             default:
-                throw new IllegalArgumentException("El código especificado no es correcto"); // Si especificamos un código incorrecto
+                return (new ExcepcionPropia(code, codigoTexto));
         }
     }
 

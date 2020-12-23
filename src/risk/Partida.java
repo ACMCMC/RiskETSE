@@ -4,6 +4,7 @@
 
 package risk;
 
+import java.text.Collator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import risk.cartas.Carta;
-import risk.cartas.CartaEquipamientoFactory;
 import risk.cartasmision.CartaMision;
 import risk.ejercito.Ejercito;
 import risk.ejercito.EjercitoFactory;
@@ -95,8 +95,11 @@ public class Partida {
         if (!this.areJugadoresCreados()) {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADORES_NO_CREADOS.get();
         }
-        if (this.jugadores.containsKey(nombre)) {
-            return this.jugadores.get(nombre);
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Jugador> jugadorBuscado = this.getJugadores().stream().filter(j -> colInstance.compare(j.getNombre(), nombre)==0).findFirst();
+        if (jugadorBuscado.isPresent()) {
+            return jugadorBuscado.get();
         } else {
             throw (ExcepcionJugador) RiskExceptionEnum.JUGADOR_NO_EXISTE.get();
         }
@@ -155,6 +158,12 @@ public class Partida {
         if (!atacante.getJugador().equals(Partida.getPartida().getJugadorActual())) {
             throw RiskExceptionEnum.PAIS_NO_PERTENECE_JUGADOR.get();
         }
+        if (dadosAtacante.size()>3) {
+            throw RiskExceptionEnum.NUM_DADOS_NO_PERMITIDO.get();
+        }
+        if (dadosDefensor.size()>3) {
+            throw RiskExceptionEnum.NUM_DADOS_NO_PERMITIDO.get();
+        }
 
         Map<Pais, Set<Dado>> mapaValores = new HashMap<>();
         Dado dadoAtacante;
@@ -162,9 +171,14 @@ public class Partida {
         int ejercitosAtacados = dadosAtacante.size(); // El número de ejércitos con los que ataca el atacante, para después saber
                                    // cuántos hay que poner en el país defensor si es conquistado
 
-        mapaValores.put(atacante, dadosAtacante.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
+        
+        mapaValores.put(atacante, dadosAtacante.stream().map(d -> {
+            try {return new Dado(d.getValor());} catch (ExcepcionRISK e) {return null;}
+        }).collect(Collectors.toSet())); // Copiamos los valores de los Sets para
                                                                                                 // devolverlos después
-        mapaValores.put(defensor, dadosDefensor.stream().map(d -> new Dado(d.getValor())).collect(Collectors.toSet()));
+        mapaValores.put(defensor, dadosDefensor.stream().map(d -> {
+            try {return new Dado(d.getValor());} catch (ExcepcionRISK e) {return null;}
+        }).collect(Collectors.toSet()));
 
         procesarDadosAtacante(atacante, dadosAtacante);
 

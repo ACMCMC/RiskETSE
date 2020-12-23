@@ -2,6 +2,9 @@ package risk.cartas;
 
 import risk.Pais;
 
+/**
+ * Clase abstracta base para las Cartas de equipamiento
+ */
 public abstract class Carta {
     Pais paisCarta;
     Carta(Pais pais) {
@@ -36,5 +39,10 @@ public abstract class Carta {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getNombre().hashCode();
     }
 }
