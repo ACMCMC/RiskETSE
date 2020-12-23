@@ -18,8 +18,12 @@ Hemos añadido algunas excepciones propias, que no se contemplan en la documenta
 - "No se ha podido leer del archivo" (201)
 - "No se ha podido leer ni crear el archivo" (202)
 - "El formato del archivo no es correcto" (203)
-- "Se ha lanzado una cantidad de dados no permitida" (205). Se lanza cuando.
+- "Se ha lanzado una cantidad de dados no permitida" (205). Se lanza cuando un jugador usa `atacar pais1 dados pais2 dados`, si la cantidad de los dados es incorrecta (por ejemplo, los dados "6x2x2x5x2").
 - "El valor de los dados no es correcto" (206). Se lanza cuando un jugador usa `atacar pais1 dados pais2 dados`, si el valor de alguno de los dados es incorrecto (por ejemplo, los dados "6x9x2").
 - "El formato de los dados no es correcto" (207). Se lanza cuando un jugador usa `atacar pais1 dados pais2 dados`, si el formato de alguno de los dados es incorrecto (por ejemplo, los dados "6xB6x2").
 
 Los comandos optativos `repartir ejercitos` y `cambiar cartas todas` han sido implementados.
+
+Hemos supuesto que `ver mapa` y sus comandos asociados se pueden ejecutar durante la fase de inicialización.
+
+Hemos cambiado el comando `Jugador` por `jugador`, ya que entendemos que los comandos, como regla general, deben ir siempre en minúsculas.

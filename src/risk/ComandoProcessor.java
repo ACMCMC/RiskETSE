@@ -375,6 +375,9 @@ public class ComandoProcessor {
                     } else if (partesComando.length == 4 && partesComando[0].equals("asignar")
                             && partesComando[1].equals("mision")) {
                         return true;
+                    } else if (partesComando.length == 4 && partesComando[0].equals("asignar")
+                            && partesComando[1].equals("pais")) {
+                        return true;
                     }
                     break;
                 case "describir":

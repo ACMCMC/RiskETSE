@@ -452,6 +452,7 @@ public class Menu {
                     io.printToErrOutput(RiskExceptionEnum.FORMATO_ARCHIVO_INCORRECTO.get());
                 }
             }
+            bufferedReader.close();
         } catch (IOException e) {
             io.printToErrOutput(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get());
         }
