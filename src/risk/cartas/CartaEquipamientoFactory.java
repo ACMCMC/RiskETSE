@@ -6,6 +6,9 @@ import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.RiskExceptionEnum;
 
+/**
+ * Clase auxiliar que genera Cartas de equipamiento según los requisitos especificados
+ */
 public abstract class CartaEquipamientoFactory {
     public static Carta get(String tipo, Mapa mapa) throws ExcepcionCarta {
         String partes[] = tipo.split("&"); // Por ejemplo, DeCampanha&Alaksa

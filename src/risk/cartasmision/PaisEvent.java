@@ -2,6 +2,9 @@ package risk.cartasmision;
 
 import risk.Pais;
 
+/**
+ * Representa un cambio en las propiedades de un país
+ */
 public class PaisEvent {
     private Pais paisAntes;
     private Pais paisDespues;

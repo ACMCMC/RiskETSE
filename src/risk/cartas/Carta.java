@@ -2,6 +2,9 @@ package risk.cartas;
 
 import risk.Pais;
 
+/**
+ * Clase abstracta base para las Cartas de equipamiento
+ */
 public abstract class Carta {
     Pais paisCarta;
     Carta(Pais pais) {

@@ -2,6 +2,9 @@ package risk.ejercito;
 
 import risk.Color;
 
+/**
+ * Clase auxiliar que genera un ejército del tipo adecuado
+ */
 public abstract class EjercitoFactory {
     public static Ejercito getEjercito(Color color) {
         switch(color) {

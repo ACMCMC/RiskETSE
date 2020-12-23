@@ -13,7 +13,7 @@ import risk.riskexception.ExcepcionCarta;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
- * Busca la configuración de cambio de cartas óptima, y la devuelve
+ * Busca una configuración de Cambio de Cartas de equipamiento
  */
 public class CambioCartasFactory {
     private Set<Carta> cartasOriginales;

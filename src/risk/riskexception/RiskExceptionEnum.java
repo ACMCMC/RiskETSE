@@ -1,5 +1,8 @@
 package risk.riskexception;
 
+/**
+ * Enumeración de las excepciones conocidas del Risk, y que proporciona un punto de acceso sencillo a representaciones de las mismas.
+ */
 public enum RiskExceptionEnum {
     COMANDO_NO_PERMITIDO(99, "Comando no permitido en este momento"),
     COLOR_NO_PERMITIDO(100, "Color no permitido"),
