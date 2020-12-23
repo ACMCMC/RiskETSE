@@ -1,5 +1,8 @@
 package risk;
 
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 /**
@@ -10,7 +13,7 @@ public class ConsolaNormal implements Consola {
     private Scanner scanner;
 
     ConsolaNormal() {
-        scanner = new Scanner(System.in);
+        scanner = new Scanner(new InputStreamReader(System.in, StandardCharsets.UTF_8));
     }
     
     @Override
