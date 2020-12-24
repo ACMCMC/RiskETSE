@@ -52,4 +52,9 @@ public enum Color {
     public static String getSecColorReset() {
         return "\033[0m";
     }
+
+    @Override
+    public String toString() {
+        return this.getNombre();
+    }
 }
