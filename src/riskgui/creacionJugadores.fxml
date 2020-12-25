@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="riskgui.CreacionJugadoresController">
    <children>
-      <TextField fx:id="campoNombreJugador" layoutX="220.0" layoutY="187.0" />
-      <ChoiceBox fx:id="choiceBoxColores" layoutX="225.0" layoutY="214.0" prefWidth="150.0" />
-      <Button fx:id="bAnadir" layoutX="273.0" layoutY="241.0" mnemonicParsing="false" onAction="#anadirJug" text="Añadir" />
+      <Group layoutX="200.0" layoutY="136.0">
+         <children>
+            <TextField fx:id="campoNombreJugador" layoutY="1.0" prefHeight="27.0" prefWidth="103.0" />
+            <ChoiceBox fx:id="choiceBoxColores" layoutX="111.0" layoutY="1.0" prefHeight="27.0" prefWidth="88.0" />
+            <ProgressBar fx:id="barraProgreso" layoutY="58.0" prefWidth="200.0" progress="0.0" />
+            <Button fx:id="bAnadir" alignment="BOTTOM_LEFT" defaultButton="true" layoutY="100.0" mnemonicParsing="false" onAction="#anadirJug" text="Añadir" />
+            <Button fx:id="bSiguiente" layoutX="130.0" layoutY="100.0" mnemonicParsing="false" onAction="#siguiente" text="Siguiente" />
+         </children>
+      </Group>
    </children>
 </Pane>

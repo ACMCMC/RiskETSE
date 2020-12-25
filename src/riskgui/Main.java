@@ -15,19 +15,36 @@ import risk.riskexception.RiskExceptionEnum;
 
 public class Main extends Application {
 
+    private static Stage stage;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
+
         crearMapa();
 
-        Parent rootCreacionJugadores = FXMLLoader.load(getClass().getResource("creacionJugadores.fxml"));
-        Scene escenaCreacionJugadores = new Scene(rootCreacionJugadores);
-
-        Parent rootPartida = FXMLLoader.load(getClass().getResource("partida.fxml"));
-        Scene escena1 = new Scene(rootPartida);
-
+        goToCreacionJugadores();
+        
         primaryStage.setTitle("RiskETSE");
-        primaryStage.setScene(escenaCreacionJugadores);
-        primaryStage.show();
+    }
+    
+    public static void goToCreacionJugadores() {
+        try {
+            Parent rootCreacionJugadores = FXMLLoader.load(Main.class.getResource("creacionJugadores.fxml"));
+            Scene escenaCreacionJugadores = new Scene(rootCreacionJugadores);
+            stage.setScene(escenaCreacionJugadores);
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
+    public static void goToAsignacionMisiones() {
+        try {
+            Parent rootAsignacionMisiones = FXMLLoader.load(Main.class.getResource("asignacionMisiones.fxml"));
+            Scene escenaAsignacionMisiones = new Scene(rootAsignacionMisiones);
+            stage.setScene(escenaAsignacionMisiones);
+            stage.show();
+        } catch (IOException e) {
+        }
     }
     
     public static void main(String[] args) {

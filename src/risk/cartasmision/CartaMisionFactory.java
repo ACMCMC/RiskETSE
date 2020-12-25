@@ -1,5 +1,8 @@
 package risk.cartasmision;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import risk.Jugador;
 import risk.riskexception.ExcepcionMision;
 import risk.riskexception.RiskExceptionEnum;
@@ -38,5 +41,22 @@ public abstract class CartaMisionFactory {
             default:
                 throw (ExcepcionMision) RiskExceptionEnum.MISION_NO_EXISTE.get();
         }
+    }
+
+    public static Set<Class<? extends CartaMision>> getAll() {
+        Set<Class<? extends CartaMision>> cartasMision = new HashSet<>();
+        cartasMision.add(M1.class);
+        cartasMision.add(M2.class);
+        cartasMision.add(M31.class);
+        cartasMision.add(M32.class);
+        cartasMision.add(M33.class);
+        cartasMision.add(M34.class);
+        cartasMision.add(M41.class);
+        cartasMision.add(M42.class);
+        cartasMision.add(M43.class);
+        cartasMision.add(M44.class);
+        cartasMision.add(M45.class);
+        cartasMision.add(M46.class);
+        return cartasMision;
     }
 }
