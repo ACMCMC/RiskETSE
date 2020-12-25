@@ -15,9 +15,11 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import risk.Jugador;
 import risk.Partida;
+import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionMision;
@@ -30,6 +32,10 @@ public class AsignacionMisionesController {
     private ListView<Class<? extends CartaMision>> listaMisiones;
     @FXML
     private Button bSiguiente;
+    @FXML
+    private Text tDescMision;
+    @FXML
+    private Text tNombreMision;
 
     public void initialize() {
         ObservableList<Jugador> listaJ = FXCollections.observableArrayList(Partida.getPartida().getJugadores());
@@ -75,7 +81,7 @@ public class AsignacionMisionesController {
         listaJugadores.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Jugador>() {
             @Override
             public void changed(ObservableValue<? extends Jugador> observable, Jugador oldValue, Jugador newValue) {
-                handleClickOnJugador(newValue);
+                handleJugadorChange(newValue);
             }
         });
         listaMisiones.getSelectionModel().selectedItemProperty()
@@ -83,12 +89,12 @@ public class AsignacionMisionesController {
                     @Override
                     public void changed(ObservableValue<? extends Class<? extends CartaMision>> observable,
                             Class<? extends CartaMision> oldValue, Class<? extends CartaMision> newValue) {
-                        handleClickOnMision(newValue, oldValue);
+                        handleMisionChange(newValue, oldValue);
                     }
                 });
     }
 
-    public void handleClickOnJugador(Jugador j) {
+    public void handleJugadorChange(Jugador j) {
         try {
             listaMisiones.getSelectionModel().select(j.getCartaMision().getClass());
         } catch (NoSuchElementException e) {
@@ -96,7 +102,7 @@ public class AsignacionMisionesController {
         }
     }
 
-    public void handleClickOnMision(Class<? extends CartaMision> claseCartaMision,
+    public void handleMisionChange(Class<? extends CartaMision> claseCartaMision,
             Class<? extends CartaMision> oldValue) {
         Jugador jSeleccionado = listaJugadores.getSelectionModel().getSelectedItem();
         if (jSeleccionado != null) {
@@ -109,6 +115,9 @@ public class AsignacionMisionesController {
             if (claseCartaMision!=null && !claseCartaMision.equals(misionJug)) {
                 try {
                     CartaMision m = CartaMisionFactory.build(claseCartaMision.getSimpleName(), jSeleccionado);
+                    if (misionJug!=null) {
+                        jSeleccionado.removeMision(jSeleccionado.getCartaMision());
+                    }
                     Partida.getPartida().asignarMisionAJugador(m, jSeleccionado);
                 } catch (ExcepcionRISK e) {
                     Alert alerta = new Alert(AlertType.WARNING);
@@ -122,6 +131,16 @@ public class AsignacionMisionesController {
         }
         if (Partida.getPartida().areMisionesAsignadas()) {
             bSiguiente.setDisable(false);
+        }
+        try {
+            CartaMision misionJugActual = jSeleccionado.getCartaMision();
+            tNombreMision.setText(misionJugActual.getID());
+            tDescMision.setText(misionJugActual.getDescripcion());
+            tNombreMision.setVisible(true);
+            tDescMision.setVisible(true);
+        } catch (NoSuchElementException e) {
+            tNombreMision.setVisible(false);
+            tDescMision.setVisible(false);
         }
     }
 }

@@ -248,6 +248,13 @@ public class Jugador {
     public void removeCartaEquipamiento(Carta carta) {
         this.setCartasEquipamiento.remove(carta);
     }
+    
+    /**
+     * Le quita la Carta de misión especificada a este Jugador
+     */
+    public void removeMision(CartaMision m) {
+        this.setCartasMision.remove(m);
+    }
 
     /**
      * Devuelve TRUE si el Jugador ha completado alguna de sus misiones
