@@ -8,20 +8,21 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
 public class RepartoPaisesController {
     @FXML
-    private Group grupoPaises;
+    private Pane panelMapa;
 
     private Mundo mundo;
 
     public void initialize() {
         mundo = new Mundo();
-        for (Entry<String, SVGPath> entrada : mundo.getPaths().entrySet()) {
-            grupoPaises.getChildren().add(entrada.getValue());
-        }
-        mundo.getPaths().get("Alaska").setOnMouseEntered(new EventHandler<Event>(){
+
+        panelMapa.getChildren().add(mundo.getWorldStackPane());
+
+        /*mundo.getPaths().get("Alaska").setOnMouseEntered(new EventHandler<Event>(){
 
 			@Override
 			public void handle(Event event) {
@@ -32,6 +33,7 @@ public class RepartoPaisesController {
                 alerta.show();
 			}
             
-        });
+        });*/
+        //panelMapa.setPrefWidth(panelMapa.getScene().widthProperty().doubleValue());
     }
 }
