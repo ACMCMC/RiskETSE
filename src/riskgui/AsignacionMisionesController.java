@@ -3,26 +3,35 @@ package riskgui;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
+import javafx.animation.Transition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import risk.Jugador;
 import risk.Partida;
-import risk.cartas.Carta;
 import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
-import risk.riskexception.ExcepcionMision;
 import risk.riskexception.ExcepcionRISK;
 
 public class AsignacionMisionesController {
@@ -33,11 +42,19 @@ public class AsignacionMisionesController {
     @FXML
     private Button bSiguiente;
     @FXML
-    private Text tDescMision;
+    private Label tDescMision;
     @FXML
-    private Text tNombreMision;
+    private ImageView iBack;
+    @FXML
+    private ImageView iFront;
+    @FXML
+    private StackPane stackPaneCarta;
+
+    private Transition transicionActualCarta;
 
     public void initialize() {
+        
+
         ObservableList<Jugador> listaJ = FXCollections.observableArrayList(Partida.getPartida().getJugadores());
         listaJugadores.setItems(listaJ);
         listaJugadores.setCellFactory(new Callback<ListView<Jugador>,ListCell<Jugador>>(){
@@ -94,12 +111,116 @@ public class AsignacionMisionesController {
                 });
     }
 
+    public void showFrontCarta() {
+        if (transicionActualCarta == null && !listaMisiones.getSelectionModel().isEmpty()) {
+            RotateTransition rotateTransitionBack = new RotateTransition(Duration.millis(300), iBack);
+            rotateTransitionBack.setToAngle(90);
+            rotateTransitionBack.setAxis(Rotate.Y_AXIS);
+            rotateTransitionBack.setCycleCount(0);
+            rotateTransitionBack.setAutoReverse(false);
+            rotateTransitionBack.setInterpolator(Interpolator.EASE_OUT);
+            
+            transicionActualCarta = rotateTransitionBack;
+            
+            rotateTransitionBack.setOnFinished(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    RotateTransition rotateTransitionFront = new RotateTransition(Duration.millis(300), iFront);
+                    rotateTransitionFront.setToAngle(0);
+                    rotateTransitionFront.setAxis(Rotate.Y_AXIS);
+                    rotateTransitionFront.setCycleCount(0);
+                    rotateTransitionFront.setAutoReverse(false);
+                    rotateTransitionFront.setInterpolator(Interpolator.EASE_OUT);
+
+                    RotateTransition rotateTransitionText = new RotateTransition(Duration.millis(300), tDescMision);
+                    rotateTransitionText.setToAngle(0);
+                    rotateTransitionText.setAxis(Rotate.Y_AXIS);
+                    rotateTransitionText.setCycleCount(0);
+                    rotateTransitionText.setAutoReverse(false);
+                    rotateTransitionText.setInterpolator(Interpolator.EASE_OUT);
+
+                    rotateTransitionFront.setOnFinished(new EventHandler<ActionEvent>(){
+
+                        @Override
+                        public void handle(ActionEvent event) {
+                            transicionActualCarta = null;
+                            if (!stackPaneCarta.isHover()) {
+                                showBackCarta();
+                            }
+                        }
+                        
+                    });
+
+                    transicionActualCarta = rotateTransitionFront;
+                    rotateTransitionFront.play();
+                    rotateTransitionText.play();
+                }
+            });
+    
+            rotateTransitionBack.play();
+        }
+    }
+    
+    public void showBackCarta() {
+        if (transicionActualCarta == null) {
+            RotateTransition rotateTransitionBack = new RotateTransition(Duration.millis(300), iFront);
+            rotateTransitionBack.setToAngle(-90);
+            rotateTransitionBack.setAxis(Rotate.Y_AXIS);
+            rotateTransitionBack.setCycleCount(0);
+            rotateTransitionBack.setAutoReverse(false);
+            rotateTransitionBack.setInterpolator(Interpolator.EASE_OUT);
+
+            RotateTransition rotateTransitionText = new RotateTransition(Duration.millis(300), tDescMision);
+            rotateTransitionText.setToAngle(-90);
+            rotateTransitionText.setAxis(Rotate.Y_AXIS);
+            rotateTransitionText.setCycleCount(0);
+            rotateTransitionText.setAutoReverse(false);
+            rotateTransitionText.setInterpolator(Interpolator.EASE_OUT);
+            
+            transicionActualCarta = rotateTransitionBack;
+            
+            rotateTransitionBack.setOnFinished(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    RotateTransition rotateTransitionFront = new RotateTransition(Duration.millis(300), iBack);
+                    rotateTransitionFront.setToAngle(0);
+                    rotateTransitionFront.setAxis(Rotate.Y_AXIS);
+                    rotateTransitionFront.setCycleCount(0);
+                    rotateTransitionFront.setAutoReverse(false);
+                    rotateTransitionFront.setInterpolator(Interpolator.EASE_OUT);
+    
+                    rotateTransitionFront.setOnFinished(new EventHandler<ActionEvent>(){
+    
+                        @Override
+                        public void handle(ActionEvent event) {
+                            transicionActualCarta = null;
+                            if (stackPaneCarta.isHover()) {
+                                showFrontCarta();
+                            }
+                        }
+                        
+                    });
+    
+                    transicionActualCarta = rotateTransitionFront;
+                    rotateTransitionFront.play();
+                }
+            });
+    
+            rotateTransitionBack.play();
+            rotateTransitionText.play();
+        }
+    }
+
     public void handleJugadorChange(Jugador j) {
         try {
             listaMisiones.getSelectionModel().select(j.getCartaMision().getClass());
         } catch (NoSuchElementException e) {
             listaMisiones.getSelectionModel().clearSelection();
         }
+    }
+
+    public void handleClickOnSiguiente() {
+        Main.goToRepartoPaises();
     }
 
     public void handleMisionChange(Class<? extends CartaMision> claseCartaMision,
@@ -134,12 +255,9 @@ public class AsignacionMisionesController {
         }
         try {
             CartaMision misionJugActual = jSeleccionado.getCartaMision();
-            tNombreMision.setText(misionJugActual.getID());
             tDescMision.setText(misionJugActual.getDescripcion());
-            tNombreMision.setVisible(true);
             tDescMision.setVisible(true);
         } catch (NoSuchElementException e) {
-            tNombreMision.setVisible(false);
             tDescMision.setVisible(false);
         }
     }

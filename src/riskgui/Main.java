@@ -46,6 +46,15 @@ public class Main extends Application {
         } catch (IOException e) {
         }
     }
+    public static void goToRepartoPaises() {
+        try {
+            Parent rootRepartoPaises = FXMLLoader.load(Main.class.getResource("repartoPaises.fxml"));
+            Scene escenaRepartoPaises = new Scene(rootRepartoPaises);
+            stage.setScene(escenaRepartoPaises);
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
     
     public static void main(String[] args) {
         risk.IOHelperFactory.setType(risk.ConsolaNormal.class);
