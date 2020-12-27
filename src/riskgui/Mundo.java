@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
@@ -74,6 +76,8 @@ public class Mundo {
         labels = new HashMap<>();
         for (Entry<Pais, SVGPath> entrada : paths.entrySet()) {
             Label etiqueta = new Label(entrada.getKey().getNombreHumano());
+            Point2D bds = entrada.getValue().localToScene(0,0);
+            etiqueta.layoutYProperty().set(bds.getY());
             labels.put(entrada.getKey(), etiqueta);
         }
     }
