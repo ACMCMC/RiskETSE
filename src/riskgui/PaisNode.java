@@ -45,13 +45,6 @@ public class PaisNode {
             
             etiquetaNEjercitos.maxHeightProperty().set(path.layoutBoundsProperty().get().getHeight());
             etiquetaNEjercitos.maxWidthProperty().set(path.layoutBoundsProperty().get().getWidth());
-
-            nombre.layoutXProperty().set(path.getLayoutBounds().getMinX());
-            nombre.layoutYProperty().set(path.getLayoutBounds().getMinY());
-            nombre.setMaxWidth(path.getLayoutBounds().getMaxX() - path.getLayoutBounds().getMinX());
-            nombre.setMaxHeight(path.getLayoutBounds().getMaxY() - path.getLayoutBounds().getMinY());
-            nombre.alignmentProperty().set(Pos.CENTER);
-            nombre.setBackground(new Background(new BackgroundFill(Color.ROSYBROWN, CornerRadii.EMPTY, Insets.EMPTY)));
         }
         return pane;
     }
