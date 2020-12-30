@@ -23,7 +23,7 @@ public class Main extends Application {
 
         crearMapa();
 
-        goToCreacionJugadores();
+        goToRepartoPaises();
         
         primaryStage.setTitle("RiskETSE");
     }
