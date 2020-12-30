@@ -149,7 +149,7 @@ public class Mapa {
         while ((linea = bufferedReader.readLine()) != null) {
             valores = linea.split(";");
             try {
-                getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
+                getContinente(valores[0]).setColor(RiskColor.getColorByString(valores[1]));
             } catch (ExcepcionGeo e) { // No se ha encontrado el continente
                 if (e.equals(RiskExceptionEnum.CONTINENTE_NO_EXISTE.get())) {
                     // addContinente(new Continente(valores[0], valores[0],
@@ -745,9 +745,9 @@ public class Mapa {
                 for (int x = 0; x < getSizeX(); x++) {
                     Casilla casilla = this.getCasilla(new Coordenadas(x, y));
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD); // También podría ser CRUZ_BOLD
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                     } else if (x == 0) {
                         stringBuilder.append(CodigosMapa.BORDE_IZQ_MIDDLE);
                     } else {
@@ -764,7 +764,7 @@ public class Mapa {
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)
                         || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)
                         || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
-                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append(RiskColor.ROJO.getSecTexto());
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) { // Si la ruta va a la casilla de
                                                                                     // arriba, y no pasa por esta
                                                                                     // casilla
@@ -772,7 +772,7 @@ public class Mapa {
                     } else {
                         stringBuilder.append(CodigosMapa.LINEA_VERTICALTOHORIZONTAL_BOLD);
                     }
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                 } else {
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
                 }
@@ -781,15 +781,15 @@ public class Mapa {
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL)
                             || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)
                             || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(new String(new char[getSizeX()]).replace('\0',
                                 CodigosMapa.LINEA_HORIZONTAL_BOLD.codigo)); // Imprimimos espacios
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                     } else if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
@@ -798,7 +798,7 @@ public class Mapa {
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                     stringBuilder.append(((CasillaPais) casilla).getPais().getContinente().getColor().getSecFondo());
                     stringBuilder.append(String.format("%-9s", ((CasillaPais) casilla).getPais().getCodigo()));
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
             }
@@ -809,9 +809,9 @@ public class Mapa {
                 Casilla casilla = this.getCasilla(new Coordenadas(x, y));
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM)
                         || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
-                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append(RiskColor.ROJO.getSecTexto());
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                 } else {
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
                 }
@@ -819,9 +819,9 @@ public class Mapa {
                                                           // casilla es marítima, o porque no tiene asignado un jugador
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " "));
@@ -834,7 +834,7 @@ public class Mapa {
                     stringBuilder.append(" ");
                     stringBuilder.append(((CasillaPais) casilla).getPais().getJugador().getColor().getSecTexto());
                     stringBuilder.append(String.format("%-9s", ((CasillaPais) casilla).getPais().getNumEjercitos()));
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
 

@@ -13,7 +13,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
-import risk.Color;
+import risk.RiskColor;
 import risk.Jugador;
 import risk.Partida;
 import risk.riskexception.ExcepcionGeo;
@@ -27,20 +27,20 @@ public class CreacionJugadoresController {
     @FXML
     private TextField campoNombreJugador;
     @FXML
-    private ChoiceBox<risk.Color> choiceBoxColores;
+    private ChoiceBox<risk.RiskColor> choiceBoxColores;
     @FXML
     private ProgressBar barraProgreso;
 
     public void initialize() {
-        Set<Color> colores = new HashSet<>(Arrays.asList(Color.class.getEnumConstants()));
-        colores.remove(Color.INDEFINIDO);
-        ObservableList<Color> listaColores = FXCollections.observableArrayList(colores);
+        Set<RiskColor> colores = new HashSet<>(Arrays.asList(RiskColor.class.getEnumConstants()));
+        colores.remove(RiskColor.INDEFINIDO);
+        ObservableList<RiskColor> listaColores = FXCollections.observableArrayList(colores);
         choiceBoxColores.setItems(listaColores);
         bSiguiente.setVisible(false);
     }
 
     public void anadirJug() {
-        Color color = choiceBoxColores.getValue();
+        RiskColor color = choiceBoxColores.getValue();
         String nombre = campoNombreJugador.getText();
         if (color != null && !nombre.equals("")) {
             try {

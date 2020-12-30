@@ -111,7 +111,7 @@ public class Partida {
      * @param color
      * @return
      */
-    public Jugador getJugador(Color color) {
+    public Jugador getJugador(RiskColor color) {
         Optional<Jugador> jugador = this.jugadores.entrySet().stream().map(entry -> {
             return (entry.getValue());
         }).filter(jug -> {

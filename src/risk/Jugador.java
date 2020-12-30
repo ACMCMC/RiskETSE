@@ -26,12 +26,12 @@ import risk.riskexception.RiskExceptionEnum;
  */
 public class Jugador {
     private String nombre;
-    private Color color;
+    private RiskColor color;
     private Set<CartaMision> setCartasMision;
     private Set<Carta> setCartasEquipamiento;
     private Set<Ejercito> ejercitosRearme;
 
-    public Jugador(String nombre, Color color) {
+    public Jugador(String nombre, RiskColor color) {
         this.setCartasMision = new HashSet<>();
         this.setCartasEquipamiento = new HashSet<>();
         this.ejercitosRearme = new HashSet<>();
@@ -175,11 +175,11 @@ public class Jugador {
         this.nombre = nombre;
     }
 
-    public Color getColor() {
+    public RiskColor getColor() {
         return this.color;
     }
 
-    private void setColor(Color color) {
+    private void setColor(RiskColor color) {
         this.color = color;
     }
 

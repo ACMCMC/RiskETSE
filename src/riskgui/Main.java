@@ -10,6 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import risk.Mapa;
+import risk.Menu;
+import risk.Partida;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.RiskExceptionEnum;
 
@@ -22,6 +24,13 @@ public class Main extends Application {
         stage = primaryStage;
 
         crearMapa();
+
+        Menu menu = new Menu();
+        menu.crearJugadores("jugadores.csv");
+        Partida.getPartida().asignarEjercitosSinRepartir();
+        menu.asignarMisiones("misiones.csv");
+        menu.asignarPaises("paises.csv");
+        menu.repartirEjercitos();
 
         goToRepartoPaises();
         

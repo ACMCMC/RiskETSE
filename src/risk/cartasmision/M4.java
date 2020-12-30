@@ -1,6 +1,6 @@
 package risk.cartasmision;
 
-import risk.Color;
+import risk.RiskColor;
 import risk.Partida;
 
 public abstract class M4 extends CartaMision {
@@ -10,7 +10,7 @@ public abstract class M4 extends CartaMision {
         jugador = Partida.getPartida().getJugador(getColor());
     }
 
-    abstract Color getColor();
+    abstract RiskColor getColor();
 
     @Override
     public String getDescripcion() {

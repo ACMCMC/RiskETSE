@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * continente.
  */
 public class Continente {
-    private Color color;
+    private RiskColor color;
     private String codigo;
     private String nombreHumano;
     private Map<String, Pais> paises;
@@ -28,7 +28,7 @@ public class Continente {
      * @param nombreHumano
      */
     public Continente(String codigo, String nombreHumano) {
-        this.setColor(Color.INDEFINIDO);
+        this.setColor(RiskColor.INDEFINIDO);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
         this.paises = new HashMap<>();
@@ -40,14 +40,14 @@ public class Continente {
      * @param codigo
      * @param color
      */
-    public Continente(String codigo, String nombreHumano, Color color) {
+    public Continente(String codigo, String nombreHumano, RiskColor color) {
         this.setColor(color);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
         this.paises = new HashMap<>();
     }
 
-    public void setColor(Color color) {
+    public void setColor(RiskColor color) {
         this.color = color;
     }
 
@@ -86,7 +86,7 @@ public class Continente {
      * 
      * @return Color
      */
-    public Color getColor() {
+    public RiskColor getColor() {
         return this.color;
     }
 

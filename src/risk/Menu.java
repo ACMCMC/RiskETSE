@@ -55,9 +55,9 @@ public class Menu {
     public Menu() {
         // Inicialización de algunos atributos
         comandoProcessor = new ComandoProcessor(this);
-        bucleProcesarComandos();
+        //bucleProcesarComandos();
 
-        io.escribirFinComandos();
+        //io.escribirFinComandos();
     }
 
     /**
@@ -188,7 +188,7 @@ public class Menu {
             while ((linea = bufferLector.readLine()) != null) {
                 partesLinea = linea.split(";");
                 try {
-                    Color color = Color.getColorByString(partesLinea[1]);
+                    RiskColor color = RiskColor.getColorByString(partesLinea[1]);
                     Partida.getPartida().addJugador(new Jugador(partesLinea[0], color));
                     io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", partesLinea[0])
                             .autoAdd("color", color.getNombre()).build());
@@ -213,10 +213,10 @@ public class Menu {
     public void crearJugador(String nombre, String color) {
         // Código necesario para crear a un jugador a partir de su nombre y color
         try {
-            Jugador jugador = new Jugador(nombre, Color.getColorByString(color));
+            Jugador jugador = new Jugador(nombre, RiskColor.getColorByString(color));
             Partida.getPartida().addJugador(jugador);
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("nombre", jugador.getNombre())
-                    .autoAdd("color", Color.getColorByString(color).getNombre()).build());
+                    .autoAdd("color", RiskColor.getColorByString(color).getNombre()).build());
         } catch (ExcepcionGeo | ExcepcionJugador e) {
             io.printToErrOutput(e);
         }
@@ -430,7 +430,7 @@ public class Menu {
      * @param abrevPais
      */
     public void obtenerColor(String abrevPais) {
-        Color color;
+        RiskColor color;
         try {
             color = Mapa.getMapa().getPais(abrevPais).getContinente().getColor();
             io.printToOutput(OutputBuilder.beginBuild().autoAdd("color", color.getNombre()).build());

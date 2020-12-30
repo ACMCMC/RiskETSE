@@ -4,28 +4,31 @@
 
 package risk;
 
+import javafx.scene.paint.Color;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.RiskExceptionEnum;
 
 /**
  * Representa un Color en el juego
  */
-public enum Color {
+public enum RiskColor {
     // El primer parámetro es el nombre del color, el segundo la secuencia para
     // colorear texto de ese color, el tercero para colorear el fondo de ese color
-    CYAN("CYAN", "\033[0;36m", "\033[46m"), VERDE("VERDE", "\033[0;32m", "\033[42m"),
-    AMARILLO("AMARILLO", "\033[0;33m", "\033[43m"), VIOLETA("VIOLETA", "\033[0;35m", "\033[45m"),
-    ROJO("ROJO", "\033[0;31m", "\033[41m"), AZUL("AZUL", "\033[0;36m", "\033[44m"),
-    INDEFINIDO("INDEFINIDO", "", "");
+    CYAN("CYAN", "\033[0;36m", "\033[46m", Color.CYAN), VERDE("VERDE", "\033[0;32m", "\033[42m", Color.GREEN),
+    AMARILLO("AMARILLO", "\033[0;33m", "\033[43m", Color.YELLOW), VIOLETA("VIOLETA", "\033[0;35m", "\033[45m", Color.PURPLE),
+    ROJO("ROJO", "\033[0;31m", "\033[41m", Color.RED), AZUL("AZUL", "\033[0;36m", "\033[44m", Color.BLUE),
+    INDEFINIDO("INDEFINIDO", "", "", Color.BLACK);
 
     private final String nombre;
     private final String secTexto;
     private final String secFondo;
+    private final Color fxColor;
 
-    private Color(String nombre, String secTexto, String secFondo) {
+    private RiskColor(String nombre, String secTexto, String secFondo, Color fxColor) {
         this.nombre = nombre;
         this.secTexto = secTexto;
         this.secFondo = secFondo;
+        this.fxColor = fxColor;
     }
 
     public String getNombre() {
@@ -40,8 +43,12 @@ public enum Color {
         return this.secFondo;
     }
 
-    public static Color getColorByString(String nombreColor) throws ExcepcionGeo {
-        for (Color c : values()) {
+    public Color getFxColor() {
+        return fxColor;
+    }
+
+    public static RiskColor getColorByString(String nombreColor) throws ExcepcionGeo {
+        for (RiskColor c : values()) {
             if (c.nombre.equals(nombreColor.toUpperCase())) {
                 return c;
             }
