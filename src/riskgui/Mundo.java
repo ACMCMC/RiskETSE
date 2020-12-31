@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -83,12 +85,17 @@ public class Mundo {
             @Override
             public void handle(Event event) {
                 if (pais.getNumEjercitos() > 1) {
-                    Dragboard dragboard = svgPath.startDragAndDrop(TransferMode.ANY);
+                    Dragboard dragboard = svgPath.startDragAndDrop(TransferMode.MOVE);
 
                     Map<DataFormat, Object> mapa = new HashMap<DataFormat, Object>();
                     mapa.put(dataFormatPais, pais.getCodigo());
 
                     dragboard.setContent(mapa);
+
+                    URL url = getClass().getResource("resources/soldado.png");
+
+                    Image imagenSoldado = new Image(url.toExternalForm(), 50, 50, true, true);
+                    dragboard.setDragView(imagenSoldado);
                 }
 
                 event.consume();
@@ -117,6 +124,7 @@ public class Mundo {
                         System.err.println(e.toString());
                     }
                 }
+                event.setDropCompleted(true);
             }
 
         });
