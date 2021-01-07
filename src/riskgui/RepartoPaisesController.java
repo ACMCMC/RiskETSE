@@ -1,11 +1,13 @@
 package riskgui;
 
+import java.util.Comparator;
 import java.util.Map.Entry;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
@@ -21,6 +23,8 @@ public class RepartoPaisesController {
         mundo = new Mundo();
 
         panelMapa.getChildren().add(mundo.getWorldStackPane());
+
+        mundo.getWorldStackPane().getChildren().stream().max(Comparator.comparing((Node n) -> n.getLayoutBounds().getMinY() ));
 
         /*mundo.getPaths().get("Alaska").setOnMouseEntered(new EventHandler<Event>(){
 
