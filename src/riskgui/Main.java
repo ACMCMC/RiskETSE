@@ -35,6 +35,7 @@ public class Main extends Application {
         goToRepartoPaises();
         
         primaryStage.setTitle("RiskETSE");
+        primaryStage.setResizable(false);
     }
     
     public static void goToCreacionJugadores() {

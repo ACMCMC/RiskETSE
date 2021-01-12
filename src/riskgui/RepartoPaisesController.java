@@ -9,13 +9,19 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
 public class RepartoPaisesController {
     @FXML
     private Pane panelMapa;
+    @FXML
+    private Pane panelControl;
+    @FXML
+    private SplitPane sPane;
 
     private Mundo mundo;
 

@@ -42,8 +42,8 @@ public class Mapa {
     private final int SIZE_Y = 8;
 
     private Map<Coordenadas, Casilla> casillas;
-    private Map<String, Pais> paises;
-    private Map<String, Continente> continentes;
+    private Set<Pais> paises;
+    private Set<Continente> continentes;
     private Set<Frontera> fronteras;
     private PaisEventPublisher paisEventPublisher;
 
@@ -53,8 +53,8 @@ public class Mapa {
     private Mapa() {
 
         casillas = new HashMap<Coordenadas, Casilla>();
-        paises = new HashMap<String, Pais>();
-        continentes = new HashMap<String, Continente>();
+        paises = new HashSet<Pais>();
+        continentes = new HashSet<Continente>();
         fronteras = new HashSet<Frontera>();
 
         paisEventPublisher = new PaisEventPublisher();
@@ -131,7 +131,7 @@ public class Mapa {
     }
 
     private void addContinente(Continente continente) {
-        this.continentes.put(continente.getCodigo(), continente);
+        this.continentes.add(continente);
     }
 
     /**
@@ -193,14 +193,15 @@ public class Mapa {
             } catch (ExcepcionGeo e) {
                 // Creamos el continente, porque no está en la lista
                 continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
-                continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
+                continentes.add(continenteDelPais);
             }
             // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva
             // casilla con país
             CasillaPais casillaPais = new CasillaPais(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)),
                     new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
             casillas.replace(casillaPais.getCoordenadas(), casillaPais);
-            paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista
+            continenteDelPais.addPais(casillaPais.getPais());
+            paises.add( casillaPais.getPais()); // Insertamos el país en la lista
                                                                                   // de países
         }
         bufferedReader.close();
@@ -212,9 +213,7 @@ public class Mapa {
      * @return
      */
     public Set<Pais> getPaises() {
-        return (this.paises.entrySet().stream().map((entrada) -> {
-            return (entrada.getValue());
-        }).collect(Collectors.toSet()));
+        return this.paises;
     }
 
     /**
@@ -717,7 +716,7 @@ public class Mapa {
      * Devuelve un Set de todos los Continentes del mapa
      */
     public Set<Continente> getContinentes() {
-        return this.continentes.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toSet());
+        return this.continentes;
     }
 
     /**

@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartasmision.PaisEvent;
+
 /**
  * Clase Continente. Almacena el codigo, su color, y los países asociados al
  * continente.
@@ -19,7 +21,7 @@ public class Continente {
     private RiskColor color;
     private String codigo;
     private String nombreHumano;
-    private Map<String, Pais> paises;
+    private Set<Pais> paises;
 
     /**
      * Crea un nuevo Continente, sin países asignados
@@ -28,10 +30,10 @@ public class Continente {
      * @param nombreHumano
      */
     public Continente(String codigo, String nombreHumano) {
+        this.paises = new HashSet<>();
         this.setColor(RiskColor.INDEFINIDO);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
-        this.paises = new HashMap<>();
     }
 
     /**
@@ -41,22 +43,25 @@ public class Continente {
      * @param color
      */
     public Continente(String codigo, String nombreHumano, RiskColor color) {
+        this.paises = new HashSet<>();
         this.setColor(color);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
-        this.paises = new HashMap<>();
     }
 
     public void setColor(RiskColor color) {
         this.color = color;
+        notificarCambiosPaises();
     }
 
-    private void setCodigo(String codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
+        notificarCambiosPaises();
     }
 
-    private void setNombreHumano(String nombreHumano) {
+    public void setNombreHumano(String nombreHumano) {
         this.nombreHumano = nombreHumano;
+        notificarCambiosPaises();
     }
     
     /**
@@ -114,7 +119,7 @@ public class Continente {
      * @param pais
      */
     public void addPais(Pais pais) {
-        this.paises.put(pais.getCodigo(), pais);
+        this.paises.add(pais);
     }
 
     /**
@@ -124,7 +129,7 @@ public class Continente {
      * @return el Pais, o NULL
      */
     public Pais getPais(String codigo) {
-        return this.paises.get(codigo);
+        return this.paises.stream().filter(p-> p.getCodigo().equals(codigo)).findFirst().orElse(null);
     }
 
     /**
@@ -141,11 +146,16 @@ public class Continente {
      * Devuelve un Set de todos los países
      */
     public Set<Pais> getPaises() {
-        Set<Pais> setPaises = new HashSet<>();
-        this.paises.entrySet().forEach((Entry<String, Pais> entry) -> {
-            setPaises.add(entry.getValue());
-        });
-        return setPaises;
+        return this.paises;
+    }
+
+    private void notificarCambiosPaises() {
+        for (Pais p : paises) {
+            PaisEvent evento = new PaisEvent();
+            evento.setPaisAntes(p);
+            evento.setPaisDespues(p);
+            p.notificarCambioPais(evento);
+        }
     }
 
     @Override

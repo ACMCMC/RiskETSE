@@ -2,33 +2,26 @@ package riskgui;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.CanvasBuilder;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -44,18 +37,16 @@ import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import risk.Mapa;
 import risk.Pais;
 import risk.Partida;
 import risk.cartasmision.PaisEvent;
 import risk.cartasmision.PaisEventSubscriber;
-import risk.ejercito.Ejercito;
 import risk.riskexception.ExcepcionGeo;
-import risk.riskexception.ExcepcionJugador;
 import risk.riskexception.ExcepcionRISK;
 
 public class Mundo {
@@ -71,6 +62,20 @@ public class Mundo {
     private HashMap<Pais, Label> labelsNombres;
     private HashMap<Pais, Label> labelsNumEjercitos;
     private MediaView fondo;
+    private static final Blend blendSVGPaths = new Blend();
+    {
+        InnerShadow is = new InnerShadow();
+        is.setOffsetX(0);
+        is.setOffsetY(0);
+        is.setChoke(0.7f);
+        is.setRadius(20.0f);
+        is.blurTypeProperty().set(BlurType.THREE_PASS_BOX);
+        is.setColor(Color.BLACK);
+
+        blendSVGPaths.setTopInput(is);
+        blendSVGPaths.setMode(BlendMode.DARKEN);
+        blendSVGPaths.setOpacity(0.35f);
+    }
 
     private static final DataFormat dataFormatPais = new DataFormat("risk.pais");
 
@@ -90,9 +95,9 @@ public class Mundo {
         stackPane.getChildren().add(labelsNombresPane);
         stackPane.getChildren().add(labelsNumEjercitosPane);
 
-        crearFondo();
-        stackPane.getChildren().add(fondo);
-        
+        // crearFondo();
+        // stackPane.getChildren().add(fondo);
+
         ajustarTamanoStackPane();
     }
 
@@ -107,12 +112,14 @@ public class Mundo {
             fondo = new MediaView();
         }
     }
-    
+
     private void ajustarTamanoStackPane() {
         double widthMax;
         double heightMax;
-        widthMax = svgPaths.entrySet().stream().map(e -> e.getValue()).mapToDouble(svg -> svg.getLayoutBounds().getMaxX()).max().orElse(0);
-        heightMax = svgPaths.entrySet().stream().map(e -> e.getValue()).mapToDouble(svg -> svg.getLayoutBounds().getMaxY()).max().orElse(0);
+        widthMax = svgPaths.entrySet().stream().map(e -> e.getValue())
+                .mapToDouble(svg -> svg.getLayoutBounds().getMaxX()).max().orElse(0);
+        heightMax = svgPaths.entrySet().stream().map(e -> e.getValue())
+                .mapToDouble(svg -> svg.getLayoutBounds().getMaxY()).max().orElse(0);
         stackPane.setMinWidth(widthMax);
         stackPane.setMaxWidth(widthMax);
         stackPane.setPrefWidth(widthMax);
@@ -176,6 +183,7 @@ public class Mundo {
             @Override
             public void handle(Event event) {
                 svgPath.fillProperty().set(Color.ORANGE);
+                svgPath.setEffect(null);
             }
         });
         svgPath.setOnMouseExited(new EventHandler<Event>() {
@@ -183,6 +191,7 @@ public class Mundo {
             public void handle(Event event) {
                 Color c = pais.getContinente().getColor().getFxColor();
                 svgPath.fillProperty().set(c);
+                svgPath.setEffect(blendSVGPaths);
             }
         });
         svgPath.setPickOnBounds(false);
@@ -199,25 +208,32 @@ public class Mundo {
         }
         svgPath.setStrokeWidth(2);
         svgPath.setStrokeType(StrokeType.CENTERED);
+
+        svgPath.setEffect(blendSVGPaths);
+
+        svgPath.setCursor(Cursor.HAND);
     }
 
     private void anadirLabelNombre(Pais pais, SVGPath svgPath) {
-        Label labelNombre = new Label(pais.getNombreHumano());
+        Label labelNombre = new Label(pais.getCodigo());
         labelsNombres.put(pais, labelNombre);
         labelsNombresPane.getChildren().add(labelNombre);
 
         labelNombre.layoutXProperty()
-                .set(svgPath.getLayoutBounds().getMinX()
+                .set((svgPath.getLayoutBounds().getMinX()
                         + (svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX()) / 2
-                        - labelNombre.getWidth() / 2);
+                        - labelNombre.getWidth() / 2) - labelNombre.getText().length() * 4);
         labelNombre.layoutYProperty()
                 .set(svgPath.getLayoutBounds().getMinY()
                         + (svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY()) / 2
-                        - labelNombre.getHeight() / 2);
+                        - labelNombre.getHeight() / 2 - 25);
         labelNombre.setMaxWidth(svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX());
         labelNombre.setMaxHeight(svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY());
         labelNombre.setAlignment(Pos.CENTER);
-        labelNombre.setBackground(new Background(new BackgroundFill(Color.ROSYBROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+        labelNombre.setTextFill(Color.BLACK);
+        labelNombre.setFont(Font.font("sans-serif", FontWeight.BOLD, 12));
+        labelNombre.setPadding(new Insets(3, 5, 3, 5));
+        labelNombre.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     private void anadirLabelNumEjercitos(Pais pais, SVGPath svgPath) {
@@ -226,30 +242,46 @@ public class Mundo {
         labelsNumEjercitosPane.getChildren().add(labelNumEjercitos);
 
         labelNumEjercitos.layoutXProperty()
-                .set(svgPath.getLayoutBounds().getMinX()
+                .set((svgPath.getLayoutBounds().getMinX()
                         + (svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX()) / 2
-                        - labelNumEjercitos.getWidth() / 2);
+                        - labelNumEjercitos.getWidth() / 2) - pais.getCodigo().length() * 4);
         labelNumEjercitos.layoutYProperty()
                 .set(svgPath.getLayoutBounds().getMinY()
                         + (svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY()) / 2
-                        - labelNumEjercitos.getHeight() / 2 + 30);
+                        - labelNumEjercitos.getHeight() / 2 + 0);
         labelNumEjercitos.setMaxWidth(svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX());
         labelNumEjercitos.setMaxHeight(svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY());
+        labelNumEjercitos.setPrefWidth(labelNumEjercitos.getHeight());
         labelNumEjercitos.setAlignment(Pos.CENTER);
-        labelNumEjercitos.setBackground(new Background(new BackgroundFill(Color.ROSYBROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+        labelNumEjercitos.setPadding(new Insets(5));
+        labelNumEjercitos.setTextFill(Color.WHITE);
+        labelNumEjercitos.setFont(Font.font("sans-serif", FontWeight.BOLD, 12));
 
         PaisEventSubscriber paisEventSubscriber = new PaisEventSubscriber() {
 
             @Override
             public void update(PaisEvent evento) {
                 if (evento.getPaisDespues().equals(pais)) {
-                    labelNumEjercitos.setText(Integer.toString(pais.getNumEjercitos()));
+                    if (pais.getJugador()==null) {
+                        labelNumEjercitos.setVisible(false);
+                    } else {
+                        labelNumEjercitos.setVisible(true);
+                        labelNumEjercitos.setText(Integer.toString(pais.getNumEjercitos()));
+                        labelNumEjercitos
+                                .setBackground(new Background(new BackgroundFill(pais.getJugador().getColor().getFxColor(),
+                                        new CornerRadii(0, true), Insets.EMPTY)));
+                    }
                 }
             }
 
-                    };
+        };
 
-                    Mapa.getMapa().getPaisEventPublisher().subscribe(paisEventSubscriber);
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisDespues(pais);
+
+        paisEventSubscriber.update(evento);
+
+        Mapa.getMapa().getPaisEventPublisher().subscribe(paisEventSubscriber);
     }
 
     private void crearYAnadirSVGPath(String nombrePais, String path) {
@@ -265,7 +297,7 @@ public class Mundo {
 
             anadirLabelNombre(pais, svgPath);
             anadirLabelNumEjercitos(pais, svgPath);
-            
+
         } catch (ExcepcionGeo e) {
             System.err.println(e.toString());
             System.err.println(nombrePais);

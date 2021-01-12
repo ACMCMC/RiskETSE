@@ -28,20 +28,12 @@ public class Pais implements Cloneable {
      * Crea un nuevo Pais
      */
     Pais(String nombre, String nombreHumano, Continente continente) {
-        this.setCodigo(nombre);
-        this.setNombreHumano(nombreHumano);
-        this.setContinente(continente);
+        this.codigo = nombre;
+        this.nombreHumano = nombreHumano;
+        this.continente = continente;
         this.jugador = null;
         this.ejercitos = new HashSet<>();
         this.vecesConquistado = -1;
-        addToContinente();
-    }
-
-    /**
-     * Añade este Pais a su Continente
-     */
-    private void addToContinente() {
-        continente.addPais(this);
     }
 
     /**
@@ -170,11 +162,19 @@ public class Pais implements Cloneable {
     }
 
     private void setCodigo(String codigo) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.codigo = codigo;
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
     private void setContinente(Continente continente) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.continente = continente;
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
     /**
