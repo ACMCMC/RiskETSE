@@ -61,6 +61,7 @@ public class Main extends Application {
             Scene escenaRepartoPaises = new Scene(rootRepartoPaises);
             stage.setScene(escenaRepartoPaises);
             stage.show();
+            stage.sizeToScene();
         } catch (IOException e) {
         }
     }
@@ -119,5 +120,9 @@ public class Main extends Application {
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
+    }
+
+    public static Stage getStage() {
+        return stage;
     }
 }

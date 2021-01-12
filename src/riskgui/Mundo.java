@@ -1,5 +1,6 @@
 package riskgui;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,6 +8,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,7 +25,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.CanvasBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
@@ -35,8 +39,13 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.StrokeType;
 import risk.Mapa;
@@ -51,6 +60,7 @@ import risk.riskexception.ExcepcionRISK;
 
 public class Mundo {
 
+    private static final String pathToVideoFondo = "resources/videoFondo.mp4";
     private Properties props;
     private Pane pathsPaises;
     private Pane labelsNombresPane;
@@ -60,6 +70,7 @@ public class Mundo {
     private HashMap<Pais, SVGPath> svgPaths;
     private HashMap<Pais, Label> labelsNombres;
     private HashMap<Pais, Label> labelsNumEjercitos;
+    private MediaView fondo;
 
     private static final DataFormat dataFormatPais = new DataFormat("risk.pais");
 
@@ -78,6 +89,36 @@ public class Mundo {
         stackPane.getChildren().add(pathsPaises);
         stackPane.getChildren().add(labelsNombresPane);
         stackPane.getChildren().add(labelsNumEjercitosPane);
+
+        crearFondo();
+        stackPane.getChildren().add(fondo);
+        
+        ajustarTamanoStackPane();
+    }
+
+    private void crearFondo() {
+        try {
+            Media videoFondo = new Media(new File(pathToVideoFondo).toURI().toString());
+            MediaPlayer reproductor = new MediaPlayer(videoFondo);
+            reproductor.setAutoPlay(true);
+            reproductor.setCycleCount(MediaPlayer.INDEFINITE);
+            fondo = new MediaView(reproductor);
+        } catch (MediaException e) {
+            fondo = new MediaView();
+        }
+    }
+    
+    private void ajustarTamanoStackPane() {
+        double widthMax;
+        double heightMax;
+        widthMax = svgPaths.entrySet().stream().map(e -> e.getValue()).mapToDouble(svg -> svg.getLayoutBounds().getMaxX()).max().orElse(0);
+        heightMax = svgPaths.entrySet().stream().map(e -> e.getValue()).mapToDouble(svg -> svg.getLayoutBounds().getMaxY()).max().orElse(0);
+        stackPane.setMinWidth(widthMax);
+        stackPane.setMaxWidth(widthMax);
+        stackPane.setPrefWidth(widthMax);
+        stackPane.setMinHeight(heightMax);
+        stackPane.setMaxHeight(heightMax);
+        stackPane.setPrefHeight(heightMax);
     }
 
     private void prepararDragNDrop(Pais pais, SVGPath svgPath) {
