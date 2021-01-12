@@ -13,7 +13,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Alert.AlertType;
@@ -26,10 +25,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import risk.Mapa;
 import risk.Partida;
 
-public class RepartoPaisesController {
+public class RepartoEjercitosController {
     @FXML
     private Pane panelMapa;
     @FXML
@@ -37,7 +35,7 @@ public class RepartoPaisesController {
     @FXML
     private VBox vBox;
     @FXML
-    private Button bSiguiente;
+    private ImageView imgSoldado;
 
     private Mundo mundo;
 
@@ -56,16 +54,36 @@ public class RepartoPaisesController {
         }).get();
 
         panelMapa.getChildren().add(mundo.getWorldStackPane());
-    }
 
-    public void siguiente() {
-        Partida.getPartida().siguienteTurnoDeReparto();
-        if (Mapa.getMapa().arePaisesAsignados()) {
-            System.out.println("dasdasdas");
-        }
-    }
+        imgSoldado.setCursor(Cursor.HAND);
+        imgSoldado.setOnDragDetected(new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                    Dragboard dragboard = imgSoldado.startDragAndDrop(TransferMode.MOVE);
+                    Map<DataFormat, Object> mapa = new HashMap<DataFormat, Object>();
+                    dragboard.setContent(mapa);
 
-    public void avanzar() {
+                    URL url = getClass().getResource("resources/soldado.png");
 
+                    Image imagenSoldado = new Image(url.toExternalForm(), 50, 50, true, true);
+                    dragboard.setDragView(imagenSoldado);
+
+                event.consume();
+            }
+        });
+
+        /*mundo.getPaths().get("Alaska").setOnMouseEntered(new EventHandler<Event>(){
+
+			@Override
+			public void handle(Event event) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Prueba");
+                alerta.setHeaderText(null);
+                alerta.setContentText("Alaska");
+                alerta.show();
+			}
+            
+        });*/
+        //panelMapa.setPrefWidth(panelMapa.getScene().widthProperty().doubleValue());
     }
 }

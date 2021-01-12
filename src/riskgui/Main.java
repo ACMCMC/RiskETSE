@@ -29,8 +29,8 @@ public class Main extends Application {
         menu.crearJugadores("jugadores.csv");
         Partida.getPartida().asignarEjercitosSinRepartir();
         menu.asignarMisiones("misiones.csv");
-        menu.asignarPaises("paises.csv");
-        menu.repartirEjercitos();
+        //menu.asignarPaises("paises.csv");
+        //menu.repartirEjercitos();
 
         goToRepartoPaises();
         

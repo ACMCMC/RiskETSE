@@ -225,8 +225,14 @@ public class Pais implements Cloneable {
         if (!this.getNombreHumano().equals(other.getNombreHumano())) {
             return false;
         }
-        if (!this.getJugador().equals(other.getJugador())) {
-            return false;
+        if (!(this.getJugador()==null)) {
+            if (!(this.getJugador().equals(other.getJugador()))) {
+                return false;
+            }
+        } else {
+            if (!(other.getJugador()==null)) {
+                return false;
+            }
         }
         if (this.getNumVecesConquistado()!=other.getNumVecesConquistado()) {
             return false;
