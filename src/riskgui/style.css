@@ -6,6 +6,7 @@
 
 .title {
     -fx-font-size: 24;
+    -fx-border-insets: 0, 20, 0, 0;
 }
 
 #descripcionPaso {

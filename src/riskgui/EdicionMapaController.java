@@ -38,8 +38,12 @@ public class EdicionMapaController {
     public void jugar() {
         Main.goToCreacionJugadores();
     }
+
     public void cargarArchivo() {
-        
+        Stage cargarArchivoStage = new CargarArchivoStage();
+        cargarArchivoStage.initOwner(Main.getStage());
+        cargarArchivoStage.initModality(Modality.APPLICATION_MODAL);
+        cargarArchivoStage.show();
     }
 
 }
