@@ -19,7 +19,7 @@
             <Button fx:id="bSiguiente" mnemonicParsing="false" onAction="#siguiente" text="Siguiente" />
          </children>
       </VBox>
-      <Separator prefWidth="200.0" />
+      <Separator/>
       <Pane fx:id="panelMapa" VBox.vgrow="ALWAYS">
          <children>
             <Group fx:id="grupoPaises" />

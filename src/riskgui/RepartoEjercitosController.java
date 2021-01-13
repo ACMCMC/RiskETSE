@@ -26,14 +26,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import risk.Mapa;
 import risk.Partida;
+import risk.cartasmision.PaisEvent;
+import risk.cartasmision.PaisEventSubscriber;
 import risk.riskexception.ExcepcionJugador;
 
 public class RepartoEjercitosController {
     @FXML
     private Pane panelMapa;
-    @FXML
-    private ToolBar toolbar;
     @FXML
     private VBox vBox;
     @FXML
@@ -79,6 +80,18 @@ public class RepartoEjercitosController {
 
                 event.consume();
             }
+        });
+
+        Mapa.getMapa().getPaisEventPublisher().subscribe(new PaisEventSubscriber(){
+
+			@Override
+			public void update(PaisEvent evento) {
+				if (Partida.getPartida().areEjercitosRepartidos()) {
+                    Mapa.getMapa().getPaisEventPublisher().unsubscribe(this);
+                    Main.goToPartida();
+                }
+			}
+            
         });
 
     }

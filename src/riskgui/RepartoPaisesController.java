@@ -30,6 +30,7 @@ import javafx.scene.shape.SVGPath;
 import risk.Mapa;
 import risk.Partida;
 import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.RiskExceptionEnum;
 
 public class RepartoPaisesController {
     @FXML
@@ -47,7 +48,7 @@ public class RepartoPaisesController {
 
                 @Override
                 public void handle(Event event) {
-                    if (p.getJugador() == null && Partida.getPartida().getJugadorActual().getNumEjercitosRearme() > 0) {
+                    if (p.getJugador() == null && Partida.getPartida().getJugadorActual().hasEjercitosSinRepartir()) {
                         p.conquistar(Partida.getPartida().getJugadorActual());
                         try {
                             Partida.getPartida().repartirEjercitos(1, p);
@@ -66,10 +67,15 @@ public class RepartoPaisesController {
                         }
                     }
                     */ else {
-                        Alert alerta = new Alert(AlertType.INFORMATION, "El país ya pertenece a un jugador",
-                                ButtonType.CLOSE);
+                        Alert alerta = new Alert(AlertType.INFORMATION);
                         alerta.setTitle("No se puede hacer la asignación");
                         alerta.setHeaderText(null);
+                        alerta.setResult(ButtonType.CLOSE);
+                        if (!Partida.getPartida().getJugadorActual().hasEjercitosSinRepartir()) {
+                            alerta.setContentText(RiskExceptionEnum.EJERCITOS_NO_DISPONIBLES.get().getMessage());
+                        } else {
+                            alerta.setContentText(RiskExceptionEnum.PAIS_YA_ASIGNADO.get().getMessage());
+                        }
                         alerta.show();
                     }
                 }

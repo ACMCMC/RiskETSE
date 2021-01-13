@@ -1,6 +1,7 @@
 package risk.cartasmision;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,9 +35,8 @@ public class PaisEventPublisher {
      * Informa a los suscriptores de que ha ocurrido una conquista
      */
     public void updateSubscribers(PaisEvent evento) {
-        for (PaisEventSubscriber sub : ListSubscribers) {
-            sub.update(evento);
-        }
+        List<PaisEventSubscriber> copiaListSubscribers = new ArrayList<>(ListSubscribers);
+        copiaListSubscribers.forEach(s -> s.update(evento));
     }
 
 }

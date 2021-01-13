@@ -87,8 +87,8 @@ public class Jugador {
                                                               // asignación
             for (int i = 0; i < numEjercitos; i++) {
                 Ejercito ejercitoAnadir = this.getAnyEjercitoDeRearme();
-                pais.addEjercito(ejercitoAnadir);
                 this.removeEjercitoDeRearme(ejercitoAnadir);
+                pais.addEjercito(ejercitoAnadir);
             }
             return (numEjercitos);
         } else if (this.getNumEjercitosRearme() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí
@@ -99,8 +99,8 @@ public class Jugador {
             // for, entonces habría problemas
             for (int i = 0; i < ejercitosSinRepartir; i++) {
                 Ejercito ejercitoAnadir = this.getAnyEjercitoDeRearme();
-                pais.addEjercito(ejercitoAnadir);
                 this.removeEjercitoDeRearme(ejercitoAnadir);
+                pais.addEjercito(ejercitoAnadir);
             }
             return (ejercitosSinRepartir);
         } else { // No hay ejércitos disponibles

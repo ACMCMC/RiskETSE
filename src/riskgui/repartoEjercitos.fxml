@@ -7,6 +7,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.text.Text?>
 
 
 <VBox fx:id="vBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="riskgui.RepartoEjercitosController"  stylesheets="@style.css">
@@ -20,6 +23,13 @@
             </ImageView>
          </items>
       </ToolBar>
+      <VBox id="descripcionPaso">
+         <children>
+            <Label text="Reparto de ejércitos" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Haz clic sobre un país para asignarle uno de los ejércitos de su jugador." />
+         </children>
+      </VBox>
+      <Separator/>
       <Pane fx:id="panelMapa" VBox.vgrow="ALWAYS">
          <children>
             <Group fx:id="grupoPaises" />
