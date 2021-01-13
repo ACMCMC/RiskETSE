@@ -257,7 +257,7 @@ public class AsignacionMisionesController {
             CartaMision misionJugActual = jSeleccionado.getCartaMision();
             tDescMision.setText(misionJugActual.getDescripcion());
             tDescMision.setVisible(true);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             tDescMision.setVisible(false);
         }
     }

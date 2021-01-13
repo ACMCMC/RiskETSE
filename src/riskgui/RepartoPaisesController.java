@@ -56,7 +56,8 @@ public class RepartoPaisesController {
                         } catch (ExcepcionJugador e) {
                             new Alert(AlertType.INFORMATION, e.getMessage(), ButtonType.CLOSE).show();
                         }
-                    } else if (Partida.getPartida().getJugadorActual().equals(p.getJugador())) {
+                    } /*
+                    else if (Partida.getPartida().getJugadorActual().equals(p.getJugador())) {
                         try {
                             Partida.getPartida().repartirEjercitos(1, p);
                         } catch (ExcepcionJugador e) {
@@ -65,7 +66,8 @@ public class RepartoPaisesController {
                             alerta.setHeaderText(null);
                             alerta.show();
                         }
-                    } else {
+                    }
+                    */ else {
                         Alert alerta = new Alert(AlertType.INFORMATION, "El país ya pertenece a un jugador",
                                 ButtonType.CLOSE);
                         alerta.setTitle("No se puede hacer el reparto");
@@ -81,9 +83,15 @@ public class RepartoPaisesController {
     }
 
     public void siguiente() {
-        Partida.getPartida().siguienteTurnoDeReparto();
         if (Mapa.getMapa().arePaisesAsignados()) {
-            System.out.println("dasdasdas");
+            if (Partida.getPartida().areEjercitosRepartidos()) {
+                Partida.getPartida().siguienteTurno();
+                Main.goToPartida();
+            } else {
+                Partida.getPartida().siguienteTurnoDeReparto();
+            }
+        } else {
+            Partida.getPartida().siguienteTurnoDeReparto();
         }
     }
 

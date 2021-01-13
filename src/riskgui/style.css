@@ -1,0 +1,21 @@
+#root{
+    -fx-background-image: url("resources/Img_Fondo_Mapa.jpg");
+    -fx-background-repeat: stretch;   
+    -fx-background-position: center center;
+}
+
+.title {
+    -fx-font-size: 24;
+}
+
+#descripcionPaso {
+    -fx-padding: 20,20,20,20;
+}
+
+#descripcionPaso > Label {
+    -fx-font-size: 24;
+}
+
+#panelMapa {
+    -fx-border-insets: 20, 50, 50, 20;
+}

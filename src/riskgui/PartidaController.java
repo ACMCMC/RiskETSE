@@ -7,6 +7,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.Pane;
 
 public class PartidaController {
     @FXML
@@ -18,21 +20,22 @@ public class PartidaController {
     @FXML
     private Button bCambiarCartas;
     @FXML
-    private ListView<String> listaJugadores;
+    private ToolBar toolBar;
+    @FXML
+    private Pane panelMapa;
 
     public void initialize() {
-        bRearmar.setOnMouseClicked(new EventHandler<Event>(){
+        Mundo mundo = new MundoBuilder().setActionClick((p) -> {
+            return new EventHandler<Event>(){
 
-			@Override
-			public void handle(Event event) {
-				// TODO Auto-generated method stub
-				bRearmar.setText("Rearmado");
-			}
-            
-        });
+				@Override
+				public void handle(Event event) {
+				}
+                
+            };
+        }).get();
 
-        listaJugadores.getItems().add("Jugador 1");
-        listaJugadores.getItems().add("Jugador 2");
+        panelMapa.getChildren().add(mundo.getWorldStackPane());
     }
 
 
