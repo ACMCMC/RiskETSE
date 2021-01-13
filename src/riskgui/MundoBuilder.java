@@ -53,6 +53,7 @@ public class MundoBuilder {
     private HashMap<Pais, SVGPath> svgPaths;
     private HashMap<Pais, Label> labelsNombres;
     private HashMap<Pais, Label> labelsNumEjercitos;
+    private Set<PaisEventSubscriber> setSubscribersSVGPaths;
 
     private static final Blend blendSVGPaths = new Blend();
     {
@@ -75,6 +76,8 @@ public class MundoBuilder {
         labelsNumEjercitos = new HashMap<>();
         paises = new HashSet<>();
 
+        setSubscribersSVGPaths = new HashSet<>();
+
         cargarMundo();
         procesarPaths();
     }
@@ -94,13 +97,15 @@ public class MundoBuilder {
         for (Entry<Object, Object> entrada : props.entrySet()) {
             crearYAnadirSVGPath(entrada.getKey().toString(), entrada.getValue().toString());
         }
+        setSubscribersSVGPaths.forEach(s -> Mapa.getMapa().getPaisEventPublisher().subscribe(s));
     }
 
     private void setAparienciaSVGPath(SVGPath svgPath, String nombrePais) {
         svgPath.setStroke(Color.BLACK);
         try {
-            Color c = Mapa.getMapa().getPais(nombrePais).getContinente().getColor().getFxColor();
-            svgPath.fillProperty().set(c);
+            Pais pais = Mapa.getMapa().getPais(nombrePais);
+            svgPath.fillProperty().set(pais.getContinente().getColor().getFxColor());
+            prepararChangeListenersSVGPath(svgPath, pais);
         } catch (ExcepcionRISK e) {
             svgPath.fillProperty().set(Color.BLACK);
         }
@@ -110,20 +115,33 @@ public class MundoBuilder {
         svgPath.setEffect(blendSVGPaths);
 
         svgPath.setCursor(Cursor.HAND);
+
     }
 
+    private void prepararChangeListenersSVGPath(SVGPath svgPath, Pais p) {
+        PaisEventSubscriber paisEventSubscriber = new PaisEventSubscriber() {
+            @Override
+            public void update(PaisEvent evento) {
+                if (p.equals(evento.getPaisDespues())) {
+                    svgPath.fillProperty().set(p.getContinente().getColor().getFxColor());
+                }
+            }
+        };
+        setSubscribersSVGPaths.add(paisEventSubscriber);
+    };
+    
     private Label anadirLabelNombre(Pais pais, SVGPath svgPath) {
         Label labelNombre = new Label(pais.getCodigo());
         labelsNombres.put(pais, labelNombre);
-
+        
         labelNombre.layoutXProperty()
-                .set((svgPath.getLayoutBounds().getMinX()
-                        + (svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX()) / 2
-                        - labelNombre.getWidth() / 2) - labelNombre.getText().length() * 4);
+        .set((svgPath.getLayoutBounds().getMinX()
+        + (svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX()) / 2
+        - labelNombre.getWidth() / 2) - labelNombre.getText().length() * 4);
         labelNombre.layoutYProperty()
-                .set(svgPath.getLayoutBounds().getMinY()
-                        + (svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY()) / 2
-                        - labelNombre.getHeight() / 2 - 25);
+        .set(svgPath.getLayoutBounds().getMinY()
+        + (svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY()) / 2
+        - labelNombre.getHeight() / 2 - 25);
         labelNombre.setMaxWidth(svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX());
         labelNombre.setMaxHeight(svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY());
         labelNombre.setAlignment(Pos.CENTER);
@@ -131,6 +149,19 @@ public class MundoBuilder {
         labelNombre.setFont(Font.font("sans-serif", FontWeight.BOLD, 12));
         labelNombre.setPadding(new Insets(3, 5, 3, 5));
         labelNombre.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        PaisEventSubscriber paisEventSubscriber = new PaisEventSubscriber() {
+            @Override
+            public void update(PaisEvent evento) {
+                if (evento.getPaisDespues().equals(pais)) {
+                    if (!evento.getPaisDespues().getCodigo().equals(labelNombre.getText())) {
+                        labelNombre.setText(evento.getPaisDespues().getCodigo());
+                    }
+                }
+            }
+        };
+        Mapa.getMapa().getPaisEventPublisher().subscribe(paisEventSubscriber);
+
         return labelNombre;
     }
 

@@ -148,10 +148,6 @@ public class Pais implements Cloneable {
         return this.nombreHumano;
     }
 
-    private void setNombreHumano(String nombreHumano) {
-        this.nombreHumano = nombreHumano;
-    }
-
     /**
      * Devuelve el código del país
      * 
@@ -161,7 +157,7 @@ public class Pais implements Cloneable {
         return this.codigo;
     }
 
-    private void setCodigo(String codigo) {
+    public void setCodigo(String codigo) {
         PaisEvent evento = new PaisEvent();
         evento.setPaisAntes(this);
         this.codigo = codigo;
@@ -169,7 +165,15 @@ public class Pais implements Cloneable {
         notificarCambioPais(evento);
     }
 
-    private void setContinente(Continente continente) {
+    public void setNombreHumano(String nombreHumano) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
+        this.nombreHumano = nombreHumano;
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
+    }
+
+    public void setContinente(Continente continente) {
         PaisEvent evento = new PaisEvent();
         evento.setPaisAntes(this);
         this.continente = continente;

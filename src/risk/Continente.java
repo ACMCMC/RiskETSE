@@ -21,7 +21,6 @@ public class Continente {
     private RiskColor color;
     private String codigo;
     private String nombreHumano;
-    private Set<Pais> paises;
 
     /**
      * Crea un nuevo Continente, sin países asignados
@@ -30,7 +29,6 @@ public class Continente {
      * @param nombreHumano
      */
     public Continente(String codigo, String nombreHumano) {
-        this.paises = new HashSet<>();
         this.setColor(RiskColor.INDEFINIDO);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
@@ -43,7 +41,6 @@ public class Continente {
      * @param color
      */
     public Continente(String codigo, String nombreHumano, RiskColor color) {
-        this.paises = new HashSet<>();
         this.setColor(color);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
@@ -114,22 +111,13 @@ public class Continente {
     }
 
     /**
-     * Añade un Pais a este continente
-     * 
-     * @param pais
-     */
-    public void addPais(Pais pais) {
-        this.paises.add(pais);
-    }
-
-    /**
      * Devuelve el Pais de codigo especificado
      * 
      * @param codigo
      * @return el Pais, o NULL
      */
     public Pais getPais(String codigo) {
-        return this.paises.stream().filter(p-> p.getCodigo().equals(codigo)).findFirst().orElse(null);
+        return this.getPaises().stream().filter(p-> p.getCodigo().equals(codigo)).findFirst().orElse(null);
     }
 
     /**
@@ -146,11 +134,11 @@ public class Continente {
      * Devuelve un Set de todos los países
      */
     public Set<Pais> getPaises() {
-        return this.paises;
+        return Mapa.getMapa().getPaises().stream().filter(p -> this.equals(p.getContinente())).collect(Collectors.toSet());
     }
 
     private void notificarCambiosPaises() {
-        for (Pais p : paises) {
+        for (Pais p : getPaises()) {
             PaisEvent evento = new PaisEvent();
             evento.setPaisAntes(p);
             evento.setPaisDespues(p);
@@ -170,14 +158,32 @@ public class Continente {
             return false;
         }
         final Continente other = (Continente) continente;
-        if (!this.getCodigo().equals(other.getCodigo())) {
-            return false;
+        if (this.getCodigo()!=null) {
+            if (!this.getCodigo().equals(other.getCodigo())) {
+                return false;
+            }
+        } else {
+            if (other.getCodigo()!=null) {
+                return false;
+            }
         }
-        if (!this.getNombreHumano().equals(other.getNombreHumano())) {
-            return false;
+        if (this.getNombreHumano()!=null) {
+            if (!this.getNombreHumano().equals(other.getNombreHumano())) {
+                return false;
+            }
+        } else {
+            if (other.getNombreHumano()!=null) {
+                return false;
+            }
         }
-        if (!this.getColor().equals(other.getColor())) {
-            return false;
+        if (this.getColor()!=null) {
+            if (!this.getColor().equals(other.getColor())) {
+                return false;
+            }
+        } else {
+            if (other.getColor()!=null) {
+                return false;
+            }
         }
         return true;
     }

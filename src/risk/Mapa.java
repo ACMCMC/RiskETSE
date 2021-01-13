@@ -200,7 +200,6 @@ public class Mapa {
             CasillaPais casillaPais = new CasillaPais(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)),
                     new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
             casillas.replace(casillaPais.getCoordenadas(), casillaPais);
-            continenteDelPais.addPais(casillaPais.getPais());
             paises.add( casillaPais.getPais()); // Insertamos el país en la lista
                                                                                   // de países
         }
