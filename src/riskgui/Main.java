@@ -25,17 +25,10 @@ public class Main extends Application {
 
         crearMapa();
 
-        Menu menu = new Menu();
-        menu.crearJugadores("jugadores.csv");
-        Partida.getPartida().asignarEjercitosSinRepartir();
-        menu.asignarMisiones("misiones.csv");
-        //menu.asignarPaises("paises.csv");
-        //menu.repartirEjercitos();
-
-        goToRepartoPaises();
-        
         primaryStage.setTitle("RiskETSE");
         primaryStage.setResizable(false);
+
+        goToPantallaInicial();
     }
     
     public static void goToCreacionJugadores() {
@@ -47,6 +40,27 @@ public class Main extends Application {
         } catch (IOException e) {
         }
     }
+    
+    public static void goToEditarMapa() {
+        try {
+            Parent root = FXMLLoader.load(Main.class.getResource("pantallaInicial.fxml"));
+            Scene escena = new Scene(root);
+            stage.setScene(escena);
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
+
+    public static void goToPantallaInicial() {
+        try {
+            Parent root = FXMLLoader.load(Main.class.getResource("pantallaInicial.fxml"));
+            Scene escena = new Scene(root);
+            stage.setScene(escena);
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
+
     public static void goToAsignacionMisiones() {
         try {
             Parent rootAsignacionMisiones = FXMLLoader.load(Main.class.getResource("asignacionMisiones.fxml"));

@@ -14,6 +14,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Alert.AlertType;
@@ -28,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import risk.Mapa;
 import risk.Partida;
+import risk.riskexception.ExcepcionJugador;
 
 public class RepartoPaisesController {
     @FXML
@@ -43,15 +45,35 @@ public class RepartoPaisesController {
 
     public void initialize() {
         mundo = new MundoBuilder().setActionClick((p) -> {
-            return new EventHandler<Event>(){
+            return new EventHandler<Event>() {
 
-				@Override
-				public void handle(Event event) {
-                    if (p.getJugador()==null) {
+                @Override
+                public void handle(Event event) {
+                    if (p.getJugador() == null && Partida.getPartida().getJugadorActual().getNumEjercitosRearme() > 0) {
                         p.conquistar(Partida.getPartida().getJugadorActual());
+                        try {
+                            Partida.getPartida().repartirEjercitos(1, p);
+                        } catch (ExcepcionJugador e) {
+                            new Alert(AlertType.INFORMATION, e.getMessage(), ButtonType.CLOSE).show();
+                        }
+                    } else if (Partida.getPartida().getJugadorActual().equals(p.getJugador())) {
+                        try {
+                            Partida.getPartida().repartirEjercitos(1, p);
+                        } catch (ExcepcionJugador e) {
+                            Alert alerta = new Alert(AlertType.INFORMATION, e.getMessage(), ButtonType.CLOSE);
+                            alerta.setTitle("No se puede hacer el reparto");
+                            alerta.setHeaderText(null);
+                            alerta.show();
+                        }
+                    } else {
+                        Alert alerta = new Alert(AlertType.INFORMATION, "El país ya pertenece a un jugador",
+                                ButtonType.CLOSE);
+                        alerta.setTitle("No se puede hacer el reparto");
+                        alerta.setHeaderText(null);
+                        alerta.show();
                     }
-				}
-                
+                }
+
             };
         }).get();
 

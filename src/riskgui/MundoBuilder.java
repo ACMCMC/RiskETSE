@@ -148,14 +148,12 @@ public class MundoBuilder {
                         - labelNumEjercitos.getHeight() / 2 + 0);
         labelNumEjercitos.setMaxWidth(svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX());
         labelNumEjercitos.setMaxHeight(svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY());
-        labelNumEjercitos.setPrefWidth(labelNumEjercitos.getHeight());
         labelNumEjercitos.setAlignment(Pos.CENTER);
         labelNumEjercitos.setPadding(new Insets(5));
-        labelNumEjercitos.setTextFill(Color.WHITE);
         labelNumEjercitos.setFont(Font.font("sans-serif", FontWeight.BOLD, 12));
-
+        
         PaisEventSubscriber paisEventSubscriber = new PaisEventSubscriber() {
-
+            
             @Override
             public void update(PaisEvent evento) {
                 if (evento.getPaisDespues().equals(pais)) {
@@ -165,8 +163,13 @@ public class MundoBuilder {
                         labelNumEjercitos.setVisible(true);
                         labelNumEjercitos.setText(Integer.toString(pais.getNumEjercitos()));
                         labelNumEjercitos
-                                .setBackground(new Background(new BackgroundFill(pais.getJugador().getColor().getFxColor(),
-                                        new CornerRadii(0, true), Insets.EMPTY)));
+                        .setBackground(new Background(new BackgroundFill(pais.getJugador().getColor().getFxColor(),
+                        new CornerRadii(0, true), Insets.EMPTY)));
+                        if (pais.getJugador().getColor().getFxColor().equals(risk.RiskColor.AMARILLO.getFxColor())) {
+                            labelNumEjercitos.setTextFill(Color.BLACK);
+                        } else {
+                            labelNumEjercitos.setTextFill(Color.WHITE);
+                        }
                     }
                 }
             }

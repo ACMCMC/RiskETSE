@@ -64,6 +64,7 @@ public class CreacionJugadoresController {
     }
 
     public void siguiente() {
+        Partida.getPartida().asignarEjercitosSinRepartir();
         Main.goToAsignacionMisiones();
     }
 }
