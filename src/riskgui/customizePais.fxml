@@ -30,7 +30,7 @@
                   <Label text="Nombre" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                   <TextField fx:id="tfNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Continente" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                  <ChoiceBox fx:id="cbContinente" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <ChoiceBox fx:id="cbContinente" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                </children>
                <padding>
                   <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
@@ -56,7 +56,7 @@
                   <Label text="Nombre" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                   <TextField fx:id="tfNombreContinente" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Color" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                  <ChoiceBox fx:id="cbColorContinente" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <ChoiceBox fx:id="cbColorContinente" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                </children>
                <padding>
                   <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />

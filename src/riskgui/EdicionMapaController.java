@@ -38,7 +38,7 @@ public class EdicionMapaController {
     private Mundo mundo;
 
     public void initialize() {
-        mundo = new MundoBuilder().setActionClick((p) -> {
+        mundo = new MundoBuilder().setDefaultEnterExitHandlers().setActionClick((p) -> {
             return new EventHandler<Event>(){
 
 				@Override
@@ -53,6 +53,10 @@ public class EdicionMapaController {
         }).get();
 
         panelMapa.getChildren().add(mundo.getWorldStackPane());
+    }
+
+    public void siguiente() {
+        Main.goToPantallaInicial();
     }
 
 }

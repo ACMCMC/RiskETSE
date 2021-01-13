@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
@@ -64,9 +65,18 @@ public class MundoBuilder {
         is.setRadius(20.0f);
         is.blurTypeProperty().set(BlurType.THREE_PASS_BOX);
         is.setColor(Color.BLACK);
+
+        DropShadow ds = new DropShadow();
+        ds.setOffsetX(0);
+        ds.setOffsetY(0);
+        ds.setHeight(1.0f);
+        ds.setRadius(20.0f);
+        ds.blurTypeProperty().set(BlurType.THREE_PASS_BOX);
+        ds.setColor(Color.BLACK);
         
         blendSVGPaths.setTopInput(is);
-        blendSVGPaths.setMode(BlendMode.DARKEN);
+        //blendSVGPaths.setBottomInput(ds);
+        blendSVGPaths.setMode(BlendMode.SRC_OVER);
         blendSVGPaths.setOpacity(0.35f);
     }
 
@@ -249,8 +259,8 @@ public class MundoBuilder {
             enterHandler = new EventHandler<Event>() {
                 @Override
                 public void handle(Event event) {
+                    e.getValue().toFront();
                     e.getValue().fillProperty().set(Color.ORANGE);
-                    e.getValue().setEffect(null);
                 }
             };
             exitHandler = new EventHandler<Event>() {
@@ -258,7 +268,6 @@ public class MundoBuilder {
                 public void handle(Event event) {
                     Color c = e.getKey().getContinente().getColor().getFxColor();
                     e.getValue().fillProperty().set(c);
-                    e.getValue().setEffect(blendSVGPaths);
                 }
             };
             prepararEnterExitHandlersSVGPath(e.getKey(), e.getValue(), enterHandler, exitHandler);
