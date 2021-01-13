@@ -35,8 +35,6 @@ public class RepartoPaisesController {
     @FXML
     private Pane panelMapa;
     @FXML
-    private ToolBar toolbar;
-    @FXML
     private VBox vBox;
     @FXML
     private Button bSiguiente;
@@ -70,7 +68,7 @@ public class RepartoPaisesController {
                     */ else {
                         Alert alerta = new Alert(AlertType.INFORMATION, "El país ya pertenece a un jugador",
                                 ButtonType.CLOSE);
-                        alerta.setTitle("No se puede hacer el reparto");
+                        alerta.setTitle("No se puede hacer la asignación");
                         alerta.setHeaderText(null);
                         alerta.show();
                     }
@@ -89,6 +87,7 @@ public class RepartoPaisesController {
                 Main.goToPartida();
             } else {
                 Partida.getPartida().siguienteTurnoDeReparto();
+                Main.goToRepartoEjercitos();
             }
         } else {
             Partida.getPartida().siguienteTurnoDeReparto();

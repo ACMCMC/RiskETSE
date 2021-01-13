@@ -13,6 +13,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Alert.AlertType;
@@ -26,6 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import risk.Partida;
+import risk.riskexception.ExcepcionJugador;
 
 public class RepartoEjercitosController {
     @FXML
@@ -41,15 +43,22 @@ public class RepartoEjercitosController {
 
     public void initialize() {
         mundo = new MundoBuilder().setActionClick((p) -> {
-            return new EventHandler<Event>(){
+            return new EventHandler<Event>() {
 
-				@Override
-				public void handle(Event event) {
-                    if (p.getJugador()==null) {
-                        p.conquistar(Partida.getPartida().getJugadorActual());
+                @Override
+                public void handle(Event event) {
+                    if (p.getJugador() != null) {
+                        try {
+                            p.getJugador().asignarEjercitosAPais(1, p);
+                        } catch (ExcepcionJugador e) {
+                            Alert alerta = new Alert(AlertType.INFORMATION, e.getMessage(), ButtonType.CLOSE);
+                            alerta.setTitle("No se puede hacer el reparto");
+                            alerta.setHeaderText(null);
+                            alerta.show();
+                        }
                     }
-				}
-                
+                }
+
             };
         }).get();
 
@@ -59,31 +68,18 @@ public class RepartoEjercitosController {
         imgSoldado.setOnDragDetected(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
-                    Dragboard dragboard = imgSoldado.startDragAndDrop(TransferMode.MOVE);
-                    Map<DataFormat, Object> mapa = new HashMap<DataFormat, Object>();
-                    dragboard.setContent(mapa);
+                Dragboard dragboard = imgSoldado.startDragAndDrop(TransferMode.MOVE);
+                Map<DataFormat, Object> mapa = new HashMap<DataFormat, Object>();
+                dragboard.setContent(mapa);
 
-                    URL url = getClass().getResource("resources/soldado.png");
+                URL url = getClass().getResource("resources/soldado.png");
 
-                    Image imagenSoldado = new Image(url.toExternalForm(), 50, 50, true, true);
-                    dragboard.setDragView(imagenSoldado);
+                Image imagenSoldado = new Image(url.toExternalForm(), 50, 50, true, true);
+                dragboard.setDragView(imagenSoldado);
 
                 event.consume();
             }
         });
 
-        /*mundo.getPaths().get("Alaska").setOnMouseEntered(new EventHandler<Event>(){
-
-			@Override
-			public void handle(Event event) {
-                Alert alerta = new Alert(AlertType.ERROR);
-                alerta.setTitle("Prueba");
-                alerta.setHeaderText(null);
-                alerta.setContentText("Alaska");
-                alerta.show();
-			}
-            
-        });*/
-        //panelMapa.setPrefWidth(panelMapa.getScene().widthProperty().doubleValue());
     }
 }

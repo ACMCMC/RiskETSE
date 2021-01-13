@@ -12,15 +12,11 @@
 
 <VBox fx:id="vBox" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="riskgui.RepartoPaisesController">
    <children>
-      <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0">
-         <items>
-            <Button fx:id="bSiguiente" mnemonicParsing="false" onAction="#siguiente" text="Siguiente" />
-         </items>
-      </ToolBar>
       <VBox id="descripcionPaso">
          <children>
             <Label text="Reparto de países" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Haz clic sobre un país para asignarlo al jugador actual." />
+            <Button fx:id="bSiguiente" mnemonicParsing="false" onAction="#siguiente" text="Siguiente" />
          </children>
       </VBox>
       <Separator prefWidth="200.0" />

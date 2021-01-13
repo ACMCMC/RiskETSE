@@ -51,6 +51,16 @@ public class Main extends Application {
         }
     }
 
+    public static void goToRepartoEjercitos() {
+        try {
+            Parent root = FXMLLoader.load(Main.class.getResource("repartoEjercitos.fxml"));
+            Scene escena = new Scene(root);
+            stage.setScene(escena);
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
+
     public static void goToPartida() {
         try {
             Parent root = FXMLLoader.load(Main.class.getResource("partida.fxml"));
