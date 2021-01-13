@@ -5,26 +5,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableStringValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
 import javafx.util.Callback;
 import risk.Continente;
-import risk.Frontera;
 import risk.Mapa;
 import risk.Pais;
-import risk.Partida;
-import risk.Risk;
 import risk.RiskColor;
 
 public class CustomizePaisController {
