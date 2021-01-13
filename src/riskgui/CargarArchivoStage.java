@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import risk.Pais;
 
 public class CargarArchivoStage extends Stage {
     public CargarArchivoStage() {
@@ -15,6 +14,8 @@ public class CargarArchivoStage extends Stage {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("cargarArchivo.fxml"));
             Parent root = fxmlLoader.load();
+
+            fxmlLoader.<CargarArchivoController>getController().setStage(this);
 
             Scene escena = new Scene(root);
 

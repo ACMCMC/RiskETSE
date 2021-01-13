@@ -11,7 +11,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="15.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="riskgui.CargarArchivoController">
    <children>
-      <Text fx:id="labelFormato" strokeType="OUTSIDE" strokeWidth="0.0" text="Formato del archivo:" />
+      <Text fx:id="textFormato" strokeType="OUTSIDE" strokeWidth="0.0" text="Formato del archivo:" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Se realizará una asignación aleatoria de los nombres a las figuras del mapa." />
       <HBox spacing="10.0">
          <children>
@@ -25,8 +25,8 @@
       </HBox>
       <HBox alignment="TOP_RIGHT" spacing="10.0">
          <children>
-            <Button cancelButton="true" mnemonicParsing="false" onAction="#seleccionarArchivo" text="Cancelar" />
-            <Button mnemonicParsing="false" onAction="#seleccionarArchivo" text="Ejecutar" />
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
+            <Button mnemonicParsing="false" onAction="#ejecutar" text="Ejecutar" />
          </children>
       </HBox>
    </children>
