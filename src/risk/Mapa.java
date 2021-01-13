@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartasmision.PaisEvent;
 import risk.cartasmision.PaisEventPublisher;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionRISK;
@@ -667,8 +668,65 @@ public class Mapa {
      * @param paisA
      * @param paisB
      */
-    private void addFrontera(Pais paisA, Pais paisB) {
-        this.fronteras.add(new Frontera(paisA, paisB));
+    public void addFrontera(Pais paisA, Pais paisB) {
+        if (paisA!=null && paisB!=null) {
+            PaisEvent paisEventA = new PaisEvent();
+            PaisEvent paisEventB = new PaisEvent();
+            paisEventA.setPaisAntes(paisA);
+            paisEventB.setPaisAntes(paisB);
+            this.fronteras.add(new Frontera(paisA, paisB));
+            paisEventA.setPaisDespues(paisA);
+            paisEventB.setPaisDespues(paisB);
+            this.getPaisEventPublisher().updateSubscribers(paisEventA);
+            this.getPaisEventPublisher().updateSubscribers(paisEventB);
+        }
+    }
+
+    /**
+     * Para un país, deja solo las fronteras que son con el set de países especificado
+     * 
+     * @param paisA
+     * @param paisB
+     */
+    public void setFronterasPais(Pais p, Set<Pais> paisesFrontera) {
+        Set<Frontera> fronterasPrevias = getFronteras(p);
+        Set<Pais> paisesPrevios = fronterasPrevias.stream().map(f -> f.getPaises()).map(set -> set.stream().filter(p2 -> !p2.equals(p)).findFirst().get()).collect(Collectors.toSet());
+        Set<Pais> paisesEnComun = new HashSet<>(paisesFrontera);
+        paisesEnComun.retainAll(paisesPrevios);
+        Set<Pais> paisesBorrar = new HashSet<>(paisesPrevios);
+        paisesBorrar.removeAll(paisesEnComun);
+        fronterasPrevias.stream().filter(front -> !Collections.disjoint(front.getPaises(), paisesBorrar)).forEach(front -> removeFrontera(front)); // Borramos las que ya no están en el set
+        Set<Pais> paisesAnadir = new HashSet<>(paisesFrontera);
+        paisesAnadir.removeAll(paisesEnComun);
+        paisesAnadir.forEach(paisAnadir -> addFrontera(p, paisAnadir));
+    }
+
+    /**
+     * Elimina una Frontera entre dos países. Si no existe la Frontera, no hace nada
+     * 
+     * @param paisA
+     * @param paisB
+     */
+    public void removeFrontera(Pais paisA, Pais paisB) {
+        Optional<Frontera> f = getFrontera(paisA, paisB);
+        f.ifPresent(this::removeFrontera);
+    }
+    /**
+     * Elimina una Frontera entre dos países. Si no existe la Frontera, no hace nada
+     * 
+     * @param paisA
+     * @param paisB
+     */
+    public void removeFrontera(Frontera f) {
+            PaisEvent paisEventA = new PaisEvent();
+            PaisEvent paisEventB = new PaisEvent();
+            paisEventA.setPaisAntes(f.getPaisA());
+            paisEventB.setPaisAntes(f.getPaisB());
+            this.fronteras.remove(f);
+            paisEventA.setPaisDespues(f.getPaisA());
+            paisEventB.setPaisDespues(f.getPaisB());
+            this.getPaisEventPublisher().updateSubscribers(paisEventA);
+            this.getPaisEventPublisher().updateSubscribers(paisEventB);
     }
 
     /**

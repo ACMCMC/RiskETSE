@@ -12,10 +12,15 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputMethodEvent;
+import javafx.util.Callback;
 import risk.Continente;
+import risk.Frontera;
 import risk.Mapa;
 import risk.Pais;
 import risk.Partida;
@@ -35,6 +40,8 @@ public class CustomizePaisController {
     private TextField tfCodigoContinente;
     @FXML
     private TextField tfNombreContinente;
+    @FXML
+    private ListView<Pais> listViewFronteras;
 
     Pais pais;
 
@@ -80,9 +87,15 @@ public class CustomizePaisController {
             @Override
             public void changed(ObservableValue<? extends RiskColor> observable, RiskColor oldValue,
                     RiskColor newValue) {
-                        if (newValue!=null) {
-                            pais.getContinente().setColor(newValue);
-                        }
+                if (newValue != null) {
+                    pais.getContinente().setColor(newValue);
+                }
+            }
+        });
+        listViewFronteras.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Pais>() {
+            @Override
+            public void changed(ObservableValue<? extends Pais> observable, Pais oldValue, Pais newValue) {
+                Mapa.getMapa().setFronterasPais(pais, new HashSet<Pais>(listViewFronteras.getSelectionModel().getSelectedItems()));
             }
         });
     }
@@ -98,11 +111,37 @@ public class CustomizePaisController {
         tfCodigo.setText(pais.getCodigo());
         tfNombre.setText(pais.getNombreHumano());
         ObservableList<Continente> listaContinentes = FXCollections
-        .observableArrayList(Mapa.getMapa().getContinentes());
+                .observableArrayList(Mapa.getMapa().getContinentes());
         cbContinente.setItems(listaContinentes);
         cbContinente.getSelectionModel().select(pais.getContinente());
+        listViewFronteras.setCellFactory(new Callback<ListView<Pais>, ListCell<Pais>>() {
+            @Override
+            public ListCell<Pais> call(ListView<Pais> param) {
+                ListCell<Pais> celda = new ListCell<Pais>() {
+                    @Override
+                    protected void updateItem(Pais item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getNombreHumano());
+                        }
+                    }
+                };
+                return celda;
+            }
+        });
+        ObservableList<Pais> listaP = FXCollections.observableArrayList(Mapa.getMapa().getPaises());
+        listViewFronteras.setItems(listaP);
+        seleccionarPaisesFrontera();
     }
     
+    private void seleccionarPaisesFrontera() {
+        listViewFronteras.getSelectionModel().clearSelection();
+        listViewFronteras.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        Mapa.getMapa().getFronteras(pais).stream()
+                .map(front -> front.getPaises().stream().filter(p -> !p.equals(pais)).findFirst().get())
+                .forEach(paisFrontera -> listViewFronteras.getSelectionModel().select(paisFrontera));
+    }
+
     public void actualizarDatosContinente() {
         tfCodigoContinente.setText(pais.getContinente().getCodigo());
         tfNombreContinente.setText(pais.getContinente().getNombreHumano());

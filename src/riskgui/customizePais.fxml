@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -23,6 +24,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
                   <Label text="Código" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" />
@@ -31,6 +33,8 @@
                   <TextField fx:id="tfNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Continente" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                   <ChoiceBox fx:id="cbContinente" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <Label text="Fronteras" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                  <ListView fx:id="listViewFronteras" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
                </children>
                <padding>
                   <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
