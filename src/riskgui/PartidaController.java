@@ -99,7 +99,11 @@ public class PartidaController {
             tAyuda.setText("Arrastra el ratón sobre un país enemigo para atacarlo.");
         } else if (estado.equals(Estado.JUGANDO_REPARTIENDO_EJERCITOS)) {
             bRearmar.setDisable(true);
-            bCambiarCartas.setDisable(false);
+            if (Partida.getPartida().getJugadorActual().getCartasEquipamiento().size()>=3) {
+                bCambiarCartas.setDisable(false);
+            } else {
+                bCambiarCartas.setDisable(true);
+            }
             bSiguienteTurno.setDisable(true);
             bAsignarCarta.setDisable(true);
             
