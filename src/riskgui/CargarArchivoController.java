@@ -1,22 +1,18 @@
 package riskgui;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
-import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -90,6 +86,11 @@ public class CargarArchivoController {
                 alerta.setHeaderText(null);
                 alerta.setContentText("El formato del archivo es incorrecto.");
                 alerta.showAndWait();
+            } finally {
+                try {
+                    inputReader.close();
+                } catch (IOException e) {
+                }
             }
         } catch (FileNotFoundException e) {
             stage.close();

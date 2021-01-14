@@ -3,21 +3,18 @@ package riskgui;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
-import javafx.beans.value.ObservableStringValue;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ToolBar;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -37,7 +34,6 @@ import risk.Partida;
 import risk.cartasmision.PaisEvent;
 import risk.cartasmision.PaisEventSubscriber;
 import risk.riskexception.ExcepcionJugador;
-import risk.riskexception.ExcepcionPropia;
 import risk.riskexception.ExcepcionRISK;
 
 public class PartidaController {

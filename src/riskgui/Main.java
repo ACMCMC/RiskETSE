@@ -10,8 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import risk.Mapa;
-import risk.Menu;
-import risk.Partida;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.RiskExceptionEnum;
 
