@@ -51,7 +51,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
               </rowConstraints>
                <children>
-                  <AnchorPane style="-fx-border-radius: 10; -fx-border-color: #000000; -fx-border-width: 2;" GridPane.columnIndex="1">
+                  <AnchorPane fx:id="aPaneJugActual" GridPane.columnIndex="1">
                      <children>
                         <Text fx:id="tJugActual" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="Jugador actual:" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -60,7 +60,7 @@
                         </Text>
                      </children>
                      <padding>
-                        <Insets bottom="30.0" left="20.0" right="20.0" top="15.0" />
+                        <Insets bottom="30.0" left="20.0" right="20.0" top="12.0" />
                      </padding>
                   </AnchorPane>
                </children>

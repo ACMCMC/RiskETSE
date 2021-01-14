@@ -21,6 +21,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
@@ -56,6 +62,8 @@ public class PartidaController {
     private Text tJugActual;
     @FXML
     private Text tAyuda;
+    @FXML
+    private AnchorPane aPaneJugActual;
 
     private Estado estado;
     private MundoBuilder mundoBuilder;
@@ -126,6 +134,9 @@ public class PartidaController {
 
     private void actualizarJugActual() {
         tJugActual.setText("Jugando: " + Partida.getPartida().getJugadorActual().getNombre());
+        tJugActual.setFill(Partida.getPartida().getJugadorActual().getColor().getFxColor());
+        aPaneJugActual.setBorder(new Border(new BorderStroke(Partida.getPartida().getJugadorActual().getColor().getFxColor(), 
+        BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
     }
 
     public void atacar() {
