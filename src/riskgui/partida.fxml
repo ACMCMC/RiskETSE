@@ -18,16 +18,16 @@
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
-            <Button fx:id="bCambiarCartas" disable="true" mnemonicParsing="false" text="Cambiar cartas" />
+            <Button fx:id="bCambiarCartas" disable="true" mnemonicParsing="false" onAction="#cambiarCartas" text="Cambiar cartas" />
             <Button fx:id="bAtacar" disable="true" mnemonicParsing="false" onAction="#atacar" text="Atacar" />
           <Button fx:id="bRearmar" mnemonicParsing="false" onAction="#rearmar" text="Rearmar" />
-            <Button fx:id="bAsignarCarta" disable="true" mnemonicParsing="false" text="Asignar carta" />
+            <Button fx:id="bAsignarCarta" disable="true" mnemonicParsing="false" onAction="#asignarCarta" text="Asignar carta" />
             <Button fx:id="bSiguienteTurno" disable="true" mnemonicParsing="false" onAction="#siguienteTurno" text="Siguiente turno" />
         </items>
       </ToolBar>
       <VBox id="descripcionPaso" spacing="10.0">
         <children>
-           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Haz clic sobre un país para asignarle uno de los ejércitos de su jugador." />
+           <Text fx:id="tAyuda" strokeType="OUTSIDE" strokeWidth="0.0" text="Haz clic sobre un país para asignarle uno de los ejércitos de su jugador." />
         </children>
      </VBox>
      <Separator />

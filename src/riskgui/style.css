@@ -1,7 +1,4 @@
 #root{
-    -fx-background-image: url("resources/Img_Fondo_Mapa.jpg");
-    -fx-background-repeat: stretch;   
-    -fx-background-position: center center;
 }
 
 .title {
@@ -19,6 +16,9 @@
 
 #panelMapa {
     -fx-border-insets: 20, 50, 50, 20;
+    -fx-background-image: url("resources/Img_Fondo_Mapa.jpg");
+    -fx-background-repeat: stretch;   
+    -fx-background-position: center center;
 }
 
 Button {

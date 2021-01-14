@@ -86,7 +86,7 @@ public class DadoStage extends Stage {
             this.initStyle(StageStyle.TRANSPARENT);
             escena.setFill(Color.TRANSPARENT);
             
-            RotateTransition rotateTransition = new RotateTransition(Duration.millis(1000));
+            RotateTransition rotateTransition = new RotateTransition(Duration.millis(700));
             rotateTransition.setNode(meshView);
             rotateTransition.setAxis(getEje());
             rotateTransition.setInterpolator(Interpolator.SPLINE(0.4, 0.02, 0.9, 0.45));
@@ -96,7 +96,7 @@ public class DadoStage extends Stage {
             meshView.setTranslateX(escena.getWidth()/2 -250 +Math.random()*500);
             meshView.setTranslateY(escena.getHeight()/2 -250 +Math.random()*500);
 
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(1000), meshView);
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(700), meshView);
             scaleTransition.setFromX(ESCALA);
             scaleTransition.setFromY(ESCALA);
             scaleTransition.setFromZ(ESCALA);
@@ -114,7 +114,7 @@ public class DadoStage extends Stage {
 
             SequentialTransition sequentialTransition = new SequentialTransition();
             sequentialTransition.getChildren().add(parallelTransition);
-            sequentialTransition.getChildren().add(new PauseTransition(Duration.millis(3000)));
+            sequentialTransition.getChildren().add(new PauseTransition(Duration.millis(700)));
             sequentialTransition.getChildren().add(fadeOutTransition);
 
             sequentialTransition.play();
