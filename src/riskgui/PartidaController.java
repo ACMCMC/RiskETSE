@@ -99,16 +99,17 @@ public class PartidaController {
             tAyuda.setText("Arrastra el ratón sobre un país enemigo para atacarlo.");
         } else if (estado.equals(Estado.JUGANDO_REPARTIENDO_EJERCITOS)) {
             bRearmar.setDisable(true);
-            if (Partida.getPartida().getJugadorActual().getCartasEquipamiento().size()>=3) {
-                bCambiarCartas.setDisable(false);
-            } else {
-                bCambiarCartas.setDisable(true);
-            }
             bSiguienteTurno.setDisable(true);
             bAsignarCarta.setDisable(true);
             
             if (!Partida.getPartida().getJugadorActual().hasEjercitosSinRepartir()) {
-                tAyuda.setText("Haz un cambio de cartas para conseguir más ejércitos de rearme, o empieza a atacar.");
+                if (Partida.getPartida().getJugadorActual().getCartasEquipamiento().size()>=3) {
+                    bCambiarCartas.setDisable(false);
+                    tAyuda.setText("Haz un cambio de cartas para conseguir más ejércitos de rearme, o empieza a atacar.");
+                } else {
+                    tAyuda.setText("No tienes cartas suficientes para cambiar. Ataca países enemigos para conseguir más.");
+                    bCambiarCartas.setDisable(true);
+                }
                 bAtacar.setDisable(false);
             } else {
                 bAtacar.setDisable(true);

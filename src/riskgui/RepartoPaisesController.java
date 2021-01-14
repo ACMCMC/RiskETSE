@@ -1,6 +1,13 @@
 package riskgui;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +34,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import risk.Mapa;
 import risk.Partida;
 import risk.riskexception.ExcepcionJugador;
+import risk.riskexception.ExcepcionRISK;
 import risk.riskexception.RiskExceptionEnum;
 
 public class RepartoPaisesController {
@@ -39,6 +49,10 @@ public class RepartoPaisesController {
     private VBox vBox;
     @FXML
     private Button bSiguiente;
+    @FXML
+    private Button bCargarDesdeArchivo;
+    @FXML
+    private Text tAyuda;
 
     private Mundo mundo;
 
@@ -48,6 +62,7 @@ public class RepartoPaisesController {
 
                 @Override
                 public void handle(Event event) {
+                    bCargarDesdeArchivo.setDisable(true);
                     if (p.getJugador() == null && Partida.getPartida().getJugadorActual().hasEjercitosSinRepartir()) {
                         p.conquistar(Partida.getPartida().getJugadorActual());
                         try {
@@ -84,6 +99,8 @@ public class RepartoPaisesController {
         }).get();
 
         panelMapa.getChildren().add(mundo.getWorldStackPane());
+
+        actualizarTextoAyuda();
     }
 
     public void siguiente() {
@@ -97,10 +114,69 @@ public class RepartoPaisesController {
             }
         } else {
             Partida.getPartida().siguienteTurnoDeReparto();
+            actualizarTextoAyuda();
         }
+    }
+    
+    private void actualizarTextoAyuda() {
+        tAyuda.setText("Haz clic sobre un país para asignárselo a " + Partida.getPartida().getJugadorActual().getNombre() + ".");
     }
 
     public void avanzar() {
 
+    }
+
+    public void cargarDesdeArchivo() {
+        File file;
+        FileChooser fileChooser = new FileChooser();
+        file = fileChooser.showOpenDialog(Main.getStage());
+
+        if (file != null) {
+
+            try {
+                BufferedReader inputReader = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+
+                String linea;
+                String[] partes;
+
+                while ((linea = inputReader.readLine()) != null) {
+                    partes = linea.split(";");
+                    try {
+                        String nombrePais = partes[1];
+                        String nombreJugador = partes[0];
+                        Mapa.getMapa().asignarPaisAJugadorInicialmente(nombrePais, nombreJugador);
+                    } catch (ExcepcionRISK e) {
+                        Alert alerta = new Alert(AlertType.ERROR);
+                        alerta.setTitle("Formato incorrecto");
+                        alerta.setHeaderText(null);
+                        alerta.setContentText(e.getMessage());
+                        alerta.showAndWait();
+                    }
+                }
+
+                inputReader.close();
+            } catch (FileNotFoundException fileNotFoundException) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText(null);
+                alerta.setContentText(RiskExceptionEnum.ARCHIVO_NO_EXISTE.get().getMessage());
+                alerta.showAndWait();
+            } catch (IOException e) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText(null);
+                alerta.setContentText(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get().getMessage());
+                alerta.showAndWait();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText(null);
+                alerta.setContentText(RiskExceptionEnum.FORMATO_ARCHIVO_INCORRECTO.get().getMessage());
+                alerta.showAndWait();
+            }
+
+            siguiente();
+        }
     }
 }

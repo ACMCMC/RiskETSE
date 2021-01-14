@@ -1,5 +1,12 @@
 package riskgui;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
@@ -26,6 +33,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import risk.Jugador;
@@ -33,6 +41,7 @@ import risk.Partida;
 import risk.cartasmision.CartaMision;
 import risk.cartasmision.CartaMisionFactory;
 import risk.riskexception.ExcepcionRISK;
+import risk.riskexception.RiskExceptionEnum;
 
 public class AsignacionMisionesController {
     @FXML
@@ -41,6 +50,8 @@ public class AsignacionMisionesController {
     private ListView<Class<? extends CartaMision>> listaMisiones;
     @FXML
     private Button bSiguiente;
+    @FXML
+    private Button bCargarDesdeArchivo;
     @FXML
     private Label tDescMision;
     @FXML
@@ -53,18 +64,17 @@ public class AsignacionMisionesController {
     private Transition transicionActualCarta;
 
     public void initialize() {
-        
 
         ObservableList<Jugador> listaJ = FXCollections.observableArrayList(Partida.getPartida().getJugadores());
         listaJugadores.setItems(listaJ);
-        listaJugadores.setCellFactory(new Callback<ListView<Jugador>,ListCell<Jugador>>(){
+        listaJugadores.setCellFactory(new Callback<ListView<Jugador>, ListCell<Jugador>>() {
             @Override
             public ListCell<Jugador> call(ListView<Jugador> param) {
                 ListCell<Jugador> celda = new ListCell<Jugador>() {
                     @Override
                     protected void updateItem(Jugador item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (item!=null) {
+                        if (item != null) {
                             setText(item.getNombre());
                         }
                     }
@@ -72,28 +82,29 @@ public class AsignacionMisionesController {
                 return celda;
             }
         });
-        
+
         listaMisiones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ObservableList<Class<? extends CartaMision>> listaM = FXCollections
-        .observableArrayList(CartaMisionFactory.getAll());
+                .observableArrayList(CartaMisionFactory.getAll());
         SortedList<Class<? extends CartaMision>> listaMOrdenada = new SortedList<>(listaM);
         listaMOrdenada.setComparator(Comparator.comparing((Class<? extends CartaMision> c) -> c.getSimpleName()));
         listaMisiones.setItems(listaMOrdenada);
-        listaMisiones.setCellFactory(new Callback<ListView<Class<? extends CartaMision>>, ListCell<Class<? extends CartaMision>>>(){
-            @Override
-            public ListCell<Class<? extends CartaMision>> call(ListView<Class<? extends CartaMision>> param) {
-                ListCell<Class<? extends CartaMision>> celda = new ListCell<Class<? extends CartaMision>>() {
+        listaMisiones.setCellFactory(
+                new Callback<ListView<Class<? extends CartaMision>>, ListCell<Class<? extends CartaMision>>>() {
                     @Override
-                    protected void updateItem(Class<? extends CartaMision> item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item!=null) {
-                            setText(item.getSimpleName());
-                        }
+                    public ListCell<Class<? extends CartaMision>> call(ListView<Class<? extends CartaMision>> param) {
+                        ListCell<Class<? extends CartaMision>> celda = new ListCell<Class<? extends CartaMision>>() {
+                            @Override
+                            protected void updateItem(Class<? extends CartaMision> item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (item != null) {
+                                    setText(item.getSimpleName());
+                                }
+                            }
+                        };
+                        return celda;
                     }
-                };
-                return celda;
-            }
-        });
+                });
 
         listaJugadores.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Jugador>() {
             @Override
@@ -106,6 +117,9 @@ public class AsignacionMisionesController {
                     @Override
                     public void changed(ObservableValue<? extends Class<? extends CartaMision>> observable,
                             Class<? extends CartaMision> oldValue, Class<? extends CartaMision> newValue) {
+                                if (!listaMisiones.getSelectionModel().isEmpty()) {
+                                    bCargarDesdeArchivo.setDisable(true);
+                                }
                         handleMisionChange(newValue, oldValue);
                     }
                 });
@@ -119,10 +133,10 @@ public class AsignacionMisionesController {
             rotateTransitionBack.setCycleCount(0);
             rotateTransitionBack.setAutoReverse(false);
             rotateTransitionBack.setInterpolator(Interpolator.EASE_OUT);
-            
+
             transicionActualCarta = rotateTransitionBack;
-            
-            rotateTransitionBack.setOnFinished(new EventHandler<ActionEvent>(){
+
+            rotateTransitionBack.setOnFinished(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     RotateTransition rotateTransitionFront = new RotateTransition(Duration.millis(300), iFront);
@@ -139,7 +153,7 @@ public class AsignacionMisionesController {
                     rotateTransitionText.setAutoReverse(false);
                     rotateTransitionText.setInterpolator(Interpolator.EASE_OUT);
 
-                    rotateTransitionFront.setOnFinished(new EventHandler<ActionEvent>(){
+                    rotateTransitionFront.setOnFinished(new EventHandler<ActionEvent>() {
 
                         @Override
                         public void handle(ActionEvent event) {
@@ -148,7 +162,7 @@ public class AsignacionMisionesController {
                                 showBackCarta();
                             }
                         }
-                        
+
                     });
 
                     transicionActualCarta = rotateTransitionFront;
@@ -156,11 +170,11 @@ public class AsignacionMisionesController {
                     rotateTransitionText.play();
                 }
             });
-    
+
             rotateTransitionBack.play();
         }
     }
-    
+
     public void showBackCarta() {
         if (transicionActualCarta == null) {
             RotateTransition rotateTransitionBack = new RotateTransition(Duration.millis(300), iFront);
@@ -176,10 +190,10 @@ public class AsignacionMisionesController {
             rotateTransitionText.setCycleCount(0);
             rotateTransitionText.setAutoReverse(false);
             rotateTransitionText.setInterpolator(Interpolator.EASE_OUT);
-            
+
             transicionActualCarta = rotateTransitionBack;
-            
-            rotateTransitionBack.setOnFinished(new EventHandler<ActionEvent>(){
+
+            rotateTransitionBack.setOnFinished(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     RotateTransition rotateTransitionFront = new RotateTransition(Duration.millis(300), iBack);
@@ -188,9 +202,9 @@ public class AsignacionMisionesController {
                     rotateTransitionFront.setCycleCount(0);
                     rotateTransitionFront.setAutoReverse(false);
                     rotateTransitionFront.setInterpolator(Interpolator.EASE_OUT);
-    
-                    rotateTransitionFront.setOnFinished(new EventHandler<ActionEvent>(){
-    
+
+                    rotateTransitionFront.setOnFinished(new EventHandler<ActionEvent>() {
+
                         @Override
                         public void handle(ActionEvent event) {
                             transicionActualCarta = null;
@@ -198,14 +212,14 @@ public class AsignacionMisionesController {
                                 showFrontCarta();
                             }
                         }
-                        
+
                     });
-    
+
                     transicionActualCarta = rotateTransitionFront;
                     rotateTransitionFront.play();
                 }
             });
-    
+
             rotateTransitionBack.play();
             rotateTransitionText.play();
         }
@@ -220,7 +234,9 @@ public class AsignacionMisionesController {
     }
 
     public void handleClickOnSiguiente() {
-        Main.goToRepartoPaises();
+        if (Partida.getPartida().areMisionesAsignadas()) {
+            Main.goToRepartoPaises();
+        }
     }
 
     public void handleMisionChange(Class<? extends CartaMision> claseCartaMision,
@@ -233,10 +249,10 @@ public class AsignacionMisionesController {
             } catch (NoSuchElementException e) {
                 misionJug = null;
             }
-            if (claseCartaMision!=null && !claseCartaMision.equals(misionJug)) {
+            if (claseCartaMision != null && !claseCartaMision.equals(misionJug)) {
                 try {
                     CartaMision m = CartaMisionFactory.build(claseCartaMision.getSimpleName(), jSeleccionado);
-                    if (misionJug!=null) {
+                    if (misionJug != null) {
                         jSeleccionado.removeMision(jSeleccionado.getCartaMision());
                     }
                     Partida.getPartida().asignarMisionAJugador(m, jSeleccionado);
@@ -259,6 +275,60 @@ public class AsignacionMisionesController {
             tDescMision.setVisible(true);
         } catch (NoSuchElementException | NullPointerException e) {
             tDescMision.setVisible(false);
+        }
+    }
+
+    public void cargarDesdeArchivo() {
+        File file;
+        FileChooser fileChooser = new FileChooser();
+        file = fileChooser.showOpenDialog(Main.getStage());
+
+        if (file != null) {
+
+            try {
+                BufferedReader inputReader = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+
+                String linea;
+                String[] partesLinea;
+
+                while ((linea = inputReader.readLine()) != null) {
+                    partesLinea = linea.split(";");
+                    try {
+                        Jugador jugadorActual = Partida.getPartida().getJugador(partesLinea[0]);
+                        CartaMision mision = CartaMisionFactory.build(partesLinea[1], jugadorActual);
+                        Partida.getPartida().asignarMisionAJugador(mision, jugadorActual);
+                    } catch (ExcepcionRISK e) {
+                        Alert alerta = new Alert(AlertType.ERROR);
+                        alerta.setTitle("Formato incorrecto");
+                        alerta.setHeaderText(null);
+                        alerta.setContentText(e.getMessage());
+                        alerta.showAndWait();
+                    }
+                }
+
+                inputReader.close();
+            } catch (FileNotFoundException fileNotFoundException) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText(null);
+                alerta.setContentText(RiskExceptionEnum.ARCHIVO_NO_EXISTE.get().getMessage());
+                alerta.showAndWait();
+            } catch (IOException e) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText(null);
+                alerta.setContentText(RiskExceptionEnum.NO_SE_HA_PODIDO_LEER.get().getMessage());
+                alerta.showAndWait();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText(null);
+                alerta.setContentText(RiskExceptionEnum.FORMATO_ARCHIVO_INCORRECTO.get().getMessage());
+                alerta.showAndWait();
+            }
+
+            handleClickOnSiguiente();
         }
     }
 }

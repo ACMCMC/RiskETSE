@@ -54,6 +54,7 @@ public class Main extends Application {
             Scene escena = new Scene(root);
             stage.setScene(escena);
             stage.show();
+            stage.centerOnScreen();
         } catch (IOException e) {
         }
     }
@@ -104,6 +105,7 @@ public class Main extends Application {
             stage.setScene(escenaRepartoPaises);
             stage.show();
             stage.sizeToScene();
+            stage.centerOnScreen();
         } catch (IOException e) {
         }
     }

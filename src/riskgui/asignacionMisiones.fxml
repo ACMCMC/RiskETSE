@@ -24,6 +24,7 @@
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
+            <Button fx:id="bCargarDesdeArchivo" mnemonicParsing="false" onAction="#cargarDesdeArchivo" onMouseClicked="#handleClickOnSiguiente" text="Cargar desde un archivo" />
             <Button fx:id="bSiguiente" disable="true" mnemonicParsing="false" onMouseClicked="#handleClickOnSiguiente" text="Siguiente" />
         </items>
       </ToolBar>
