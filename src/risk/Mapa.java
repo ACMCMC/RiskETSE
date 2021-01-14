@@ -747,6 +747,23 @@ public class Mapa {
     }
 
     /**
+     * Devuelve el Pais con el código especificado
+     * 
+     * @param codigo
+     * @return
+     */
+    public Pais getPaisByCodigoGeografico(String codigo) throws ExcepcionGeo {
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> colInstance.compare(p.getCodigoGeografico(), codigo)==0).findFirst();
+        if (paisBuscado.isPresent()) {
+            return paisBuscado.get();
+        } else {
+            throw (ExcepcionGeo) RiskExceptionEnum.PAIS_NO_EXISTE.get();
+        }
+    }
+
+    /**
      * Indica si todos los Paises del Mapa tienen asignado un Jugador
      * 
      * @return

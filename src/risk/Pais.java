@@ -16,6 +16,7 @@ import risk.riskexception.RiskExceptionEnum;
  * Representa un país dentro de un Continente
  */
 public class Pais implements Cloneable {
+    private final String codigoGeografico; // Nunca puede cambiar
     private String codigo;
     private String nombreHumano;
     private Continente continente;
@@ -29,6 +30,7 @@ public class Pais implements Cloneable {
      */
     Pais(String nombre, String nombreHumano, Continente continente) {
         this.codigo = nombre;
+        this.codigoGeografico = nombre;
         this.nombreHumano = nombreHumano;
         this.continente = continente;
         this.jugador = null;
@@ -201,6 +203,10 @@ public class Pais implements Cloneable {
 
     public void notificarCambioPais(PaisEvent evento) {
         Mapa.getMapa().getPaisEventPublisher().updateSubscribers(evento);
+    }
+
+    public String getCodigoGeografico() {
+        return codigoGeografico;
     }
 
     @Override

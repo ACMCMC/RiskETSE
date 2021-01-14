@@ -114,7 +114,7 @@ public class MundoBuilder {
     private void setAparienciaSVGPath(SVGPath svgPath, String nombrePais) {
         svgPath.setStroke(Color.BLACK);
         try {
-            Pais pais = Mapa.getMapa().getPais(nombrePais);
+            Pais pais = Mapa.getMapa().getPaisByCodigoGeografico(nombrePais);
             svgPath.fillProperty().set(pais.getContinente().getColor().getFxColor());
             prepararChangeListenersSVGPath(svgPath, pais);
         } catch (ExcepcionRISK e) {
@@ -207,7 +207,7 @@ public class MundoBuilder {
                         labelNumEjercitos
                         .setBackground(new Background(new BackgroundFill(pais.getJugador().getColor().getFxColor(),
                         new CornerRadii(0, true), Insets.EMPTY)));
-                        if (pais.getJugador().getColor().getFxColor().equals(risk.RiskColor.AMARILLO.getFxColor())) {
+                        if (pais.getJugador().getColor().getFxColor().equals(risk.RiskColor.AMARILLO.getFxColor()) || pais.getJugador().getColor().getFxColor().equals(risk.RiskColor.CYAN.getFxColor())) {
                             labelNumEjercitos.setTextFill(Color.BLACK);
                         } else {
                             labelNumEjercitos.setTextFill(Color.WHITE);
@@ -234,7 +234,7 @@ public class MundoBuilder {
         setAparienciaSVGPath(svgPath, nombrePais);
 
         try {
-            Pais pais = Mapa.getMapa().getPais(nombrePais);
+            Pais pais = Mapa.getMapa().getPaisByCodigoGeografico(nombrePais);
             svgPaths.put(pais, svgPath);
             paises.add(pais);
 
