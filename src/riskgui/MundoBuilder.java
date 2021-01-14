@@ -262,6 +262,7 @@ public class MundoBuilder {
                 public void handle(Event event) {
                     e.getValue().toFront();
                     e.getValue().fillProperty().set(Color.ORANGE);
+                    e.getValue().setEffect(null);
                 }
             };
             exitHandler = new EventHandler<Event>() {
@@ -269,6 +270,7 @@ public class MundoBuilder {
                 public void handle(Event event) {
                     Color c = e.getKey().getContinente().getColor().getFxColor();
                     e.getValue().fillProperty().set(c);
+                    e.getValue().setEffect(blendSVGPaths);
                 }
             };
             prepararEnterExitHandlersSVGPath(e.getKey(), e.getValue(), enterHandler, exitHandler);
