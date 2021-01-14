@@ -57,13 +57,13 @@ public class CargarArchivoController {
         Iterator<Pais> itPaises = Mapa.getMapa().getPaises().iterator();
         try {
             inputReader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(archivo), StandardCharsets.UTF_8));
+                    new InputStreamReader(new FileInputStream(archivo), StandardCharsets.UTF_8));
             try {
                 input = inputReader.readLine();
-                while (input!=null) {
+                while (input != null) {
                     String partes[] = input.split(";");
 
-                    if (partes.length!=2) {
+                    if (partes.length != 2) {
                         throw new ArrayIndexOutOfBoundsException();
                     }
 
@@ -74,7 +74,7 @@ public class CargarArchivoController {
                     Pais p = itPaises.next();
                     p.setCodigo(partes[0]);
                     p.setNombreHumano(partes[1]);
-                    
+
                     input = inputReader.readLine();
                 }
                 inputReader.close();
@@ -99,5 +99,5 @@ public class CargarArchivoController {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-   
+
 }

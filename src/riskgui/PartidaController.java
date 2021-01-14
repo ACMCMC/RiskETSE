@@ -9,6 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import risk.Dado;
+import risk.riskexception.ExcepcionPropia;
 
 public class PartidaController {
     @FXML
@@ -26,18 +30,35 @@ public class PartidaController {
 
     public void initialize() {
         Mundo mundo = new MundoBuilder().setActionClick((p) -> {
-            return new EventHandler<Event>(){
+            return new EventHandler<Event>() {
 
-				@Override
-				public void handle(Event event) {
-				}
-                
+                @Override
+                public void handle(Event event) {
+                }
+
             };
         }).get();
 
         panelMapa.getChildren().add(mundo.getWorldStackPane());
     }
 
-
+    public void accionPrueba() {
+        try {
+            Stage cargarArchivoStage = new DadoStage(new Dado(6));
+            cargarArchivoStage.initOwner(Main.getStage());
+            cargarArchivoStage.initModality(Modality.APPLICATION_MODAL);
+            cargarArchivoStage.show();
+            Stage cargarArchivoStage2 = new DadoStage(new Dado(5));
+            cargarArchivoStage2.initOwner(Main.getStage());
+            cargarArchivoStage2.initModality(Modality.APPLICATION_MODAL);
+            cargarArchivoStage2.show();
+            Stage cargarArchivoStage3 = new DadoStage(new Dado(3));
+            cargarArchivoStage3.initOwner(Main.getStage());
+            cargarArchivoStage3.initModality(Modality.APPLICATION_MODAL);
+            cargarArchivoStage3.show();
+        } catch (ExcepcionPropia e) {
+            e.printStackTrace();
+        }
+    }
     
 }

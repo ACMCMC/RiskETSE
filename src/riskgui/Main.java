@@ -28,7 +28,7 @@ public class Main extends Application {
         primaryStage.setTitle("RiskETSE");
         primaryStage.setResizable(false);
 
-        goToPantallaInicial();
+        goToPartida();
     }
     
     public static void goToCreacionJugadores() {
