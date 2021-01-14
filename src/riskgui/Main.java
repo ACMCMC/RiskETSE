@@ -3,6 +3,10 @@ package riskgui;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -162,6 +166,33 @@ public class Main extends Application {
         } catch (ExcepcionGeo e) {
             io.printToErrOutput(e);
         }
+
+        anadirFronterasIndirectas();
+    }
+
+    private void anadirFronterasIndirectas() {
+        Set<String[]> fronterasPaises = new HashSet<>();
+
+        fronterasPaises.add(new String[] { "Brasil", "ANorte" });
+        fronterasPaises.add(new String[] { "EurOcc", "ANorte" });
+        fronterasPaises.add(new String[] { "Groenlan", "Islandia" });
+        fronterasPaises.add(new String[] { "Kamchatka", "Alaska" });
+        fronterasPaises.add(new String[] { "EurSur", "Egipto" });
+        fronterasPaises.add(new String[] { "SAsiático", "Indonesia" });
+
+        fronterasPaises.stream().map(paises -> {
+            List<risk.Pais> par = new ArrayList<>();
+            try {
+                par.add(Mapa.getMapa().getPais(paises[0]));
+                par.add(Mapa.getMapa().getPais(paises[1]));
+            } catch (ExcepcionGeo e) { // Sería conveniente implementar manejo de excepciones
+            }
+            return (par);
+        }).forEach(par -> {
+            try{
+            Mapa.getMapa().anadirFronteraIndirecta(par.get(0), par.get(1));}
+            catch(IndexOutOfBoundsException e) {}
+        });
     }
 
     public static Stage getStage() {
