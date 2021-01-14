@@ -123,6 +123,7 @@ public class CustomizePaisController {
             }
         });
         ObservableList<Pais> listaP = FXCollections.observableArrayList(Mapa.getMapa().getPaises());
+        listaP.remove(pais);
         listViewFronteras.setItems(listaP);
         seleccionarPaisesFrontera();
     }

@@ -93,8 +93,8 @@ public class CargarArchivoController {
                 }
             }
         } catch (FileNotFoundException e) {
-            stage.close();
         }
+        stage.close();
     }
 
     public void setStage(Stage stage) {

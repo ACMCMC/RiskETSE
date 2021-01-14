@@ -85,7 +85,7 @@ public class AsignacionMisionesController {
 
         listaMisiones.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ObservableList<Class<? extends CartaMision>> listaM = FXCollections
-                .observableArrayList(CartaMisionFactory.getAll());
+                .observableArrayList(CartaMisionFactory.getAllAssignable());
         SortedList<Class<? extends CartaMision>> listaMOrdenada = new SortedList<>(listaM);
         listaMOrdenada.setComparator(Comparator.comparing((Class<? extends CartaMision> c) -> c.getSimpleName()));
         listaMisiones.setItems(listaMOrdenada);
@@ -226,6 +226,14 @@ public class AsignacionMisionesController {
     }
 
     public void handleJugadorChange(Jugador j) {
+        if (j!=null) {
+            ObservableList<Class<? extends CartaMision>> listaM = FXCollections
+                .observableArrayList(CartaMisionFactory.getAllAssignable(j));
+        SortedList<Class<? extends CartaMision>> listaMOrdenada = new SortedList<>(listaM);
+        listaMOrdenada.setComparator(Comparator.comparing((Class<? extends CartaMision> c) -> c.getSimpleName()));
+        listaMisiones.setItems(FXCollections.emptyObservableList());
+        listaMisiones.setItems(listaMOrdenada);
+        }
         try {
             listaMisiones.getSelectionModel().select(j.getCartaMision().getClass());
         } catch (NoSuchElementException e) {

@@ -19,10 +19,12 @@ public abstract class M4 extends CartaMision {
 
     @Override
     public void update(PaisEvent evento) {
-        if (jugador.getPaises().isEmpty())
-            completada = true;
-        else
-            completada = false;
+        if (jugador != null) {
+            if (jugador.getPaises().isEmpty())
+                completada = true;
+            else
+                completada = false;
+        }
     }
 
 }

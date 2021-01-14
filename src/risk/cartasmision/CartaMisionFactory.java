@@ -1,9 +1,11 @@
 package risk.cartasmision;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
 import risk.Jugador;
+import risk.Partida;
 import risk.riskexception.ExcepcionMision;
 import risk.riskexception.RiskExceptionEnum;
 
@@ -57,6 +59,43 @@ public abstract class CartaMisionFactory {
         cartasMision.add(M44.class);
         cartasMision.add(M45.class);
         cartasMision.add(M46.class);
+        return cartasMision;
+    }
+    public static Set<Class<? extends CartaMision>> getAllAssignable() {
+        Set<Class<? extends CartaMision>> cartasMision = getAll();
+        Set<Class<? extends CartaMision>> cartasMisionBorrar = new HashSet<>();
+        for (Class<? extends CartaMision> c : cartasMision) {
+            if (M4.class.isAssignableFrom(c)) {
+                try {
+                    M4 m4 = (M4) CartaMisionFactory.build(c.getSimpleName(), null);
+                    if (!Partida.getPartida().getJugadores().stream().map(j -> j.getColor()).anyMatch(col -> col.equals(m4.getColor()))) {
+                        cartasMisionBorrar.add(c);
+                    }
+                } catch (ExcepcionMision e) {
+                }
+            }
+        }
+        cartasMision.removeAll(cartasMisionBorrar);
+        return cartasMision;
+    }
+    public static Set<Class<? extends CartaMision>> getAllAssignable(Jugador jug) {
+        Set<Class<? extends CartaMision>> cartasMision = getAll();
+        Set<Class<? extends CartaMision>> cartasMisionBorrar = new HashSet<>();
+        for (Class<? extends CartaMision> c : cartasMision) {
+            if (M4.class.isAssignableFrom(c)) {
+                try {
+                    M4 m4 = (M4) CartaMisionFactory.build(c.getSimpleName(), null);
+                    if (!Partida.getPartida().getJugadores().stream().map(j -> j.getColor()).anyMatch(col -> col.equals(m4.getColor()))) {
+                        cartasMisionBorrar.add(c);
+                    }
+                    if (m4.getColor().equals(jug.getColor())) {
+                        cartasMisionBorrar.add(c);
+                    }
+                } catch (ExcepcionMision e) {
+                }
+            }
+        }
+        cartasMision.removeAll(cartasMisionBorrar);
         return cartasMision;
     }
 }
