@@ -325,7 +325,7 @@ public class Partida {
         jugador.addCartaMision(cartaMision);
     }
 
-    private Turno getTurnoActual() {
+    public Turno getTurnoActual() {
         if (this.turnoActual==null) {
             this.turnoActual = new Turno(this.colaJugadores.peek());
         }

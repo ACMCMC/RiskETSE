@@ -27,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -48,7 +49,7 @@ import java.io.InputStreamReader;
 
 public class MundoBuilder {
 
-    private static final DataFormat dataFormatPais = new DataFormat("risk.pais");
+    public static final DataFormat dataFormatPais = new DataFormat("risk.pais");
     private Properties props;
     private Set<Pais> paises;
     private HashMap<Pais, SVGPath> svgPaths;
@@ -152,7 +153,7 @@ public class MundoBuilder {
         .set(svgPath.getLayoutBounds().getMinY()
         + (svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY()) / 2
         - labelNombre.getHeight() / 2 - 25);
-        labelNombre.setMaxWidth(svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX());
+        //labelNombre.setMaxWidth(svgPath.getLayoutBounds().getMaxX() - svgPath.getLayoutBounds().getMinX());
         labelNombre.setMaxHeight(svgPath.getLayoutBounds().getMaxY() - svgPath.getLayoutBounds().getMinY());
         labelNombre.setAlignment(Pos.CENTER);
         labelNombre.setTextFill(Color.BLACK);
@@ -337,6 +338,21 @@ public class MundoBuilder {
     }
 
     return this;
+    }
+
+    
+    public MundoBuilder setDragNDrop(Function<Entry<Pais, SVGPath>, EventHandler<MouseEvent>> fOnDragDetected, Function<Entry<Pais, SVGPath>, EventHandler<DragEvent>> fOnDragOver, Function<Entry<Pais, SVGPath>, EventHandler<DragEvent>> fOnDragDropped) {
+
+        for (Entry<Pais, SVGPath> e : svgPaths.entrySet()) {
+            e.getValue().setOnDragDetected(fOnDragDetected.apply(e));
+            e.getValue().setOnDragOver(fOnDragOver.apply(e));
+            e.getValue().setOnDragDropped(fOnDragDropped.apply(e));
+        }
+
+        return this;
+    }
+
+    private void limpiarListenersDragNDrop() {
     }
 
 

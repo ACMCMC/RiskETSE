@@ -20,3 +20,28 @@
 #panelMapa {
     -fx-border-insets: 20, 50, 50, 20;
 }
+
+Button {
+
+    -fx-background-color:
+            linear-gradient(#ffa735,#ff0000),
+            radial-gradient(center 50% -40%, radius 200%, #f7918a 45%, #c44343 50%);
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0.0, 0, 1);
+   -fx-text-fill: #395306;
+}
+
+Button:hover
+{
+    -fx-background-color:
+            linear-gradient(#ff0000,#ff9735),
+            radial-gradient(center 50% -40%, radius 200%, #b64b4b 45%, #d35a56 50%);
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0.0, 0, 1);
+   -fx-text-fill: #395306;
+
+}

@@ -41,7 +41,7 @@ public class DadoStage extends Stage {
     private final static int ESCALA = 15;
     private final Dado dado;
 
-    public DadoStage(Dado dado) {
+    public DadoStage(Dado dado, Color color) {
         super();
 
         this.dado = dado;
@@ -54,7 +54,7 @@ public class DadoStage extends Stage {
             meshView.setScaleY(ESCALA);
             meshView.setScaleZ(ESCALA);
 
-            meshView.setMaterial(new PhongMaterial(Color.WHITESMOKE));
+            meshView.setMaterial(new PhongMaterial(color));
             meshView.setDrawMode(DrawMode.FILL);
 
             
@@ -89,7 +89,7 @@ public class DadoStage extends Stage {
             RotateTransition rotateTransition = new RotateTransition(Duration.millis(1000));
             rotateTransition.setNode(meshView);
             rotateTransition.setAxis(getEje());
-            rotateTransition.setInterpolator(Interpolator.SPLINE(0.3, 0.1, 0.9, 0.45));
+            rotateTransition.setInterpolator(Interpolator.SPLINE(0.4, 0.02, 0.9, 0.45));
             rotateTransition.setFromAngle(0);
             rotateTransition.setToAngle(getAngulo());
             

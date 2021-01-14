@@ -25,6 +25,13 @@ public class Main extends Application {
 
         crearMapa();
 
+        Menu menu = new Menu();
+        menu.crearJugadores("jugadores.csv");
+        menu.asignarMisiones("misiones.csv");
+        Partida.getPartida().asignarEjercitosSinRepartir();
+        menu.asignarPaises("paises.csv");
+        menu.repartirEjercitos();
+
         primaryStage.setTitle("RiskETSE");
         primaryStage.setResizable(false);
 
