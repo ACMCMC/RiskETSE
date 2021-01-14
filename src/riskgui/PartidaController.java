@@ -28,6 +28,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import risk.Dado;
+import risk.Jugador;
 import risk.Mapa;
 import risk.Pais;
 import risk.Partida;
@@ -247,15 +248,17 @@ public class PartidaController {
 
     public void realizarAtaque(Pais p1, Pais p2) {
         try {
+            Jugador j1 = p1.getJugador();
+            Jugador j2 = p2.getJugador();
             Map<Pais, Set<Dado>> dados = Partida.getPartida().atacar(p1, p2);
             for (Dado dado : dados.get(p1)) {
-                Stage cargarArchivoStage = new DadoStage(dado, Color.WHITE);
+                Stage cargarArchivoStage = new DadoStage(dado, j1.getColor().getFxColor().desaturate().brighter().brighter().brighter());
                 cargarArchivoStage.initOwner(Main.getStage());
                 cargarArchivoStage.initModality(Modality.APPLICATION_MODAL);
                 cargarArchivoStage.show();
             }
             for (Dado dado : dados.get(p2)) {
-                Stage cargarArchivoStage = new DadoStage(dado, Color.rgb(255, 200, 200));
+                Stage cargarArchivoStage = new DadoStage(dado, j2.getColor().getFxColor().desaturate().brighter().brighter().brighter());
                 cargarArchivoStage.initOwner(Main.getStage());
                 cargarArchivoStage.initModality(Modality.APPLICATION_MODAL);
                 cargarArchivoStage.show();

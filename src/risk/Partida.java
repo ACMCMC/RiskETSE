@@ -190,7 +190,9 @@ public class Partida {
             if (dadoAtacante.getValor() > dadoDefensor.getValor()) {
                 defensor.removeEjercito();
             } else {
-                atacante.removeEjercito();
+                if (atacante.getNumEjercitos()>1) {
+                    atacante.removeEjercito();
+                }
             }
         }
         if (defensor.getNumEjercitos() == 0) {
