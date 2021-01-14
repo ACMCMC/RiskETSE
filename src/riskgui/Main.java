@@ -24,18 +24,18 @@ public class Main extends Application {
         stage = primaryStage;
 
         crearMapa();
+        
+        primaryStage.setTitle("RiskETSE");
+        primaryStage.setResizable(false);
 
-        Menu menu = new Menu();
+        /*Menu menu = new Menu();
         menu.crearJugadores("jugadores.csv");
         menu.asignarMisiones("misiones.csv");
         Partida.getPartida().asignarEjercitosSinRepartir();
         menu.asignarPaises("paises.csv");
         menu.repartirEjercitos();
-
-        primaryStage.setTitle("RiskETSE");
-        primaryStage.setResizable(false);
-
-        goToPartida();
+        goToPartida();*/
+        goToPantallaInicial();
     }
     
     public static void goToCreacionJugadores() {
