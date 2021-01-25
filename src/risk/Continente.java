@@ -11,15 +11,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartasmision.PaisEvent;
+
 /**
  * Clase Continente. Almacena el codigo, su color, y los países asociados al
  * continente.
  */
 public class Continente {
-    private Color color;
+    private RiskColor color;
     private String codigo;
     private String nombreHumano;
-    private Map<String, Pais> paises;
 
     /**
      * Crea un nuevo Continente, sin países asignados
@@ -28,10 +29,9 @@ public class Continente {
      * @param nombreHumano
      */
     public Continente(String codigo, String nombreHumano) {
-        this.setColor(Color.INDEFINIDO);
+        this.setColor(RiskColor.INDEFINIDO);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
-        this.paises = new HashMap<>();
     }
 
     /**
@@ -40,23 +40,25 @@ public class Continente {
      * @param codigo
      * @param color
      */
-    public Continente(String codigo, String nombreHumano, Color color) {
+    public Continente(String codigo, String nombreHumano, RiskColor color) {
         this.setColor(color);
         this.setCodigo(codigo);
         this.setNombreHumano(nombreHumano);
-        this.paises = new HashMap<>();
     }
 
-    public void setColor(Color color) {
+    public void setColor(RiskColor color) {
         this.color = color;
+        notificarCambiosPaises();
     }
 
-    private void setCodigo(String codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
+        notificarCambiosPaises();
     }
 
-    private void setNombreHumano(String nombreHumano) {
+    public void setNombreHumano(String nombreHumano) {
         this.nombreHumano = nombreHumano;
+        notificarCambiosPaises();
     }
     
     /**
@@ -86,7 +88,7 @@ public class Continente {
      * 
      * @return Color
      */
-    public Color getColor() {
+    public RiskColor getColor() {
         return this.color;
     }
 
@@ -109,22 +111,13 @@ public class Continente {
     }
 
     /**
-     * Añade un Pais a este continente
-     * 
-     * @param pais
-     */
-    public void addPais(Pais pais) {
-        this.paises.put(pais.getCodigo(), pais);
-    }
-
-    /**
      * Devuelve el Pais de codigo especificado
      * 
      * @param codigo
      * @return el Pais, o NULL
      */
     public Pais getPais(String codigo) {
-        return this.paises.get(codigo);
+        return this.getPaises().stream().filter(p-> p.getCodigo().equals(codigo)).findFirst().orElse(null);
     }
 
     /**
@@ -141,11 +134,16 @@ public class Continente {
      * Devuelve un Set de todos los países
      */
     public Set<Pais> getPaises() {
-        Set<Pais> setPaises = new HashSet<>();
-        this.paises.entrySet().forEach((Entry<String, Pais> entry) -> {
-            setPaises.add(entry.getValue());
-        });
-        return setPaises;
+        return Mapa.getMapa().getPaises().stream().filter(p -> this.equals(p.getContinente())).collect(Collectors.toSet());
+    }
+
+    private void notificarCambiosPaises() {
+        for (Pais p : getPaises()) {
+            PaisEvent evento = new PaisEvent();
+            evento.setPaisAntes(p);
+            evento.setPaisDespues(p);
+            p.notificarCambioPais(evento);
+        }
     }
 
     @Override
@@ -160,14 +158,32 @@ public class Continente {
             return false;
         }
         final Continente other = (Continente) continente;
-        if (!this.getCodigo().equals(other.getCodigo())) {
-            return false;
+        if (this.getCodigo()!=null) {
+            if (!this.getCodigo().equals(other.getCodigo())) {
+                return false;
+            }
+        } else {
+            if (other.getCodigo()!=null) {
+                return false;
+            }
         }
-        if (!this.getNombreHumano().equals(other.getNombreHumano())) {
-            return false;
+        if (this.getNombreHumano()!=null) {
+            if (!this.getNombreHumano().equals(other.getNombreHumano())) {
+                return false;
+            }
+        } else {
+            if (other.getNombreHumano()!=null) {
+                return false;
+            }
         }
-        if (!this.getColor().equals(other.getColor())) {
-            return false;
+        if (this.getColor()!=null) {
+            if (!this.getColor().equals(other.getColor())) {
+                return false;
+            }
+        } else {
+            if (other.getColor()!=null) {
+                return false;
+            }
         }
         return true;
     }

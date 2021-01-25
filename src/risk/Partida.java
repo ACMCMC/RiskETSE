@@ -111,7 +111,7 @@ public class Partida {
      * @param color
      * @return
      */
-    public Jugador getJugador(Color color) {
+    public Jugador getJugador(RiskColor color) {
         Optional<Jugador> jugador = this.jugadores.entrySet().stream().map(entry -> {
             return (entry.getValue());
         }).filter(jug -> {
@@ -190,7 +190,9 @@ public class Partida {
             if (dadoAtacante.getValor() > dadoDefensor.getValor()) {
                 defensor.removeEjercito();
             } else {
-                atacante.removeEjercito();
+                if (atacante.getNumEjercitos()>1) {
+                    atacante.removeEjercito();
+                }
             }
         }
         if (defensor.getNumEjercitos() == 0) {
@@ -325,7 +327,7 @@ public class Partida {
         jugador.addCartaMision(cartaMision);
     }
 
-    private Turno getTurnoActual() {
+    public Turno getTurnoActual() {
         if (this.turnoActual==null) {
             this.turnoActual = new Turno(this.colaJugadores.peek());
         }

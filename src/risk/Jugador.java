@@ -26,12 +26,12 @@ import risk.riskexception.RiskExceptionEnum;
  */
 public class Jugador {
     private String nombre;
-    private Color color;
+    private RiskColor color;
     private Set<CartaMision> setCartasMision;
     private Set<Carta> setCartasEquipamiento;
     private Set<Ejercito> ejercitosRearme;
 
-    public Jugador(String nombre, Color color) {
+    public Jugador(String nombre, RiskColor color) {
         this.setCartasMision = new HashSet<>();
         this.setCartasEquipamiento = new HashSet<>();
         this.ejercitosRearme = new HashSet<>();
@@ -87,8 +87,8 @@ public class Jugador {
                                                               // asignación
             for (int i = 0; i < numEjercitos; i++) {
                 Ejercito ejercitoAnadir = this.getAnyEjercitoDeRearme();
-                pais.addEjercito(ejercitoAnadir);
                 this.removeEjercitoDeRearme(ejercitoAnadir);
+                pais.addEjercito(ejercitoAnadir);
             }
             return (numEjercitos);
         } else if (this.getNumEjercitosRearme() > 0) { // No tenemos todos los ejércitos que nos piden, pero sí
@@ -99,8 +99,8 @@ public class Jugador {
             // for, entonces habría problemas
             for (int i = 0; i < ejercitosSinRepartir; i++) {
                 Ejercito ejercitoAnadir = this.getAnyEjercitoDeRearme();
-                pais.addEjercito(ejercitoAnadir);
                 this.removeEjercitoDeRearme(ejercitoAnadir);
+                pais.addEjercito(ejercitoAnadir);
             }
             return (ejercitosSinRepartir);
         } else { // No hay ejércitos disponibles
@@ -175,11 +175,11 @@ public class Jugador {
         this.nombre = nombre;
     }
 
-    public Color getColor() {
+    public RiskColor getColor() {
         return this.color;
     }
 
-    private void setColor(Color color) {
+    private void setColor(RiskColor color) {
         this.color = color;
     }
 
@@ -247,6 +247,13 @@ public class Jugador {
      */
     public void removeCartaEquipamiento(Carta carta) {
         this.setCartasEquipamiento.remove(carta);
+    }
+    
+    /**
+     * Le quita la Carta de misión especificada a este Jugador
+     */
+    public void removeMision(CartaMision m) {
+        this.setCartasMision.remove(m);
     }
 
     /**

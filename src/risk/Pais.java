@@ -16,6 +16,7 @@ import risk.riskexception.RiskExceptionEnum;
  * Representa un país dentro de un Continente
  */
 public class Pais implements Cloneable {
+    private final String codigoGeografico; // Nunca puede cambiar
     private String codigo;
     private String nombreHumano;
     private Continente continente;
@@ -28,20 +29,13 @@ public class Pais implements Cloneable {
      * Crea un nuevo Pais
      */
     Pais(String nombre, String nombreHumano, Continente continente) {
-        this.setCodigo(nombre);
-        this.setNombreHumano(nombreHumano);
-        this.setContinente(continente);
+        this.codigo = nombre;
+        this.codigoGeografico = nombre;
+        this.nombreHumano = nombreHumano;
+        this.continente = continente;
         this.jugador = null;
         this.ejercitos = new HashSet<>();
         this.vecesConquistado = -1;
-        addToContinente();
-    }
-
-    /**
-     * Añade este Pais a su Continente
-     */
-    private void addToContinente() {
-        continente.addPais(this);
     }
 
     /**
@@ -156,10 +150,6 @@ public class Pais implements Cloneable {
         return this.nombreHumano;
     }
 
-    private void setNombreHumano(String nombreHumano) {
-        this.nombreHumano = nombreHumano;
-    }
-
     /**
      * Devuelve el código del país
      * 
@@ -169,12 +159,28 @@ public class Pais implements Cloneable {
         return this.codigo;
     }
 
-    private void setCodigo(String codigo) {
+    public void setCodigo(String codigo) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.codigo = codigo;
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
-    private void setContinente(Continente continente) {
+    public void setNombreHumano(String nombreHumano) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
+        this.nombreHumano = nombreHumano;
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
+    }
+
+    public void setContinente(Continente continente) {
+        PaisEvent evento = new PaisEvent();
+        evento.setPaisAntes(this);
         this.continente = continente;
+        evento.setPaisDespues(this);
+        notificarCambioPais(evento);
     }
 
     /**
@@ -197,6 +203,10 @@ public class Pais implements Cloneable {
 
     public void notificarCambioPais(PaisEvent evento) {
         Mapa.getMapa().getPaisEventPublisher().updateSubscribers(evento);
+    }
+
+    public String getCodigoGeografico() {
+        return codigoGeografico;
     }
 
     @Override
@@ -225,8 +235,14 @@ public class Pais implements Cloneable {
         if (!this.getNombreHumano().equals(other.getNombreHumano())) {
             return false;
         }
-        if (!this.getJugador().equals(other.getJugador())) {
-            return false;
+        if (!(this.getJugador()==null)) {
+            if (!(this.getJugador().equals(other.getJugador()))) {
+                return false;
+            }
+        } else {
+            if (!(other.getJugador()==null)) {
+                return false;
+            }
         }
         if (this.getNumVecesConquistado()!=other.getNumVecesConquistado()) {
             return false;

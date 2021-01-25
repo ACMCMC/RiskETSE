@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/acmc/Repos/RiskETSE/src/risk/IOHelperFactory.java</file>
             <file>file:/Users/acmc/Repos/RiskETSE/src/risk/Risk.java</file>
+            <file>file:/Users/acmc/Repos/RiskETSE/src/riskgui/Main.java</file>
+            <file>file:/Users/acmc/Repos/RiskETSE/src/risk/Color.java</file>
+            <file>file:/Users/acmc/Repos/RiskETSE/src/risk/IOHelperFactory.java</file>
             <file>file:/Users/acmc/Repos/RiskETSE/src/risk/Continente.java</file>
         </group>
     </open-files>

@@ -1,12 +1,12 @@
 package risk.cartasmision;
 
-import risk.Color;
+import risk.RiskColor;
 
 public class M46 extends M4 {
 
     @Override
-    Color getColor() {
-        return Color.VIOLETA;
+    RiskColor getColor() {
+        return RiskColor.VIOLETA;
     }
     
 }

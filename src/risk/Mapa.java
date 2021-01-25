@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import risk.cartasmision.PaisEvent;
 import risk.cartasmision.PaisEventPublisher;
 import risk.riskexception.ExcepcionGeo;
 import risk.riskexception.ExcepcionRISK;
@@ -42,8 +43,8 @@ public class Mapa {
     private final int SIZE_Y = 8;
 
     private Map<Coordenadas, Casilla> casillas;
-    private Map<String, Pais> paises;
-    private Map<String, Continente> continentes;
+    private Set<Pais> paises;
+    private Set<Continente> continentes;
     private Set<Frontera> fronteras;
     private PaisEventPublisher paisEventPublisher;
 
@@ -53,8 +54,8 @@ public class Mapa {
     private Mapa() {
 
         casillas = new HashMap<Coordenadas, Casilla>();
-        paises = new HashMap<String, Pais>();
-        continentes = new HashMap<String, Continente>();
+        paises = new HashSet<Pais>();
+        continentes = new HashSet<Continente>();
         fronteras = new HashSet<Frontera>();
 
         paisEventPublisher = new PaisEventPublisher();
@@ -131,7 +132,7 @@ public class Mapa {
     }
 
     private void addContinente(Continente continente) {
-        this.continentes.put(continente.getCodigo(), continente);
+        this.continentes.add(continente);
     }
 
     /**
@@ -149,7 +150,7 @@ public class Mapa {
         while ((linea = bufferedReader.readLine()) != null) {
             valores = linea.split(";");
             try {
-                getContinente(valores[0]).setColor(Color.getColorByString(valores[1]));
+                getContinente(valores[0]).setColor(RiskColor.getColorByString(valores[1]));
             } catch (ExcepcionGeo e) { // No se ha encontrado el continente
                 if (e.equals(RiskExceptionEnum.CONTINENTE_NO_EXISTE.get())) {
                     // addContinente(new Continente(valores[0], valores[0],
@@ -193,14 +194,14 @@ public class Mapa {
             } catch (ExcepcionGeo e) {
                 // Creamos el continente, porque no está en la lista
                 continenteDelPais = new Continente(codigoContinente, nombreHumanoContinente);
-                continentes.put(continenteDelPais.getCodigo(), continenteDelPais);
+                continentes.add(continenteDelPais);
             }
             // La casilla que estaba en el mapa antes la vamos a reemplazar por una nueva
             // casilla con país
             CasillaPais casillaPais = new CasillaPais(new Coordenadas(Integer.valueOf(posX), Integer.valueOf(posY)),
                     new Pais(codigoPais, nombreHumanoPais, continenteDelPais));
             casillas.replace(casillaPais.getCoordenadas(), casillaPais);
-            paises.put(casillaPais.getPais().getCodigo(), casillaPais.getPais()); // Insertamos el país en la lista
+            paises.add( casillaPais.getPais()); // Insertamos el país en la lista
                                                                                   // de países
         }
         bufferedReader.close();
@@ -212,9 +213,7 @@ public class Mapa {
      * @return
      */
     public Set<Pais> getPaises() {
-        return (this.paises.entrySet().stream().map((entrada) -> {
-            return (entrada.getValue());
-        }).collect(Collectors.toSet()));
+        return this.paises;
     }
 
     /**
@@ -669,8 +668,65 @@ public class Mapa {
      * @param paisA
      * @param paisB
      */
-    private void addFrontera(Pais paisA, Pais paisB) {
-        this.fronteras.add(new Frontera(paisA, paisB));
+    public void addFrontera(Pais paisA, Pais paisB) {
+        if (paisA!=null && paisB!=null) {
+            PaisEvent paisEventA = new PaisEvent();
+            PaisEvent paisEventB = new PaisEvent();
+            paisEventA.setPaisAntes(paisA);
+            paisEventB.setPaisAntes(paisB);
+            this.fronteras.add(new Frontera(paisA, paisB));
+            paisEventA.setPaisDespues(paisA);
+            paisEventB.setPaisDespues(paisB);
+            this.getPaisEventPublisher().updateSubscribers(paisEventA);
+            this.getPaisEventPublisher().updateSubscribers(paisEventB);
+        }
+    }
+
+    /**
+     * Para un país, deja solo las fronteras que son con el set de países especificado
+     * 
+     * @param paisA
+     * @param paisB
+     */
+    public void setFronterasPais(Pais p, Set<Pais> paisesFrontera) {
+        Set<Frontera> fronterasPrevias = getFronteras(p);
+        Set<Pais> paisesPrevios = fronterasPrevias.stream().map(f -> f.getPaises()).map(set -> set.stream().filter(p2 -> !p2.equals(p)).findFirst().get()).collect(Collectors.toSet());
+        Set<Pais> paisesEnComun = new HashSet<>(paisesFrontera);
+        paisesEnComun.retainAll(paisesPrevios);
+        Set<Pais> paisesBorrar = new HashSet<>(paisesPrevios);
+        paisesBorrar.removeAll(paisesEnComun);
+        fronterasPrevias.stream().filter(front -> !Collections.disjoint(front.getPaises(), paisesBorrar)).forEach(front -> removeFrontera(front)); // Borramos las que ya no están en el set
+        Set<Pais> paisesAnadir = new HashSet<>(paisesFrontera);
+        paisesAnadir.removeAll(paisesEnComun);
+        paisesAnadir.forEach(paisAnadir -> addFrontera(p, paisAnadir));
+    }
+
+    /**
+     * Elimina una Frontera entre dos países. Si no existe la Frontera, no hace nada
+     * 
+     * @param paisA
+     * @param paisB
+     */
+    public void removeFrontera(Pais paisA, Pais paisB) {
+        Optional<Frontera> f = getFrontera(paisA, paisB);
+        f.ifPresent(this::removeFrontera);
+    }
+    /**
+     * Elimina una Frontera entre dos países. Si no existe la Frontera, no hace nada
+     * 
+     * @param paisA
+     * @param paisB
+     */
+    public void removeFrontera(Frontera f) {
+            PaisEvent paisEventA = new PaisEvent();
+            PaisEvent paisEventB = new PaisEvent();
+            paisEventA.setPaisAntes(f.getPaisA());
+            paisEventB.setPaisAntes(f.getPaisB());
+            this.fronteras.remove(f);
+            paisEventA.setPaisDespues(f.getPaisA());
+            paisEventB.setPaisDespues(f.getPaisB());
+            this.getPaisEventPublisher().updateSubscribers(paisEventA);
+            this.getPaisEventPublisher().updateSubscribers(paisEventB);
     }
 
     /**
@@ -683,6 +739,23 @@ public class Mapa {
         final Collator colInstance = Collator.getInstance();
         colInstance.setStrength(Collator.NO_DECOMPOSITION);
         Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> colInstance.compare(p.getCodigo(), codigo)==0).findFirst();
+        if (paisBuscado.isPresent()) {
+            return paisBuscado.get();
+        } else {
+            throw (ExcepcionGeo) RiskExceptionEnum.PAIS_NO_EXISTE.get();
+        }
+    }
+
+    /**
+     * Devuelve el Pais con el código especificado
+     * 
+     * @param codigo
+     * @return
+     */
+    public Pais getPaisByCodigoGeografico(String codigo) throws ExcepcionGeo {
+        final Collator colInstance = Collator.getInstance();
+        colInstance.setStrength(Collator.NO_DECOMPOSITION);
+        Optional<Pais> paisBuscado = this.getPaises().stream().filter(p -> colInstance.compare(p.getCodigoGeografico(), codigo)==0).findFirst();
         if (paisBuscado.isPresent()) {
             return paisBuscado.get();
         } else {
@@ -717,7 +790,7 @@ public class Mapa {
      * Devuelve un Set de todos los Continentes del mapa
      */
     public Set<Continente> getContinentes() {
-        return this.continentes.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toSet());
+        return this.continentes;
     }
 
     /**
@@ -745,9 +818,9 @@ public class Mapa {
                 for (int x = 0; x < getSizeX(); x++) {
                     Casilla casilla = this.getCasilla(new Coordenadas(x, y));
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) {
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD); // También podría ser CRUZ_BOLD
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                     } else if (x == 0) {
                         stringBuilder.append(CodigosMapa.BORDE_IZQ_MIDDLE);
                     } else {
@@ -764,7 +837,7 @@ public class Mapa {
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)
                         || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)
                         || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
-                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append(RiskColor.ROJO.getSecTexto());
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP)) { // Si la ruta va a la casilla de
                                                                                     // arriba, y no pasa por esta
                                                                                     // casilla
@@ -772,7 +845,7 @@ public class Mapa {
                     } else {
                         stringBuilder.append(CodigosMapa.LINEA_VERTICALTOHORIZONTAL_BOLD);
                     }
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                 } else {
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
                 }
@@ -781,15 +854,15 @@ public class Mapa {
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.HORIZONTAL)
                             || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)
                             || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_TOP_HORIZONTAL)) {
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(new String(new char[getSizeX()]).replace('\0',
                                 CodigosMapa.LINEA_HORIZONTAL_BOLD.codigo)); // Imprimimos espacios
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                     } else if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " ")); // Imprimimos espacios
@@ -798,7 +871,7 @@ public class Mapa {
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                     stringBuilder.append(((CasillaPais) casilla).getPais().getContinente().getColor().getSecFondo());
                     stringBuilder.append(String.format("%-9s", ((CasillaPais) casilla).getPais().getCodigo()));
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
             }
@@ -809,9 +882,9 @@ public class Mapa {
                 Casilla casilla = this.getCasilla(new Coordenadas(x, y));
                 if (casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM)
                         || casilla.getBorde().equals(Casilla.BordeCasilla.LEFT_BOTTOM_HORIZONTAL)) {
-                    stringBuilder.append(Color.ROJO.getSecTexto());
+                    stringBuilder.append(RiskColor.ROJO.getSecTexto());
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                 } else {
                     stringBuilder.append(CodigosMapa.LINEA_VERTICAL);
                 }
@@ -819,9 +892,9 @@ public class Mapa {
                                                           // casilla es marítima, o porque no tiene asignado un jugador
                     if (casilla.getBorde().equals(Casilla.BordeCasilla.VERTICAL)) {
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
-                        stringBuilder.append(Color.ROJO.getSecTexto());
+                        stringBuilder.append(RiskColor.ROJO.getSecTexto());
                         stringBuilder.append(CodigosMapa.LINEA_VERTICAL_BOLD);
-                        stringBuilder.append(Color.getSecColorReset());
+                        stringBuilder.append(RiskColor.getSecColorReset());
                         stringBuilder.append(new String(new char[5]).replace("\0", " "));
                     } else {
                         stringBuilder.append(new String(new char[11]).replace("\0", " "));
@@ -834,7 +907,7 @@ public class Mapa {
                     stringBuilder.append(" ");
                     stringBuilder.append(((CasillaPais) casilla).getPais().getJugador().getColor().getSecTexto());
                     stringBuilder.append(String.format("%-9s", ((CasillaPais) casilla).getPais().getNumEjercitos()));
-                    stringBuilder.append(Color.getSecColorReset());
+                    stringBuilder.append(RiskColor.getSecColorReset());
                     stringBuilder.append(" "); // Imprimimos un espacio al final para separar
                 }
 
