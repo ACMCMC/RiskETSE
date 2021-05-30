@@ -88,7 +88,7 @@ public class CambiarCartasController {
             CambioCartas cambio = Partida.getPartida().getJugadorActual().realizarCambioOptimoDeCartasDeEquipamiento();
 
             Alert alerta = new Alert(AlertType.INFORMATION);
-                alerta.setTitle("Error cambiando cartas");
+                alerta.setTitle("Cambiadas");
                 alerta.setHeaderText(null);
                 alerta.setContentText("Se han cambiado: " + cambio.getCarta1().getNombre() + ", " + cambio.getCarta2().getNombre() + " y " + cambio.getCarta3().getNombre() + ".");
                 alerta.showAndWait();
